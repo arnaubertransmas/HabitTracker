@@ -1,67 +1,115 @@
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import { Container, Row, Col, Card } from 'react-bootstrap';
-import Header from '../components/Header';
+import React from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
+import { Button, Form, Container, Row, Col, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import Header from '../components/Header';
+import Input from '../components/Input';
 
 const Register = () => {
+  const methods = useForm({ mode: 'onChange' });
+  // abans de cridar onsubmit validem el form
+  // agafem les propietats de useformContext:
+  const {
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = methods;
+
+  const onSubmit = (data) => {
+    if (data.password !== data.password2) {
+      return;
+    }
+    console.log(data);
+  };
+
+  const password = watch('password');
+
   return (
     <>
       <Header />
       <Container className="d-flex justify-content-center align-items-center mt-5">
         <Row className="w-100">
-          {/* num de grid col per small, medium and large devices */}
           <Col xs={12} md={8} lg={6} className="mx-auto">
             <Card className="shadow p-5" style={{ margin: 'auto' }}>
               <Card.Body>
                 <h2 className="text-center mb-5">Sign Up</h2>
-                <Form>
-                  <Form.Group className="mb-3" controlId="formBasicName">
-                    <Form.Control type="text" placeholder="Name" size="lg" />
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="formBasicSurname">
-                    <Form.Control
+                {/* li passem el useFormContext per accedir al form */}
+                <FormProvider {...methods}>
+                  <Form onSubmit={handleSubmit(onSubmit)}>
+                    <Input
                       type="text"
+                      id="name"
+                      placeholder="Name"
+                      className="form-control"
+                    />
+                    {errors.name && (
+                      <p className="text-danger">{errors.name.message}</p>
+                    )}
+                    <Input
+                      type="text"
+                      id="surname"
                       placeholder="Second name"
-                      size="lg"
+                      className="form-control"
                     />
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Control
+                    {errors.surname && (
+                      <p className="text-danger">{errors.surname.message}</p>
+                    )}
+                    <Input
                       type="email"
+                      id="email"
                       placeholder="Email address"
-                      size="lg"
+                      className="form-control"
                     />
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Control
+                    {errors.email && (
+                      <p className="text-danger">{errors.email.message}</p>
+                    )}
+                    <Input
                       type="password"
+                      id="password"
                       placeholder="Password"
-                      size="lg"
+                      className="form-control"
+                      rules={{
+                        required: 'Please confirm your password',
+                        validate: {
+                          matchPassword: (value) => {
+                            return value === password || 'Passwords must match';
+                          },
+                        },
+                      }}
                     />
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="formBasicPassword2">
-                    <Form.Control
+                    {errors.password && (
+                      <p className="text-danger">{errors.password.message}</p>
+                    )}
+                    <Input
                       type="password"
+                      id="password2"
                       placeholder="Repeat your password"
-                      size="lg"
+                      className="form-control"
+                      validate={{
+                        // Validar que la contrasenya repetida sigui igual a la contrasenya
+                        validate: (value) =>
+                          value === password || 'Passwords do not match',
+                      }}
                     />
-                  </Form.Group>
-                  <Button
-                    variant="primary"
-                    type="submit"
-                    className="w-100"
-                    size="lg"
-                  >
-                    Submit
-                  </Button>
-                  <Form.Group className="text-center mt-3">
-                    Already have an account?
-                    <Link to="/signin" className="ms-1">
-                      Sign in
-                    </Link>
-                  </Form.Group>
-                </Form>
+                    {errors.password2 && (
+                      <p className="text-danger">{errors.password2.message}</p>
+                    )}
+                    <Button
+                      variant="primary"
+                      type="submit"
+                      className="w-100"
+                      size="lg"
+                    >
+                      Submit
+                    </Button>
+                    <Form.Group className="text-center mt-3">
+                      Already have an account?
+                      <Link to="/signin" className="ms-1">
+                        Sign in
+                      </Link>
+                    </Form.Group>
+                  </Form>
+                </FormProvider>
               </Card.Body>
             </Card>
           </Col>
