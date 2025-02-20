@@ -1,0 +1,6 @@
+# created by virtualenv automatically
+.venv/
+.env
+__pycache__/
+.DS_Store
+app.log
