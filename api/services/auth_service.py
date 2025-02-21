@@ -1,6 +1,7 @@
 from models.user_model import User
 from utils.logger import log_error
 from utils.validators import validate_email, validate_password
+from werkzeug.security import check_password_hash
 
 
 def registrate_user(name, surname, email, password, password2):
@@ -13,19 +14,36 @@ def registrate_user(name, surname, email, password, password2):
             return {"Success": False, "message": "Invalid email address"}
 
         if password != password2:
-            return {
-                "Success": False,
-                "message": "Passwords must be identical",
-            }
+            return {"Success": False, "message": "Passwords must be identical"}
 
         password_validation = validate_password(password)
         if not password_validation["Success"]:
             return password_validation
 
+        if User.find_email(email):
+            return {"success": False, "message": "This address is already registered!"}
+
         user = User(name, surname, email, password)
         user.save()
-        return {"Success": True, "message": "User registred correctly"}
+
+        return {"Success": True, "message": "User registered correctly"}
 
     except Exception as e:
         log_error(f"User registration {e}")
-        return {"Success": False, "message": "Server error"}
+        return {"Success": False, "message": f"Server error: {str(e)}"}
+
+
+def login_user(email, password):
+    try:
+        user_to_login = User.get_user("email", email)
+
+        if not user_to_login:
+            return {"Success": False, "message": "Invalid credentials"}
+
+        if check_password_hash(user_to_login[0]["password"], password):
+            return {"Success": True, "message": "Logging in"}
+        return {"Success": False, "message": "Invalid credentials"}
+
+    except Exception as e:
+        log_error(f"Login registration {e}")
+        return {"Success": False, "message": f"Server error: {str(e)}"}

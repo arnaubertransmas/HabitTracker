@@ -3,7 +3,7 @@ import re
 
 def validate_email(email):
     """email validation for register"""
-    return bool(re.match(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$", email))
+    return bool(re.match(r"^[\w.-]+@([\w.-]+\.)+[a-zA-Z]{2,}$", email))
 
 
 def validate_password(password):

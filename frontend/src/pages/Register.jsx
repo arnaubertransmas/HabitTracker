@@ -1,25 +1,72 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Button, Form, Container, Row, Col, Card } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import {
+  Button,
+  Form,
+  Container,
+  Row,
+  Col,
+  Card,
+  Alert,
+} from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Header from '../components/Header';
 import Input from '../components/Input';
 
 const Register = () => {
   const methods = useForm({ mode: 'onChange' });
-  // abans de cridar onsubmit validem el form
-  // agafem les propietats de useformContext:
+  const redirect = useNavigate();
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState(false);
+
   const {
     handleSubmit,
     formState: { errors },
     watch,
   } = methods;
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     if (data.password !== data.password2) {
+      setError('Passwords do not match');
       return;
     }
-    console.log(data);
+
+    try {
+      setError('');
+      setLoading(true);
+
+      const response = await axios.post(
+        'http://127.0.0.1:5000/auth/signup',
+        {
+          name: data.name,
+          surname: data.surname,
+          email: data.email,
+          password: data.password,
+          password2: data.password2,
+        },
+        {
+          headers: {
+            'Content-Type': 'application.json',
+          },
+        },
+      );
+
+      const result = await response.json();
+      console.log(result);
+
+      if (!result.Success) {
+        setError(result.message || 'Registration failed');
+        return;
+      }
+
+      redirect('/signin');
+    } catch (err) {
+      setError('Internal server error, try again later...');
+      console.log('Registration error', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const password = watch('password');
@@ -33,7 +80,11 @@ const Register = () => {
             <Card className="shadow p-5" style={{ margin: 'auto' }}>
               <Card.Body>
                 <h2 className="text-center mb-5">Sign Up</h2>
-                {/* li passem el useFormContext per accedir al form */}
+                {error && (
+                  <Alert variant="danger" className="mb-4">
+                    {error}
+                  </Alert>
+                )}
                 <FormProvider {...methods}>
                   <Form onSubmit={handleSubmit(onSubmit)}>
                     <Input
@@ -41,6 +92,9 @@ const Register = () => {
                       id="name"
                       placeholder="Name"
                       className="form-control"
+                      rules={{
+                        required: 'Name is required',
+                      }}
                     />
                     {errors.name && (
                       <p className="text-danger">{errors.name.message}</p>
@@ -50,6 +104,9 @@ const Register = () => {
                       id="surname"
                       placeholder="Second name"
                       className="form-control"
+                      rules={{
+                        required: 'Second name is required',
+                      }}
                     />
                     {errors.surname && (
                       <p className="text-danger">{errors.surname.message}</p>
@@ -59,6 +116,13 @@ const Register = () => {
                       id="email"
                       placeholder="Email address"
                       className="form-control"
+                      rules={{
+                        required: 'Email address is required',
+                        pattern: {
+                          value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i,
+                          message: 'Invalid email address',
+                        },
+                      }}
                     />
                     {errors.email && (
                       <p className="text-danger">{errors.email.message}</p>
@@ -69,11 +133,16 @@ const Register = () => {
                       placeholder="Password"
                       className="form-control"
                       rules={{
-                        required: 'Please confirm your password',
-                        validate: {
-                          matchPassword: (value) => {
-                            return value === password || 'Passwords must match';
-                          },
+                        required: 'Password is required',
+                        minLength: {
+                          value: 8,
+                          message: 'Password must be at least 8 characters',
+                        },
+                        pattern: {
+                          value:
+                            /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&].{8,}$/i,
+                          message:
+                            'Invalid password, make sure to include uppercase, numbers and special characters',
                         },
                       }}
                     />
@@ -85,8 +154,8 @@ const Register = () => {
                       id="password2"
                       placeholder="Repeat your password"
                       className="form-control"
-                      validate={{
-                        // Validar que la contrasenya repetida sigui igual a la contrasenya
+                      rules={{
+                        required: 'Please confirm your password',
                         validate: (value) =>
                           value === password || 'Passwords do not match',
                       }}
@@ -99,8 +168,9 @@ const Register = () => {
                       type="submit"
                       className="w-100"
                       size="lg"
+                      disabled={loading}
                     >
-                      Submit
+                      {loading ? 'Signing up...' : 'Submit'}
                     </Button>
                     <Form.Group className="text-center mt-3">
                       Already have an account?
