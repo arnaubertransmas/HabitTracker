@@ -36,23 +36,15 @@ const Register = () => {
       setError('');
       setLoading(true);
 
-      const response = await axios.post(
-        'http://127.0.0.1:5000/auth/signup',
-        {
-          name: data.name,
-          surname: data.surname,
-          email: data.email,
-          password: data.password,
-          password2: data.password2,
-        },
-        {
-          headers: {
-            'Content-Type': 'application.json',
-          },
-        },
-      );
+      const response = await axios.post('http://127.0.0.1:5000/auth/signup', {
+        name: data.name,
+        surname: data.surname,
+        email: data.email,
+        password: data.password,
+        password2: data.password2,
+      });
 
-      const result = await response.json();
+      const result = await response.data;
       console.log(result);
 
       if (!result.Success) {

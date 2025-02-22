@@ -13,19 +13,19 @@ app.config["DEBUG"] = DEBUG
 app.register_blueprint(auth_routes, url_prefix="/auth")
 
 #! cors settings
-CORS(app)
-CORS(app, resources={r"/auth/*": {"origins": "*"}})
+# CORS(app)
+# CORS(app, resources={r"/auth/*": {"origins": "*"}})
 
-# CORS(
-#     app,
-#     resources={
-#         r"/*": {
-#             "origins": [os.environ.get("REACT_APP_URL", "")],
-#             "methods": ["GET", "POST", "OPTIONS"REACT_APP_URL],
-#             "allow_headers": ["Content-Type" # Allow all origins for testing],
-#         }
-#     },
-# )
+CORS(
+    app,
+    resources={
+        r"/*": {
+            "origins": [os.environ.get("REACT_APP_URL", "*")],
+            "methods": ["GET", "POST", "OPTIONS"],
+            "allow_headers": ["Content-Type"],
+        }
+    },
+)
 
 
 @app.route("/")

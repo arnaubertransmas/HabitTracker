@@ -1,4 +1,3 @@
-from ast import Try
 from flask import Blueprint, request, jsonify
 from services.auth_service import login_user, registrate_user
 from models.user_model import User
@@ -8,10 +7,10 @@ auth_routes = Blueprint("auth", __name__)
 
 @auth_routes.route("/signup", methods=["POST"])
 def signup():
-    """Signup route, rep dades d'un JSON i les desa a MongoDB"""
+    """signup route, register new user to DB"""
 
     try:
-        # Rebem un JSON des de React o qualsevol client
+        # arriba un json des de react.js
         data = request.json
 
         name = data.get("name", "").strip()
@@ -20,13 +19,13 @@ def signup():
         password = data.get("password", "").strip()
         password2 = data.get("password2", "").strip()
 
-        # Comprovem que cap camp estigui buit
         if not all([name, surname, email, password, password2]):
             return (
                 jsonify({"success": False, "message": "All fields are required"}),
                 400,
             )
 
+        # registrem usuari
         registered = registrate_user(name, surname, email, password, password2)
         if registered.get("Success"):
             return jsonify(registered), 201
@@ -41,13 +40,14 @@ def signup():
 
 @auth_routes.route("/signin", methods=["POST"])
 def signin():
-    """signin route, takes data from form"""
+    """signin route, recieve json from frontend"""
     try:
         if request.method == "POST":
             data = request.json
             email = data.get("email", "").strip()
             password = data.get("password", "").strip()
 
+            # loggin de l'usuari
             logged = login_user(email, password)
             if logged.get("Success"):
                 return jsonify(logged), 201
