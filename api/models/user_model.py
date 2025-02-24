@@ -14,10 +14,11 @@ class User:
         self.surname = surname
         self.email = email
         self.password = generate_password_hash(password)
+        # self.id = None
 
     def save(self):
         try:
-            users_collection.insert_one(
+            result = users_collection.insert_one(
                 {
                     "name": self.name,
                     "surname": self.surname,
@@ -25,6 +26,9 @@ class User:
                     "password": self.password,
                 }
             )
+
+            # self.id = result.inserted_id
+
         except Exception as e:
             raise e
 

@@ -1,9 +1,9 @@
-from flask import Flask, request
-from flask_cors import CORS
-from dotenv import load_dotenv
-from routes.auth_routes import auth_routes
 import os
-import requests
+from flask import Flask
+from flask_cors import CORS
+from flask_jwt_extended import JWTManager
+from routes.auth_routes import auth_routes
+from dotenv import load_dotenv
 
 DEBUG = bool(os.environ.get("DEBUG", True))
 
@@ -12,10 +12,7 @@ app = Flask(__name__)
 app.config["DEBUG"] = DEBUG
 app.register_blueprint(auth_routes, url_prefix="/auth")
 
-#! cors settings
-# CORS(app)
-# CORS(app, resources={r"/auth/*": {"origins": "*"}})
-
+# ? cors settings
 CORS(
     app,
     resources={
@@ -28,9 +25,14 @@ CORS(
 )
 
 
-@app.route("/")
-def hello():
-    return "Hello, World!"
+# ? jwt config
+app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_KEY", "")
+jwt = JWTManager(app)
+
+
+# @app.route("/")
+# def hello():
+#     return "Hello, World!"
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@ from models.user_model import User
 from utils.logger import log_error
 from utils.validators import validate_email, validate_password
 from werkzeug.security import check_password_hash
+from flask_jwt_extended import create_access_token
 
 
 def registrate_user(name, surname, email, password, password2):
@@ -40,9 +41,11 @@ def login_user(email, password):
         if not user_to_login:
             return {"Success": False, "message": "Invalid credentials"}
 
-        if check_password_hash(user_to_login[0]["password"], password):
-            return {"Success": True, "message": "Logging in"}
-        return {"Success": False, "message": "Invalid credentials"}
+        if not check_password_hash(user_to_login[0]["password"], password):
+            return {"Success": False, "message": "Invalid credentials"}
+
+        access_token = create_access_token(identity=str(user_to_login[0]["_id"]))
+        return {"Success": True, "message": "Logging in", "access_token": access_token}
 
     except Exception as e:
         log_error(f"Login registration {e}")

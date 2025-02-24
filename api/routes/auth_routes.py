@@ -1,6 +1,9 @@
+import os
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 from services.auth_service import login_user, registrate_user
 from models.user_model import User
+from flask_jwt_extended import jwt_required
 
 auth_routes = Blueprint("auth", __name__)
 
@@ -44,13 +47,24 @@ def signin():
     try:
         if request.method == "POST":
             data = request.json
+
             email = data.get("email", "").strip()
             password = data.get("password", "").strip()
-
             # loggin de l'usuari
             logged = login_user(email, password)
             if logged.get("Success"):
-                return jsonify(logged), 201
+                response = jsonify(logged)
+                # creem la cookie, temporal (session cookie)
+                response.set_cookie(
+                    key="access_token",
+                    value=logged.get("access_token"),
+                    max_age=None,
+                    expires=None,
+                    # evitem atacs XSS
+                    httponly=True,
+                    secure=True,
+                )
+                return response, 201
             return jsonify(logged), 400
     except Exception as e:
         return (
@@ -59,6 +73,7 @@ def signin():
         )
 
 
-@auth_routes.route("/users", methods=["GET"])
-def get_users():
-    return User.get_users()
+# @auth_routes.route("/users", methods=["GET"])
+# @jwt_required()
+# def get_users():
+#     return User.get_users()

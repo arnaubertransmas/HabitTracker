@@ -19,6 +19,7 @@ const Register = () => {
   const redirect = useNavigate();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const {
     handleSubmit,
@@ -36,7 +37,7 @@ const Register = () => {
       setError('');
       setLoading(true);
 
-      const response = await axios.post('http://127.0.0.1:5000/auth/signup', {
+      const response = await axios.post(`${apiUrl}/auth/signup`, {
         name: data.name,
         surname: data.surname,
         email: data.email,
@@ -45,7 +46,7 @@ const Register = () => {
       });
 
       const result = await response.data;
-      console.log(result);
+      // console.log(result);
 
       if (!result.Success) {
         setError(result.message || 'Registration failed');
@@ -134,7 +135,7 @@ const Register = () => {
                           value:
                             /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&].{8,}$/i,
                           message:
-                            'Invalid password, make sure to include uppercase, numbers and special characters',
+                            'Make sure to include uppercase, numbers and special characters',
                         },
                       }}
                     />
@@ -162,7 +163,7 @@ const Register = () => {
                       size="lg"
                       disabled={loading}
                     >
-                      {loading ? 'Signing up...' : 'Submit'}
+                      {loading ? 'Registering...' : 'Sign up'}
                     </Button>
                     <Form.Group className="text-center mt-3">
                       Already have an account?

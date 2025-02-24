@@ -1,19 +1,62 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Button, Form, Container, Row, Col, Card } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import {
+  Button,
+  Form,
+  Container,
+  Row,
+  Col,
+  Card,
+  Alert,
+} from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Header from '../components/Header';
 import Input from '../components/Input';
 
 const Login = () => {
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState(false);
+  const redirect = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL;
   const methods = useForm();
   const {
     handleSubmit,
     formState: { errors },
   } = methods;
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      setError('');
+      setLoading(true);
+
+      const response = await axios.post(
+        `${apiUrl}/auth/signin`,
+        {
+          email: data.email,
+          password: data.password,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      const result = response.data;
+
+      if (!result.Success) {
+        setError(result.message || 'Login failed');
+        return;
+      }
+
+      redirect('/');
+    } catch (err) {
+      setError('Internal server error, try again later...');
+      console.log('ERROR', err.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -25,6 +68,11 @@ const Login = () => {
             <Card className="shadow p-5" style={{ margin: 'auto' }}>
               <Card.Body>
                 <h2 className="text-center mb-5">Sign In</h2>
+                {error && (
+                  <Alert variant="danger" className="mb-4">
+                    {error}
+                  </Alert>
+                )}
                 <FormProvider {...methods}>
                   <Form onSubmit={handleSubmit(onSubmit)}>
                     <Input
@@ -50,8 +98,9 @@ const Login = () => {
                       type="submit"
                       className="w-100"
                       size="lg"
+                      disabled={loading}
                     >
-                      Submit
+                      {loading ? 'Logging in...' : 'Sign in'}
                     </Button>
                     <Form.Group className="text-center mt-3">
                       Don't have an account?
