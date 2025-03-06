@@ -33,10 +33,6 @@ class User:
             raise e
 
     @staticmethod
-    def find_email(email):
-        return users_collection.find_one({"email": email}) is not None
-
-    @staticmethod
     def get_users():
         try:
             # excloem l'ID per evitar ObjectID error

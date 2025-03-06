@@ -21,7 +21,7 @@ def registrate_user(name, surname, email, password, password2):
         if not password_validation["Success"]:
             return password_validation
 
-        if User.find_email(email):
+        if User.get_user("email", email):
             return {"success": False, "message": "This address is already registered!"}
 
         user = User(name, surname, email, password)
@@ -36,17 +36,25 @@ def registrate_user(name, surname, email, password, password2):
 
 def login_user(email, password):
     try:
+        if not validate_email(email):
+            return {"Success": False, "message": "Invalid email format"}
+
         user_to_login = User.get_user("email", email)
 
-        if not user_to_login:
+        if not user_to_login or len(user_to_login) == 0:
+            return {"Success": False, "message": "User not registered"}
+
+        user = user_to_login[0]
+
+        if not check_password_hash(user["password"], password):
             return {"Success": False, "message": "Invalid credentials"}
 
-        if not check_password_hash(user_to_login[0]["password"], password):
-            return {"Success": False, "message": "Invalid credentials"}
-
-        access_token = create_access_token(identity=str(user_to_login[0]["_id"]))
-        return {"Success": True, "message": "Logging in", "access_token": access_token}
+        return {
+            "Success": True,
+            "message": "Login successful",
+        }
 
     except Exception as e:
-        log_error(f"Login registration {e}")
+        print(f"Login error: {str(e)}")
+        log_error(f"Login error: {e}")
         return {"Success": False, "message": f"Server error: {str(e)}"}

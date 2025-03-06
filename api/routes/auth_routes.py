@@ -1,21 +1,22 @@
-import os
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import (
+    jwt_required,
+    get_jwt_identity,
+    create_access_token,
+    set_access_cookies,
+    unset_jwt_cookies,
+    verify_jwt_in_request,
+)
 from services.auth_service import login_user, registrate_user
-from models.user_model import User
-from flask_jwt_extended import jwt_required
 
-auth_routes = Blueprint("auth", __name__)
+auth_routes = Blueprint("auth", __name__)  # Fixed incorrect `name` usage
 
 
 @auth_routes.route("/signup", methods=["POST"])
 def signup():
-    """signup route, register new user to DB"""
-
+    """Signup route, register new user to DB"""
     try:
-        # arriba un json des de react.js
         data = request.json
-
         name = data.get("name", "").strip()
         surname = data.get("surname", "").strip()
         email = data.get("email", "").strip()
@@ -28,52 +29,112 @@ def signup():
                 400,
             )
 
-        # registrem usuari
         registered = registrate_user(name, surname, email, password, password2)
-        if registered.get("Success"):
+
+        if registered.get("success"):
             return jsonify(registered), 201
+
         return jsonify(registered), 400
 
     except Exception as e:
         return (
-            jsonify({"success": False, "message": f"Error registering user {str(e)}"}),
+            jsonify({"success": False, "message": f"Error registering user: {str(e)}"}),
             500,
         )
 
 
 @auth_routes.route("/signin", methods=["POST"])
 def signin():
-    """signin route, recieve json from frontend"""
     try:
-        if request.method == "POST":
-            data = request.json
+        data = request.json
+        email = data.get("email", "").strip()
+        password = data.get("password", "").strip()
 
-            email = data.get("email", "").strip()
-            password = data.get("password", "").strip()
-            # loggin de l'usuari
-            logged = login_user(email, password)
-            if logged.get("Success"):
-                response = jsonify(logged)
-                # creem la cookie, temporal (session cookie)
-                response.set_cookie(
-                    key="access_token",
-                    value=logged.get("access_token"),
-                    max_age=None,
-                    expires=None,
-                    # evitem atacs XSS
-                    httponly=True,
-                    secure=True,
-                )
-                return response, 201
-            return jsonify(logged), 400
+        logged = login_user(email, password)
+
+        if logged.get("Success"):
+            access_token = create_access_token(identity=email)
+
+            response = jsonify(
+                {
+                    "Success": True,
+                    "message": "Login successful",
+                    "access_token": access_token,
+                    "user": email,
+                }
+            )
+
+            set_access_cookies(response, access_token)
+
+            return response, 200
+
+        return jsonify(logged), 400
+
     except Exception as e:
         return (
-            jsonify({"success": False, "message": f"Error registering user {str(e)}"}),
+            jsonify({"success": False, "message": f"Error logging the user: {str(e)}"}),
             500,
         )
 
 
-# @auth_routes.route("/users", methods=["GET"])
-# @jwt_required()
-# def get_users():
-#     return User.get_users()
+@auth_routes.route("/logout", methods=["POST"])
+@jwt_required()
+def logout():
+    try:
+        # Log detailed request information
+        print("Logout Request Headers:", request.headers)
+        print("Logout Request Cookies:", request.cookies)
+
+        # Attempt to get the current user's identity
+        try:
+            user = get_jwt_identity()
+            print("Current User Identity:", user)
+        except Exception as identity_error:
+            print("Error getting user identity:", str(identity_error))
+            user = "Unknown"
+
+        # Create a response
+        response = jsonify(
+            {"success": True, "message": "Logout successful", "user": user}
+        )
+
+        # Unset JWT cookies
+        unset_jwt_cookies(response)
+
+        return response, 200
+
+    except Exception as e:
+        print("Comprehensive Logout Error:")
+        print("Error Type:", type(e))
+        print("Error Details:", str(e))
+
+        return (
+            jsonify(
+                {
+                    "success": False,
+                    "message": f"Logout failed: {str(e)}",
+                    "error_type": str(type(e)),
+                }
+            ),
+            400,
+        )
+
+
+# @auth_routes.route("/auth/check_session", methods=["GET"])
+# def check_session():
+#     try:
+#         try:
+#             verify_jwt_in_request(locations=["cookies"])
+#             user = get_jwt_identity()
+
+#             # If we get here, the token is valid
+#             return jsonify({"success": True, "message": f"User found: {user}"}), 200
+
+#         except Exception as jwt_error:
+#             # If JWT verification fails, return unauthorized
+#             print("JWT Verification Failed:", str(jwt_error))
+#             return jsonify({"success": False, "message": "No active session"}), 401
+
+#     except Exception as e:
+#         print("Check Session Error:", str(e))
+#         return jsonify({"success": False, "message": "Error checking session"}), 500

@@ -40,20 +40,25 @@ const Login = () => {
           headers: {
             'Content-Type': 'application/json',
           },
+          withCredentials: true,
         },
       );
 
       const result = response.data;
 
       if (!result.Success) {
-        setError(result.message || 'Login failed');
+        setError(result.message || 'Invalid Credentials');
         return;
       }
 
-      redirect('/');
+      if (result.access_token) {
+        localStorage.setItem('access_token', result.access_token);
+        localStorage.setItem('user', JSON.stringify(result.user));
+        redirect('/');
+      }
     } catch (err) {
-      setError('Internal server error, try again later...');
-      console.log('ERROR', err.response?.data?.message);
+      console.log(err);
+      setError('Invalid Credentials');
     } finally {
       setLoading(false);
     }
@@ -80,6 +85,9 @@ const Login = () => {
                       id="email"
                       placeholder="Enter email"
                       className="form-control"
+                      {...methods.register('email', {
+                        required: 'Email is required',
+                      })}
                     />
                     {errors.email && (
                       <p className="text-danger">{errors.email.message}</p>
@@ -89,6 +97,9 @@ const Login = () => {
                       id="password"
                       placeholder="Password"
                       className="form-control"
+                      {...methods.register('password', {
+                        required: 'Password is required',
+                      })}
                     />
                     {errors.password && (
                       <p className="text-danger">{errors.password.message}</p>
