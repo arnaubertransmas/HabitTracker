@@ -21,6 +21,7 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL;
 
+  // reactive form variables
   const {
     handleSubmit,
     formState: { errors },
@@ -62,6 +63,7 @@ const Register = () => {
     }
   };
 
+  // watch password in real time
   const password = watch('password');
 
   return (
@@ -78,6 +80,7 @@ const Register = () => {
                     {error}
                   </Alert>
                 )}
+                {/* Inject methods validations to form */}
                 <FormProvider {...methods}>
                   <Form onSubmit={handleSubmit(onSubmit)}>
                     <Input
@@ -85,9 +88,7 @@ const Register = () => {
                       id="name"
                       placeholder="Name"
                       className="form-control"
-                      rules={{
-                        required: 'Name is required',
-                      }}
+                      rules={{ required: 'Name is required' }}
                     />
                     {errors.name && (
                       <p className="text-danger">{errors.name.message}</p>
@@ -97,9 +98,7 @@ const Register = () => {
                       id="surname"
                       placeholder="Second name"
                       className="form-control"
-                      rules={{
-                        required: 'Second name is required',
-                      }}
+                      rules={{ required: 'Second name is required' }}
                     />
                     {errors.surname && (
                       <p className="text-danger">{errors.surname.message}</p>
@@ -135,7 +134,7 @@ const Register = () => {
                           value:
                             /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&].{8,}$/i,
                           message:
-                            'Make sure to include uppercase, numbers and special characters',
+                            'Include uppercase, numbers and special characters',
                         },
                       }}
                     />

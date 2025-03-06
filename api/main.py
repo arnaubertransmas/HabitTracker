@@ -3,7 +3,7 @@ from datetime import timedelta
 from flask import Flask, jsonify, make_response
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from routes.auth_routes import auth_routes
+from routes.auth_routes import auth_routes, login_manager
 from dotenv import load_dotenv
 
 # Carrega variables d'entorn
@@ -45,6 +45,8 @@ def create_app():
     )
 
     jwt = JWTManager(app)
+    # iniciem login manager del Routes
+    login_manager.init_app(app)
 
     return app, jwt
 
@@ -80,15 +82,9 @@ def handle_options():
     return response
 
 
-# Endpoint per verificar la sessió
-@app.route("/auth/check_session", methods=["GET"])
-def check_session():
-    return jsonify({"success": True, "message": "Session active!"}), 200
-
-
-# Manejar errors d'autenticació JWT
 @jwt.unauthorized_loader
 def handle_unauthorized_error(error_desc):
+    """Errors autenticació JWT"""
     return (
         jsonify(
             {

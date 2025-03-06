@@ -12,6 +12,7 @@ flask-pymongo = "*"
 werkzeug = "*"
 flask-bcrypt = "*"
 flask-jwt-extended = "*"
+flask-login = "*"
 
 [dev-packages]
 

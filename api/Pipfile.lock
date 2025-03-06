@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "ba21da0a5796067be208d9d368b9d1f80bec8a0ff01d699274357cf4f1b1a9f0"
+            "sha256": "80f4d526f18eecda896752969939cd5d54ae6777e62325fb3fba6f4444b686ab"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -211,6 +211,15 @@
             "markers": "python_version >= '3.9' and python_version < '4'",
             "version": "==4.7.1"
         },
+        "flask-login": {
+            "hashes": [
+                "sha256:5e23d14a607ef12806c699590b89d0f0e0d67baeec599d75947bf9c147330333",
+                "sha256:849b25b82a436bf830a054e74214074af59097171562ab10bfa999e6b78aae5d"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.7'",
+            "version": "==0.6.3"
+        },
         "flask-pymongo": {
             "hashes": [
                 "sha256:c75a4a9d7f4dc41ddefcfe75d2a0a259049071d285242c1338c42c64dd1223d9",
@@ -238,11 +247,11 @@
         },
         "jinja2": {
             "hashes": [
-                "sha256:8fefff8dc3034e27bb80d67c671eb8a9bc424c0ef4c0826edbff304cceff43bb",
-                "sha256:aba0f4dc9ed8013c424088f68a5c226f7d6097ed89b246d7749c2ec4175c6adb"
+                "sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d",
+                "sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==3.1.5"
+            "version": "==3.1.6"
         },
         "markupsafe": {
             "hashes": [

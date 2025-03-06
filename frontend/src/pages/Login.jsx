@@ -13,13 +13,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../components/Header';
 import Input from '../components/Input';
+import Cookies from 'js-cookie';
 
 const Login = () => {
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const redirect = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
-  const methods = useForm();
+  const methods = useForm({ mode: 'onChange' });
   const {
     handleSubmit,
     formState: { errors },
@@ -52,8 +53,12 @@ const Login = () => {
       }
 
       if (result.access_token) {
-        localStorage.setItem('access_token', result.access_token);
-        localStorage.setItem('user', JSON.stringify(result.user));
+        // set a cookie with access token
+        Cookies.set('cookie_access_token', result.access_token, {
+          // 1 week expiration
+          expires: 7,
+          path: '/',
+        });
         redirect('/');
       }
     } catch (err) {
@@ -78,6 +83,7 @@ const Login = () => {
                     {error}
                   </Alert>
                 )}
+                {/* methods const inject for reactivness */}
                 <FormProvider {...methods}>
                   <Form onSubmit={handleSubmit(onSubmit)}>
                     <Input
@@ -85,9 +91,7 @@ const Login = () => {
                       id="email"
                       placeholder="Enter email"
                       className="form-control"
-                      {...methods.register('email', {
-                        required: 'Email is required',
-                      })}
+                      rules={{ required: 'Email is required' }}
                     />
                     {errors.email && (
                       <p className="text-danger">{errors.email.message}</p>
@@ -97,9 +101,7 @@ const Login = () => {
                       id="password"
                       placeholder="Password"
                       className="form-control"
-                      {...methods.register('password', {
-                        required: 'Password is required',
-                      })}
+                      rules={{ required: 'Password is required' }}
                     />
                     {errors.password && (
                       <p className="text-danger">{errors.password.message}</p>

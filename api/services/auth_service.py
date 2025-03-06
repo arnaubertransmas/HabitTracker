@@ -36,6 +36,9 @@ def registrate_user(name, surname, email, password, password2):
 
 def login_user(email, password):
     try:
+        if not email and not password:
+            return {"Success": False, "message": "All fields are required"}
+
         if not validate_email(email):
             return {"Success": False, "message": "Invalid email format"}
 

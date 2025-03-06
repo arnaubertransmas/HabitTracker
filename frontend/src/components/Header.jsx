@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const Header = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -16,40 +17,40 @@ const Header = () => {
         });
 
         if (response.data.success) {
-          // If session check is successful, ensure token exists
-          const accessToken = localStorage.getItem('access_token');
+          // get cookie w access_token
+          const accessToken = Cookies.get('cookie_access_token');
           if (accessToken) {
             setIsAuthenticated(true);
           } else {
-            // If no token but session check succeeds, force logout
             setIsAuthenticated(false);
           }
         } else {
           setIsAuthenticated(false);
         }
       } catch (error) {
-        // If session check fails, ensure we're logged out
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('user');
+        // force logout if check_session fails
+        Cookies.remove('cookie_access_token');
         setIsAuthenticated(false);
         console.error('Error checking session:', error);
       }
     };
 
     if (apiUrl) checkSession();
+
+    // call it again if url change -->
   }, [apiUrl]);
 
   const handleLogout = async () => {
     try {
-      // Try to logout even if token is not in localStorage
-      const accessToken = localStorage.getItem('access_token');
+      const accessToken = Cookies.get('cookie_access_token');
 
       const response = await axios.post(
         `${apiUrl}/auth/logout`,
         {},
         {
+          // access token in header for logout
           headers: {
-            ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+            Authorization: `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
           withCredentials: true,
@@ -57,22 +58,22 @@ const Header = () => {
       );
 
       if (response.data.success) {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('user');
+        // remove cookie
+        Cookies.remove('cookie_access_token');
         setIsAuthenticated(false);
         redirect('/signin');
       }
     } catch (error) {
       console.error('Logout error:', error);
 
-      // Force logout even if there's an error
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('user');
+      // remove it anyway
+      Cookies.remove('cookie_access_token');
       setIsAuthenticated(false);
       redirect('/signin');
     }
   };
 
+  // styles for buttons
   const loginStyle = {
     backgroundColor: '#f8f9fa',
     transition: '0.3s',
@@ -96,6 +97,7 @@ const Header = () => {
           <Nav.Link as={Link} to="/about-us">
             About us
           </Nav.Link>
+          {/* if true don't show signin&signup */}
           {isAuthenticated ? (
             <>
               <Nav.Link
@@ -103,6 +105,7 @@ const Header = () => {
                 to="/user"
                 className="px-4 py-2 rounded"
                 style={loginStyle}
+                // + hover styles
                 onMouseEnter={(e) => (e.target.style.color = '#007bff')}
                 onMouseLeave={(e) => (e.target.style.color = 'black')}
               >
@@ -110,7 +113,6 @@ const Header = () => {
               </Nav.Link>
               <Nav.Link
                 as={Link}
-                to="#"
                 className="fw-semibold px-4 py-2 rounded ms-2"
                 style={registerStyle}
                 onMouseEnter={(e) =>
@@ -125,6 +127,7 @@ const Header = () => {
               </Nav.Link>
             </>
           ) : (
+            // otherwise -->
             <>
               <Nav.Link
                 as={Link}
