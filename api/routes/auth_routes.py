@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, create_access_token
+from flask_jwt_extended import get_jwt_identity, jwt_required, create_access_token
 from services.auth_service import login_user, registrate_user
-from flask_login import LoginManager, login_required
+from flask_login import LoginManager
 from models.user_model import User
 
 # * register Blueprint auth
@@ -51,16 +51,23 @@ def signin():
         # sign in user
         logged = login_user(email, password)
 
-        if logged.get("Success"):
+        if logged.get("success"):
             # create access token
             access_token = create_access_token(identity=email)
+            user = User.get_user("email", email)
+
+            # if user exists and its in a list:
+            if user and isinstance(user, list):
+                user = user[0]
+
+                user_name = user.get("name", "User")
 
             response = jsonify(
                 {
-                    "Success": True,
+                    "success": True,
                     "message": "Login successful",
                     "access_token": access_token,
-                    "user": email,
+                    "user": {"email": email, "name": user_name},  #! email és necessari?
                 }
             )
 
@@ -77,7 +84,6 @@ def signin():
 
 @auth_routes.route("/logout", methods=["POST"])
 @jwt_required()
-@login_required
 def logout():
     """User logout"""
     try:

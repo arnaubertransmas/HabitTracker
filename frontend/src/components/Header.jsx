@@ -60,6 +60,7 @@ const Header = () => {
       if (response.data.success) {
         // remove cookie
         Cookies.remove('cookie_access_token');
+        localStorage.removeItem('user_name');
         setIsAuthenticated(false);
         redirect('/signin');
       }
@@ -68,6 +69,7 @@ const Header = () => {
 
       // remove it anyway
       Cookies.remove('cookie_access_token');
+      localStorage.removeItem('user_name');
       setIsAuthenticated(false);
       redirect('/signin');
     }
@@ -109,7 +111,7 @@ const Header = () => {
                 onMouseEnter={(e) => (e.target.style.color = '#007bff')}
                 onMouseLeave={(e) => (e.target.style.color = 'black')}
               >
-                User
+                {localStorage.getItem('user_name') || 'User'}
               </Nav.Link>
               <Nav.Link
                 as={Link}

@@ -24,8 +24,11 @@ const Sidebar = () => {
         setCollapsed(false);
       }
     };
-    window.addEventListener('resize', handleResize);
 
+    // Initial check
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -35,84 +38,73 @@ const Sidebar = () => {
     e.target.style.color = 'black';
     e.target.style.backgroundColor = '#EEEEEE';
   };
+
   const hoverLinkLeave = (e) => {
     e.target.style.color = '#333';
     e.target.style.backgroundColor = 'transparent';
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        height: '100vh',
-        overflow: 'scroll initial',
-      }}
+    <CDBSidebar
+      textColor="#333"
+      backgroundColor="transparent"
+      style={{ width: collapsed ? '80px' : '275px' }}
+      toggled={collapsed} // toggled true = només icones
     >
-      <CDBSidebar
-        textColor="#333"
-        backgroundColor="transparent"
-        style={{ width: collapsed ? '80px' : '275px' }}
-        toggled={collapsed} // toggled true = només icones
-      >
-        <CDBSidebarContent className="sidebar-content">
-          <CDBSidebarHeader prefix={<i className="fa fa-bars" />}>
-            Features
-          </CDBSidebarHeader>
-          <CDBSidebarMenu>
-            <NavLink
-              to="/non-negotiables"
-              activeClassName="activeClicked"
-              onMouseEnter={hoverLinkEnter}
-              onMouseLeave={hoverLinkLeave}
-            >
-              <CDBSidebarMenuItem>
-                <FontAwesomeIcon icon={faLock} style={iconMargin} />
-                {!collapsed && 'Non-negotiables'}
-              </CDBSidebarMenuItem>
-            </NavLink>
+      <CDBSidebarContent className="sidebar-content">
+        <CDBSidebarHeader prefix={<></>}>Features</CDBSidebarHeader>
 
-            <NavLink
-              exact
-              to="/habits"
-              activeClassName="activeClicked"
-              onMouseEnter={hoverLinkEnter}
-              onMouseLeave={hoverLinkLeave}
-            >
-              <CDBSidebarMenuItem>
-                <FontAwesomeIcon icon={faCalendarCheck} style={iconMargin} />
-                {!collapsed && 'Habits'}
-              </CDBSidebarMenuItem>
-            </NavLink>
+        <CDBSidebarMenu>
+          <NavLink
+            to="/non-negotiables"
+            className={({ isActive }) => (isActive ? 'activeClicked' : '')}
+            onMouseEnter={hoverLinkEnter}
+            onMouseLeave={hoverLinkLeave}
+          >
+            <CDBSidebarMenuItem>
+              <FontAwesomeIcon icon={faLock} style={iconMargin} />
+              {!collapsed && 'Non-negotiables'}
+            </CDBSidebarMenuItem>
+          </NavLink>
 
-            <NavLink
-              exact
-              to="/schedule"
-              activeClassName="activeClicked"
-              onMouseEnter={hoverLinkEnter}
-              onMouseLeave={hoverLinkLeave}
-            >
-              <CDBSidebarMenuItem>
-                <i className="fa fa-table" style={iconMargin} />
-                {!collapsed && 'Schedule'}
-              </CDBSidebarMenuItem>
-            </NavLink>
+          <NavLink
+            to="/habits"
+            className={({ isActive }) => (isActive ? 'activeClicked' : '')}
+            onMouseEnter={hoverLinkEnter}
+            onMouseLeave={hoverLinkLeave}
+          >
+            <CDBSidebarMenuItem>
+              <FontAwesomeIcon icon={faCalendarCheck} style={iconMargin} />
+              {!collapsed && 'Habits'}
+            </CDBSidebarMenuItem>
+          </NavLink>
 
-            <NavLink
-              exact
-              to="/progress"
-              activeClassName="activeClicked"
-              onMouseEnter={hoverLinkEnter}
-              onMouseLeave={hoverLinkLeave}
-            >
-              <CDBSidebarMenuItem>
-                <i className="fa fa-chart-line" style={iconMargin} />
-                {!collapsed && 'Progress'}
-              </CDBSidebarMenuItem>
-            </NavLink>
-          </CDBSidebarMenu>
-        </CDBSidebarContent>
-      </CDBSidebar>
-    </div>
+          <NavLink
+            to="/schedule"
+            className={({ isActive }) => (isActive ? 'activeClicked' : '')}
+            onMouseEnter={hoverLinkEnter}
+            onMouseLeave={hoverLinkLeave}
+          >
+            <CDBSidebarMenuItem>
+              <i className="fa fa-table" style={iconMargin} />
+              {!collapsed && 'Schedule'}
+            </CDBSidebarMenuItem>
+          </NavLink>
+
+          <NavLink
+            to="/progress"
+            className={({ isActive }) => (isActive ? 'activeClicked' : '')}
+            onMouseEnter={hoverLinkEnter}
+            onMouseLeave={hoverLinkLeave}
+          >
+            <CDBSidebarMenuItem>
+              <i className="fa fa-chart-line" style={iconMargin} />
+              {!collapsed && 'Progress'}
+            </CDBSidebarMenuItem>
+          </NavLink>
+        </CDBSidebarMenu>
+      </CDBSidebarContent>
+    </CDBSidebar>
   );
 };
 

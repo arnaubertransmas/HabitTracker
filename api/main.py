@@ -15,7 +15,7 @@ DEBUG = bool(os.environ.get("DEBUG", True))
 def create_app():
     app = Flask(__name__)
     app.config["DEBUG"] = DEBUG
-    app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "super-secret-key")
+    app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "")
     app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies"]
     app.config["JWT_COOKIE_SECURE"] = False
     app.config["JWT_COOKIE_CSRF_PROTECT"] = False
@@ -32,7 +32,7 @@ def create_app():
         supports_credentials=True,
         resources={
             r"/*": {
-                "origins": ["http://localhost:3000"],  # React app
+                "origins": [os.environ.get("REACT_APP_URL", "")],
                 "supports_credentials": True,
                 "methods": ["GET", "POST", "OPTIONS", "HEAD", "PUT", "DELETE"],
                 "allow_headers": [
@@ -57,7 +57,9 @@ app, jwt = create_app()
 # Afegir capçaleres CORS a totes les respostes
 @app.after_request
 def add_cors_headers(response):
-    response.headers["Access-Control-Allow-Origin"] = "http://localhost:3000"
+    response.headers["Access-Control-Allow-Origin"] = os.environ.get(
+        "REACT_APP_URL", ""
+    )
     response.headers["Access-Control-Allow-Credentials"] = "true"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS, PUT, DELETE"
     response.headers["Access-Control-Allow-Headers"] = (
@@ -73,7 +75,9 @@ def add_cors_headers(response):
 @app.route("/auth/check_session", methods=["OPTIONS"])
 def handle_options():
     response = make_response()
-    response.headers["Access-Control-Allow-Origin"] = "http://localhost:3000"
+    response.headers["Access-Control-Allow-Origin"] = os.environ.get(
+        "REACT_APP_URL", ""
+    )
     response.headers["Access-Control-Allow-Credentials"] = "true"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS, PUT, DELETE"
     response.headers["Access-Control-Allow-Headers"] = (

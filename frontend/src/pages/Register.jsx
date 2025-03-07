@@ -49,7 +49,7 @@ const Register = () => {
       const result = await response.data;
       // console.log(result);
 
-      if (!result.Success) {
+      if (!result.success) {
         setError(result.message || 'Registration failed');
         return;
       }

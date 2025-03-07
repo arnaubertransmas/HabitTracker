@@ -47,19 +47,23 @@ const Login = () => {
 
       const result = response.data;
 
-      if (!result.Success) {
+      if (!result.success) {
+        // ! revisar el result.message, depurar
         setError(result.message || 'Invalid Credentials');
         return;
       }
 
-      if (result.access_token) {
+      if (result.access_token && result.user) {
         // set a cookie with access token
         Cookies.set('cookie_access_token', result.access_token, {
           // 1 week expiration
           expires: 7,
           path: '/',
         });
-        redirect('/');
+
+        // setName to localstorage
+        localStorage.setItem('user_name', result.user.name);
+        redirect(`/user/${result.user.name.toLowerCase()}`);
       }
     } catch (err) {
       console.log(err);
