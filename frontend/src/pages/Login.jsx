@@ -48,7 +48,6 @@ const Login = () => {
       const result = response.data;
 
       if (!result.success) {
-        // ! revisar el result.message, depurar
         setError(result.message || 'Invalid Credentials');
         return;
       }
@@ -56,7 +55,6 @@ const Login = () => {
       if (result.access_token && result.user) {
         // set a cookie with access token
         Cookies.set('cookie_access_token', result.access_token, {
-          // 1 week expiration
           expires: 7,
           path: '/',
         });

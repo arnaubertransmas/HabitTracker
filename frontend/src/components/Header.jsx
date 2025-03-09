@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import logout from '../utils/logout';
+import checkAuth from '../utils/check_auth';
 
 const Header = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -10,70 +10,12 @@ const Header = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const response = await axios.get(`${apiUrl}/auth/check_session`, {
-          withCredentials: true,
-        });
-
-        if (response.data.success) {
-          // get cookie w access_token
-          const accessToken = Cookies.get('cookie_access_token');
-          if (accessToken) {
-            setIsAuthenticated(true);
-          } else {
-            setIsAuthenticated(false);
-          }
-        } else {
-          setIsAuthenticated(false);
-        }
-      } catch (error) {
-        // force logout if check_session fails
-        Cookies.remove('cookie_access_token');
-        setIsAuthenticated(false);
-        console.error('Error checking session:', error);
-      }
-    };
-
-    if (apiUrl) checkSession();
+    if (apiUrl) {
+      checkAuth(apiUrl, setIsAuthenticated);
+    }
 
     // call it again if url change -->
   }, [apiUrl]);
-
-  const handleLogout = async () => {
-    try {
-      const accessToken = Cookies.get('cookie_access_token');
-
-      const response = await axios.post(
-        `${apiUrl}/auth/logout`,
-        {},
-        {
-          // access token in header for logout
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-          withCredentials: true,
-        },
-      );
-
-      if (response.data.success) {
-        // remove cookie
-        Cookies.remove('cookie_access_token');
-        localStorage.removeItem('user_name');
-        setIsAuthenticated(false);
-        redirect('/signin');
-      }
-    } catch (error) {
-      console.error('Logout error:', error);
-
-      // remove it anyway
-      Cookies.remove('cookie_access_token');
-      localStorage.removeItem('user_name');
-      setIsAuthenticated(false);
-      redirect('/signin');
-    }
-  };
 
   // styles for buttons
   const loginStyle = {
@@ -85,6 +27,10 @@ const Header = () => {
     backgroundColor: '#2962FF',
     transition: '0.3s',
     color: 'white',
+  };
+
+  const handleLogout = () => {
+    logout(apiUrl, redirect, setIsAuthenticated);
   };
 
   return (
@@ -123,6 +69,7 @@ const Header = () => {
                 onMouseLeave={(e) =>
                   (e.target.style.backgroundColor = '#2962FF')
                 }
+                // => for avoiding auto render
                 onClick={handleLogout}
               >
                 Logout
