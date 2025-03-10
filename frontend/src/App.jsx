@@ -11,7 +11,8 @@ import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
-import Error from './components/Error';
+import Error from './pages/Error';
+import AboutUs from './pages/AboutUs';
 
 const ProtectedRoute = ({ children }) => {
   const redirect = useNavigate();
@@ -40,6 +41,7 @@ const App = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/signin" element={<Login />} />
         <Route path="/signup" element={<Register />} />
+        <Route path="/about_us" element={<AboutUs />} />
 
         {/* private routes */}
 

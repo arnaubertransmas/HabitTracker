@@ -42,7 +42,7 @@ const Header = () => {
           </Link>
         </Navbar.Brand>
         <Nav className="ms-auto">
-          <Nav.Link as={Link} to="/about-us">
+          <Nav.Link as={Link} to="/about_us">
             About us
           </Nav.Link>
           {/* if true don't show signin&signup */}

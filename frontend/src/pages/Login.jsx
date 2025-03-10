@@ -46,9 +46,8 @@ const Login = () => {
       );
 
       const result = response.data;
-
       if (!result.success) {
-        setError(result.message || 'Invalid Credentials');
+        setError('Invalid Credentials');
         return;
       }
 
@@ -64,7 +63,7 @@ const Login = () => {
         redirect(`/user/${result.user.name.toLowerCase()}`);
       }
     } catch (err) {
-      console.log(err);
+      console.log('Error message:', err.response.data);
       setError('Invalid Credentials');
     } finally {
       setLoading(false);
