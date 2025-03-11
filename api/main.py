@@ -4,6 +4,7 @@ from flask import Flask, jsonify, make_response
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from routes.auth_routes import auth_routes, login_manager
+from routes.habit_routes import habit_routes
 from dotenv import load_dotenv
 
 # Carrega variables d'entorn
@@ -25,6 +26,7 @@ def create_app():
 
     # Registre de blueprints
     app.register_blueprint(auth_routes, url_prefix="/auth")
+    app.register_blueprint(habit_routes, url_prefix="/habit")
 
     # Configuració detallada de CORS
     CORS(

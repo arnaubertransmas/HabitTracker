@@ -11,8 +11,8 @@ import {
 } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Header from '../components/Header';
-import Input from '../components/Input';
+import Header from '../components/ui/Header';
+import Input from '../components/ui/Input';
 
 const Register = () => {
   const methods = useForm({ mode: 'onChange' });

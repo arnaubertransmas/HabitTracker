@@ -11,8 +11,8 @@ import {
 } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Header from '../components/Header';
-import Input from '../components/Input';
+import Header from '../components/ui/Header';
+import Input from '../components/ui/Input';
 import Cookies from 'js-cookie';
 
 const Login = () => {
@@ -63,7 +63,7 @@ const Login = () => {
         redirect(`/user/${result.user.name.toLowerCase()}`);
       }
     } catch (err) {
-      console.log('Error message:', err.response.data);
+      console.log('Error message:', err?.response?.data);
       setError('Invalid Credentials');
     } finally {
       setLoading(false);

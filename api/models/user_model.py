@@ -35,7 +35,7 @@ class User:
     @staticmethod
     def get_users():
         try:
-            # excloem l'ID per evitar ObjectID error
+            # exclude ID avoiding ObjectID error
             users = list(users_collection.find({}, {"_id": 0}))
             return users
         except Exception as e:

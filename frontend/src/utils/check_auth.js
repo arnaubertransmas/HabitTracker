@@ -20,5 +20,3 @@ const checkAuth = async (apiUrl, setIsAuthenticated) => {
 };
 
 export default checkAuth;
-
-// ! CONTIONUAR AQUI, NO ES GUARDA LA COOKIE CORRECTAMETN AMB LA NOVA STRUCTURE, REVISAR-HO

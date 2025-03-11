@@ -49,7 +49,7 @@ const Sidebar = () => {
       textColor="#333"
       backgroundColor="transparent"
       style={{ width: collapsed ? '80px' : '275px' }}
-      toggled={collapsed} // toggled true = només icones
+      toggled={collapsed} // toggled true = only icons
     >
       <CDBSidebarContent className="sidebar-content">
         <CDBSidebarHeader prefix={<></>}>Features</CDBSidebarHeader>

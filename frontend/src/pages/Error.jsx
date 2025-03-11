@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import Header from '../components/Header';
+import Header from '../components/ui/Header';
 
 const Error404 = () => {
   return (
