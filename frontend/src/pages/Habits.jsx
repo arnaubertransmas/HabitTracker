@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import axiosInstance from '../config/axiosConfig';
 import Header from '../components/ui/Header';
 import Sidebar from '../components/ui/Sidebar';
 import CreateHabit from '../components/habits/CreateHabit';
 import ShowHabits from '../components/habits/ShowHabits';
 
 const Habits = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
   const [habits, setHabits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,14 +17,7 @@ const Habits = () => {
   const loadHabits = useCallback(async () => {
     try {
       setLoading(true);
-      const accessToken = Cookies.get('cookie_access_token');
-      const response = await axios.get(`${apiUrl}/habit/get_habits`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get('/habit/get_habits');
       const result = response?.data?.habits || [];
       setHabits(result);
       setLoading(false);
@@ -35,7 +26,7 @@ const Habits = () => {
       setError('Could not load habits');
       setLoading(false);
     }
-  }, [apiUrl]);
+  }, []);
 
   useEffect(() => {
     loadHabits();

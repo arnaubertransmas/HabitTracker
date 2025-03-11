@@ -1,10 +1,9 @@
 import { useForm, FormProvider } from 'react-hook-form';
-import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { Form } from 'react-bootstrap';
 import Input from '../ui/Input';
-import Cookies from 'js-cookie';
+import axiosInstance from '../../config/axiosConfig';
 
 const CreateHabit = ({ show, handleClose, onSuccess }) => {
   const methods = useForm({ mode: 'onChange' });
@@ -14,27 +13,15 @@ const CreateHabit = ({ show, handleClose, onSuccess }) => {
     formState: { errors },
   } = methods;
 
-  const apiUrl = process.env.REACT_APP_API_URL;
-
   const onSubmit = async (data) => {
     try {
-      const accessToken = Cookies.get('cookie_access_token');
-      const response = await axios.post(
-        `${apiUrl}/habit/create_habit`,
-        {
-          name: data.name,
-          duration: parseInt(data.duration, 10),
-          repeat: data.repeat,
-          time_day: data.time_day,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-          withCredentials: true,
-        },
-      );
+      const response = await axiosInstance.post('/habit/create_habit', {
+        name: data.name,
+        duration: parseInt(data.duration, 10),
+        repeat: data.repeat,
+        time_day: data.time_day,
+      });
+
       const result = response.data;
       if (!result.success) {
         console.error('Error de servidor:', result);

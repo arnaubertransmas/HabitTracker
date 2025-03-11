@@ -10,7 +10,7 @@ import {
   Alert,
 } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../config/axiosConfig';
 import Header from '../components/ui/Header';
 import Input from '../components/ui/Input';
 
@@ -19,7 +19,6 @@ const Register = () => {
   const redirect = useNavigate();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
-  const apiUrl = process.env.REACT_APP_API_URL;
 
   // reactive form variables
   const {
@@ -38,7 +37,7 @@ const Register = () => {
       setError('');
       setLoading(true);
 
-      const response = await axios.post(`${apiUrl}/auth/signup`, {
+      const response = await axiosInstance.post('/auth/signup', {
         name: data.name,
         surname: data.surname,
         email: data.email,

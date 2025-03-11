@@ -1,21 +1,9 @@
 import Cookies from 'js-cookie';
-import axios from 'axios';
+import axiosInstance from '../config/axiosConfig';
 
-const logout = async (apiUrl, redirect, setIsAuthenticated) => {
+const logout = async (redirect, setIsAuthenticated) => {
   try {
-    const accessToken = Cookies.get('cookie_access_token');
-    const response = await axios.post(
-      `${apiUrl}/auth/logout`,
-      {},
-      {
-        // access token in header for logout
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true,
-      },
-    );
+    const response = await axiosInstance.post('/auth/logout');
 
     if (response.data.success) {
       // remove cookie

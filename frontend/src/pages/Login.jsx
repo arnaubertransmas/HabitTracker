@@ -10,16 +10,15 @@ import {
   Alert,
 } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import Cookies from 'js-cookie';
+import axiosInstance from '../config/axiosConfig';
 import Header from '../components/ui/Header';
 import Input from '../components/ui/Input';
-import Cookies from 'js-cookie';
 
 const Login = () => {
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const redirect = useNavigate();
-  const apiUrl = process.env.REACT_APP_API_URL;
   const methods = useForm({ mode: 'onChange' });
   const {
     handleSubmit,
@@ -31,19 +30,10 @@ const Login = () => {
       setError('');
       setLoading(true);
 
-      const response = await axios.post(
-        `${apiUrl}/auth/signin`,
-        {
-          email: data.email,
-          password: data.password,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          withCredentials: true,
-        },
-      );
+      const response = await axiosInstance.post('/auth/signin', {
+        email: data.email,
+        password: data.password,
+      });
 
       const result = response.data;
       if (!result.success) {

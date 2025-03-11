@@ -7,15 +7,10 @@ import checkAuth from '../../utils/check_auth';
 const Header = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const redirect = useNavigate();
-  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    if (apiUrl) {
-      checkAuth(apiUrl, setIsAuthenticated);
-    }
-
-    // call it again if url change -->
-  }, [apiUrl]);
+    checkAuth(setIsAuthenticated);
+  }, []);
 
   // styles for buttons
   const loginStyle = {
@@ -30,7 +25,7 @@ const Header = () => {
   };
 
   const handleLogout = () => {
-    logout(apiUrl, redirect, setIsAuthenticated);
+    logout(redirect, setIsAuthenticated);
   };
 
   return (
