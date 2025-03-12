@@ -87,7 +87,13 @@ const Register = () => {
                       id="name"
                       placeholder="Name"
                       className="form-control"
-                      rules={{ required: 'Name is required' }}
+                      rules={{
+                        required: 'Name is required',
+                        pattern: {
+                          value: /^[A-Za-z\s]+$/i,
+                          message: 'Include only letters',
+                        },
+                      }}
                     />
                     {errors.name && (
                       <p className="text-danger">{errors.name.message}</p>
@@ -97,7 +103,13 @@ const Register = () => {
                       id="surname"
                       placeholder="Second name"
                       className="form-control"
-                      rules={{ required: 'Second name is required' }}
+                      rules={{
+                        required: 'Second name is required',
+                        pattern: {
+                          value: /^[A-Za-z\s]+$/i,
+                          message: 'Include only letters',
+                        },
+                      }}
                     />
                     {errors.surname && (
                       <p className="text-danger">{errors.surname.message}</p>

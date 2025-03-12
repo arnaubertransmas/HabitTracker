@@ -1,11 +1,14 @@
 from models.user_model import User
 from utils.logger import log_error
-from utils.validators import validate_email, validate_password
+from utils.validators import validate_email, validate_password, is_string
 from werkzeug.security import check_password_hash
 
 
 def registrate_user(name, surname, email, password, password2):
     try:
+
+        if not is_string(name, surname):
+            return {"success": False, "message": "Can't contain numbers"}
 
         if not all([name, surname, email, password, password2]):
             return {"success": False, "message": "All fields are required"}

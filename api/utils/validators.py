@@ -9,9 +9,6 @@ def validate_email(email):
 def validate_password(password):
     """password validation for register"""
 
-    if len(password) < 8:
-        return False
-
     if not bool(
         re.match(
             r"^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&].{8,}$", password
@@ -19,4 +16,16 @@ def validate_password(password):
     ):
         return False
 
+    return True
+
+
+def is_string(*args):
+    """Check if all inputs are only letters and spaces"""
+    for arg in args:
+        # 1st validation to prevent errorType
+        if not isinstance(arg, str):
+            return False
+        # 2nd validation to match nums in strFORMAT
+        if not bool(re.match(r"^[a-zA-Z\s]+$", arg, re.IGNORECASE)):
+            return False
     return True
