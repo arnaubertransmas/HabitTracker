@@ -8,30 +8,34 @@ habits_collection = db["habits"]
 
 class Habit:
 
-    def __init__(self, name, duration, repeat, time_day):
+    def __init__(self, name, frequency, time_day, type_habit, user_email):
         self.name = name
-        self.duration = duration
-        self.repeat = repeat
+        self.frequency = frequency
         self.time_day = time_day
+        self.type = type_habit
+        self.user_email = user_email
 
     def save_habit(self):
         try:
             result = habits_collection.insert_one(
                 {
                     "name": self.name,
-                    "duration": self.duration,
-                    "repeat": self.repeat,
+                    "frequency": self.frequency,
                     "time_day": self.time_day,
+                    "type": self.type,
+                    "user_email": self.user_email,
                 }
             )
         except Exception as e:
             raise e
 
     @staticmethod
-    def get_habits():
+    def get_habits(user_email):
         try:
             # exclude ID avoiding ObjectID error
-            habits = list(habits_collection.find({}, {"_id": 0}))
+            habits = list(
+                habits_collection.find({"user_email": user_email}, {"_id": 0})
+            )
             return habits
         except Exception as e:
             raise e

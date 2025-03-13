@@ -3,22 +3,19 @@ from models.habit_model import Habit
 from utils.logger import log_error
 
 
-def create_new_habit(name, duration, repeat, time_day):
+def create_new_habit(name, frequency, time_day, type_habit, user_email):
     try:
 
-        if not all([name, duration, repeat, time_day]):
+        if not all([name, frequency, time_day, type_habit, user_email]):
             return {"success": False, "message": "All fields are required"}
 
         if type(name) != str:
             return {"success": False, "message": "Name param must contain only strings"}
 
-        if type(duration) != int:
-            return {"success": False, "message": "Duration must be an integrer"}
-
         if Habit.get_habit("name", name):
             return {"success": False, "message": "Habit already exists"}
 
-        habit = Habit(name, duration, repeat, time_day)
+        habit = Habit(name, frequency, time_day, type_habit, user_email)
         habit.save_habit()
 
         return {"success": True, "message": "Habit saved correctly"}

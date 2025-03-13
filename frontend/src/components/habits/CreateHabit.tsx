@@ -22,15 +22,16 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
     handleSubmit,
     register,
     formState: { errors },
+    reset,
   } = methods;
 
   const onSubmit = async (data: any) => {
     try {
       const response = await axiosInstance.post('/habit/create_habit', {
         name: data.name,
-        duration: parseInt(data.duration, 10),
-        repeat: data.repeat,
+        frequency: data.frequency,
         time_day: data.time_day,
+        type: 'habit',
       });
 
       const result = response.data;
@@ -38,6 +39,7 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
         console.error('Error from server:', result);
         return;
       }
+      reset();
       handleClose();
       if (onSuccess && typeof onSuccess === 'function') {
         onSuccess();
@@ -71,38 +73,22 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
             {errors.name && (
               <p className="text-danger">{(errors.name as any).message}</p>
             )}{' '}
-            {/* Type casting errors */}
-            <Input
-              type="text"
-              id="duration"
-              placeholder="Duration"
-              className="form-control mb-3"
-              rules={{
-                required: 'Duration is required',
-                pattern: {
-                  value: /^[0-9]+$/i,
-                  message: 'Only numbers are allowed',
-                },
-              }}
-            />
-            {errors.duration && (
-              <p className="text-danger">{(errors.duration as any).message}</p>
-            )}{' '}
-            {/* Type casting errors */}
             <Form.Group className="mb-3">
-              <Form.Label>Repeat</Form.Label>
+              <Form.Label>Frequency</Form.Label>
               <Form.Select
-                id="repeat"
-                {...register('repeat', { required: 'Field is required' })}
+                id="frequency"
+                {...register('frequency', { required: 'Field is required' })}
                 className="form-control"
               >
-                <option value="">Select Repeat Frequency</option>
+                <option value="">Select Frequency</option>
                 <option value="daily">Daily</option>
                 <option value="monthly">Monthly</option>
                 <option value="custom">Custom</option>
               </Form.Select>
-              {errors.repeat && (
-                <p className="text-danger">{(errors.repeat as any).message}</p>
+              {errors.frequency && (
+                <p className="text-danger">
+                  {(errors.frequency as any).message}
+                </p>
               )}
             </Form.Group>
             <Form.Group className="mb-3">
@@ -122,7 +108,6 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
                   {(errors.time_day as any).message}
                 </p>
               )}{' '}
-              {/* Type casting errors */}
             </Form.Group>
             <div className="d-flex justify-content-end mt-4">
               <Button

@@ -54,8 +54,8 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
                 </tr>
               </thead>
               <tbody>
-                {habits.map((habit) => (
-                  <tr key={habit.id}>
+                {habits.map((habit, index) => (
+                  <tr key={habit.id || index}>
                     <td>{habit.name}</td>
                     <td>
                       <div className="d-flex justify-content-center gap-2">

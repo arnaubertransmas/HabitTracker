@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from services.habit_service import create_new_habit
 from models.habit_model import Habit
 
@@ -7,11 +7,21 @@ from models.habit_model import Habit
 habit_routes = Blueprint("habit", __name__)
 
 
+@jwt_required()
+def get_identity():
+    email = get_jwt_identity()
+
+    return email
+
+
 @habit_routes.route("/get_habits", methods=["GET"])
+@jwt_required()
 def get_habits():
     """Get all existing habits"""
     try:
-        habits = Habit.get_habits()
+
+        email = get_identity()
+        habits = Habit.get_habits(email)
 
         if habits:
             return (
@@ -26,8 +36,10 @@ def get_habits():
             )
         else:
             return (
-                jsonify({"success": False, "message": "There are no habits created"}),
-                404,
+                jsonify(
+                    {"success": True, "message": "No habits created yet", "habits": []}
+                ),
+                200,
             )
     except Exception as e:
         return (
@@ -36,18 +48,20 @@ def get_habits():
         )
 
 
-@habit_routes.route("create_habit", methods=["POST"])
+@habit_routes.route("/create_habit", methods=["POST"])
 @jwt_required()
 def create_habit():
     """Create new habit"""
     try:
+        email = get_identity()
+
         data = request.json
         name = data.get("name", "").strip()
-        duration = data.get("duration", "")
-        repeat = data.get("repeat", "").strip()
+        frequency = data.get("frequency", "").strip()
         time_day = data.get("time_day", "").strip()
+        type_habit = data.get("type", "").strip()
 
-        created = create_new_habit(name, duration, repeat, time_day)
+        created = create_new_habit(name, frequency, time_day, type_habit, email)
 
         if created.get("success"):
             return jsonify(created), 201
@@ -61,7 +75,7 @@ def create_habit():
         )
 
 
-@habit_routes.route("delete_habit", methods=["DELETE"])
+@habit_routes.route("/delete_habit", methods=["DELETE"])
 @jwt_required()
 def delete_habit():
     try:
