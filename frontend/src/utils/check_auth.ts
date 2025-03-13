@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import axiosInstance from '../config/axiosConfig';
 
-const checkAuth = async (setIsAuthenticated) => {
+const checkAuth = async (setIsAuthenticated: (value: boolean) => void) => {
   try {
     const response = await axiosInstance.get('/auth/check_session');
 

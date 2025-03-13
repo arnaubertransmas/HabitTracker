@@ -9,18 +9,19 @@ import {
   CDBSidebarMenuItem,
   CDBSidebarHeader,
 } from 'cdbreact';
+// import './Sidebar.css'; // Add a custom CSS file
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
 
-  // controlem la mida de la pantalla
+  // control the screen size
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        // només icones
+        // only icons
         setCollapsed(true);
       } else {
-        // icones + text
+        // icons + text
         setCollapsed(false);
       }
     };
@@ -34,22 +35,27 @@ const Sidebar = () => {
 
   const iconMargin = { marginRight: '15px' };
 
-  const hoverLinkEnter = (e) => {
-    e.target.style.color = 'black';
-    e.target.style.backgroundColor = '#EEEEEE';
+  const hoverLinkEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Use type assertion to tell TypeScript e.target is an HTMLAnchorElement
+    (e.target as HTMLElement).style.color = 'black';
+    (e.target as HTMLElement).style.backgroundColor = '#EEEEEE';
   };
 
-  const hoverLinkLeave = (e) => {
-    e.target.style.color = '#333';
-    e.target.style.backgroundColor = 'transparent';
+  const hoverLinkLeave = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Use type assertion to tell TypeScript e.target is an HTMLAnchorElement
+    (e.target as HTMLElement).style.color = '#333';
+    (e.target as HTMLElement).style.backgroundColor = 'transparent';
   };
 
   return (
     <CDBSidebar
       textColor="#333"
       backgroundColor="transparent"
-      style={{ width: collapsed ? '80px' : '275px' }}
-      toggled={collapsed} // toggled true = only icons
+      className={collapsed ? 'collapsed-sidebar' : 'expanded-sidebar'}
+      toggled={collapsed} // You must include the toggled prop
+      breakpoint={768} // Define a breakpoint to trigger the collapse
+      minWidth={'80'} // Define the minimum width
+      maxWidth={'275'} // Define the maximum width
     >
       <CDBSidebarContent className="sidebar-content">
         <CDBSidebarHeader prefix={<></>}>Features</CDBSidebarHeader>

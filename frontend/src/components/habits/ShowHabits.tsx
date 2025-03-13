@@ -2,7 +2,24 @@ import React from 'react';
 import { Button, Container, Row, Col, Table } from 'react-bootstrap';
 import Alert from 'react-bootstrap/Alert';
 
-const ShowHabits = ({ habits, loading, error, handleShowModal }) => {
+interface Habit {
+  id: string;
+  name: string;
+}
+
+interface ShowHabitsProps {
+  habits: Habit[];
+  loading: boolean;
+  error: string | null;
+  handleShowModal: () => void;
+}
+
+const ShowHabits: React.FC<ShowHabitsProps> = ({
+  habits,
+  loading,
+  error,
+  handleShowModal,
+}) => {
   return (
     <Container fluid className="p-3">
       <Row className="mt-5">
@@ -13,7 +30,7 @@ const ShowHabits = ({ habits, loading, error, handleShowModal }) => {
           <Button
             variant="primary"
             type="button"
-            size="md"
+            size="sm"
             onClick={handleShowModal}
           >
             Create Habit
@@ -37,8 +54,8 @@ const ShowHabits = ({ habits, loading, error, handleShowModal }) => {
                 </tr>
               </thead>
               <tbody>
-                {habits.map((habit, index) => (
-                  <tr key={habit.id || index}>
+                {habits.map((habit) => (
+                  <tr key={habit.id}>
                     <td>{habit.name}</td>
                     <td>
                       <div className="d-flex justify-content-center gap-2">

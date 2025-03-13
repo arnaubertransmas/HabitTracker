@@ -1,3 +1,4 @@
+import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -5,7 +6,17 @@ import { Form } from 'react-bootstrap';
 import Input from '../ui/Input';
 import axiosInstance from '../../config/axiosConfig';
 
-const CreateHabit = ({ show, handleClose, onSuccess }) => {
+interface CreateHabitProps {
+  show: boolean;
+  handleClose: () => void;
+  onSuccess: () => void;
+}
+
+const CreateHabit: React.FC<CreateHabitProps> = ({
+  show,
+  handleClose,
+  onSuccess,
+}) => {
   const methods = useForm({ mode: 'onChange' });
   const {
     handleSubmit,
@@ -13,7 +24,7 @@ const CreateHabit = ({ show, handleClose, onSuccess }) => {
     formState: { errors },
   } = methods;
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: any) => {
     try {
       const response = await axiosInstance.post('/habit/create_habit', {
         name: data.name,
@@ -24,7 +35,7 @@ const CreateHabit = ({ show, handleClose, onSuccess }) => {
 
       const result = response.data;
       if (!result.success) {
-        console.error('Error de servidor:', result);
+        console.error('Error from server:', result);
         return;
       }
       handleClose();
@@ -39,7 +50,7 @@ const CreateHabit = ({ show, handleClose, onSuccess }) => {
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Create a habit</Modal.Title>
+        <Modal.Title>Create a Habit</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <FormProvider {...methods}>
@@ -58,9 +69,9 @@ const CreateHabit = ({ show, handleClose, onSuccess }) => {
               }}
             />
             {errors.name && (
-              <p className="text-danger">{errors.name.message}</p>
-            )}
-
+              <p className="text-danger">{(errors.name as any).message}</p>
+            )}{' '}
+            {/* Type casting errors */}
             <Input
               type="text"
               id="duration"
@@ -75,9 +86,9 @@ const CreateHabit = ({ show, handleClose, onSuccess }) => {
               }}
             />
             {errors.duration && (
-              <p className="text-danger">{errors.duration.message}</p>
-            )}
-
+              <p className="text-danger">{(errors.duration as any).message}</p>
+            )}{' '}
+            {/* Type casting errors */}
             <Form.Group className="mb-3">
               <Form.Label>Repeat</Form.Label>
               <Form.Select
@@ -85,33 +96,34 @@ const CreateHabit = ({ show, handleClose, onSuccess }) => {
                 {...register('repeat', { required: 'Field is required' })}
                 className="form-control"
               >
-                <option value="">Daily</option>
-                <option value="morning">Montly</option>
-                <option value="afternoon">Custom</option>
+                <option value="">Select Repeat Frequency</option>
+                <option value="daily">Daily</option>
+                <option value="monthly">Monthly</option>
+                <option value="custom">Custom</option>
               </Form.Select>
-              {errors.time_day && (
-                <p className="text-danger">{errors.time_day.message}</p>
+              {errors.repeat && (
+                <p className="text-danger">{(errors.repeat as any).message}</p>
               )}
             </Form.Group>
-
-            {/* Replace text input with dropdown for time_day */}
             <Form.Group className="mb-3">
-              <Form.Label>Time of day</Form.Label>
+              <Form.Label>Time of Day</Form.Label>
               <Form.Select
                 id="time_day"
                 {...register('time_day', { required: 'Field is required' })}
                 className="form-control"
               >
-                <option value="">Select time of day</option>
+                <option value="">Select Time of Day</option>
                 <option value="morning">Morning</option>
                 <option value="afternoon">Afternoon</option>
                 <option value="night">Night</option>
               </Form.Select>
               {errors.time_day && (
-                <p className="text-danger">{errors.time_day.message}</p>
-              )}
+                <p className="text-danger">
+                  {(errors.time_day as any).message}
+                </p>
+              )}{' '}
+              {/* Type casting errors */}
             </Form.Group>
-
             <div className="d-flex justify-content-end mt-4">
               <Button
                 variant="secondary"
@@ -121,7 +133,7 @@ const CreateHabit = ({ show, handleClose, onSuccess }) => {
                 Cancel
               </Button>
               <Button variant="primary" type="submit">
-                Save changes
+                Save Habit
               </Button>
             </div>
           </Form>

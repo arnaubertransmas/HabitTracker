@@ -1,6 +1,6 @@
-import React from 'react';
 import Header from '../components/ui/Header';
 import postits from '../assets/img/postits.jpeg';
+
 const AboutUs = () => {
   return (
     <>

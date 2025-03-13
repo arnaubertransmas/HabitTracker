@@ -2,8 +2,21 @@ import React from 'react';
 import { Form } from 'react-bootstrap';
 import { useFormContext } from 'react-hook-form';
 
-const Input = ({ type, id, placeholder, className, rules = {} }) => {
-  // controlem l'estat dels inputs
+interface InputProps {
+  type: string;
+  id: string;
+  placeholder?: string;
+  className?: string;
+  rules?: object;
+}
+
+const Input: React.FC<InputProps> = ({
+  type,
+  id,
+  placeholder,
+  className,
+  rules = {},
+}) => {
   const methods = useFormContext();
 
   if (!methods) {

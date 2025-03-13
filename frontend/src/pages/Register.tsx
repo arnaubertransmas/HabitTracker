@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
 import {
   Button,
   Form,
@@ -14,20 +14,30 @@ import axiosInstance from '../config/axiosConfig';
 import Header from '../components/ui/Header';
 import Input from '../components/ui/Input';
 
-const Register = () => {
-  const methods = useForm({ mode: 'onChange' });
-  const redirect = useNavigate();
-  const [error, setError] = useState();
-  const [loading, setLoading] = useState(false);
+interface IRegisterForm {
+  name: string;
+  surname: string;
+  email: string;
+  password: string;
+  password2: string;
+}
 
-  // reactive form variables
+const Register = () => {
+  const [error, setError] = useState<string>(''); // Set initial error state as an empty string
+  const [loading, setLoading] = useState<boolean>(false);
+  const redirect = useNavigate();
+
+  const methods = useForm<IRegisterForm>({ mode: 'onChange' });
   const {
     handleSubmit,
     formState: { errors },
     watch,
   } = methods;
 
-  const onSubmit = async (data) => {
+  const password = watch('password'); // Real-time watch for password
+
+  // Type the onSubmit function with the IRegisterForm type
+  const onSubmit: SubmitHandler<IRegisterForm> = async (data) => {
     if (data.password !== data.password2) {
       setError('Passwords do not match');
       return;
@@ -46,24 +56,19 @@ const Register = () => {
       });
 
       const result = await response.data;
-      // console.log(result);
-
       if (!result.success) {
         setError(result.message || 'Registration failed');
         return;
       }
 
-      redirect('/signin');
-    } catch (err) {
+      redirect('/signin'); // Redirect to sign in page after successful registration
+    } catch (err: any) {
       setError('Internal server error, try again later...');
-      console.log('Registration error', err);
+      console.error('Registration error', err);
     } finally {
       setLoading(false);
     }
   };
-
-  // watch password in real time
-  const password = watch('password');
 
   return (
     <>
@@ -98,6 +103,7 @@ const Register = () => {
                     {errors.name && (
                       <p className="text-danger">{errors.name.message}</p>
                     )}
+
                     <Input
                       type="text"
                       id="surname"
@@ -114,6 +120,7 @@ const Register = () => {
                     {errors.surname && (
                       <p className="text-danger">{errors.surname.message}</p>
                     )}
+
                     <Input
                       type="email"
                       id="email"
@@ -130,6 +137,7 @@ const Register = () => {
                     {errors.email && (
                       <p className="text-danger">{errors.email.message}</p>
                     )}
+
                     <Input
                       type="password"
                       id="password"
@@ -152,6 +160,7 @@ const Register = () => {
                     {errors.password && (
                       <p className="text-danger">{errors.password.message}</p>
                     )}
+
                     <Input
                       type="password"
                       id="password2"
@@ -159,13 +168,15 @@ const Register = () => {
                       className="form-control"
                       rules={{
                         required: 'Please confirm your password',
-                        validate: (value) =>
+                        validate: (value: string) =>
                           value === password || 'Passwords do not match',
                       }}
                     />
+
                     {errors.password2 && (
                       <p className="text-danger">{errors.password2.message}</p>
                     )}
+
                     <Button
                       variant="primary"
                       type="submit"
@@ -175,6 +186,7 @@ const Register = () => {
                     >
                       {loading ? 'Registering...' : 'Sign up'}
                     </Button>
+
                     <Form.Group className="text-center mt-3">
                       Already have an account?
                       <Link to="/signin" className="ms-1">

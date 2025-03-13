@@ -3,7 +3,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Header from '../components/ui/Header';
 
-const Error404 = () => {
+const Error404 = (): JSX.Element => {
   return (
     <>
       <Header />
@@ -18,7 +18,7 @@ const Error404 = () => {
             <h2 className="display-6 mb-3">Page not found</h2>
             <p className="lead text-muted mb-4">
               The page that you are looking for was not found or it has been
-              moved to another location
+              moved to another location.
             </p>
             <Link to="/" className="btn btn-outline-secondary btn-lg">
               Go to home page

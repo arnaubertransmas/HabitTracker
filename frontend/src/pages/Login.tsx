@@ -15,17 +15,22 @@ import axiosInstance from '../config/axiosConfig';
 import Header from '../components/ui/Header';
 import Input from '../components/ui/Input';
 
+interface FormData {
+  email: string;
+  password: string;
+}
+
 const Login = () => {
-  const [error, setError] = useState();
+  const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const redirect = useNavigate();
-  const methods = useForm({ mode: 'onChange' });
+  const methods = useForm<FormData>({ mode: 'onChange' });
   const {
     handleSubmit,
     formState: { errors },
   } = methods;
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: FormData) => {
     try {
       setError('');
       setLoading(true);
@@ -52,8 +57,8 @@ const Login = () => {
         localStorage.setItem('user_name', result.user.name);
         redirect(`/user/${result.user.name.toLowerCase()}`);
       }
-    } catch (err) {
-      console.log('Error message:', err?.response?.data);
+    } catch (err: any) {
+      console.log('Error message:', err.response?.data);
       setError('Invalid Credentials');
     } finally {
       setLoading(false);
@@ -85,7 +90,7 @@ const Login = () => {
                       rules={{ required: 'Email is required' }}
                     />
                     {errors.email && (
-                      <p className="text-danger">{errors.email.message}</p>
+                      <p className="text-danger">{errors.email?.message}</p>
                     )}
                     <Input
                       type="password"
@@ -95,7 +100,7 @@ const Login = () => {
                       rules={{ required: 'Password is required' }}
                     />
                     {errors.password && (
-                      <p className="text-danger">{errors.password.message}</p>
+                      <p className="text-danger">{errors.password?.message}</p>
                     )}
                     <Button
                       variant="primary"

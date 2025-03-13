@@ -8,7 +8,7 @@ import ShowHabits from '../components/habits/ShowHabits';
 const Habits = () => {
   const [habits, setHabits] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string>('');
   const [showModal, setShowModal] = useState(false);
 
   const handleShowModal = () => setShowModal(true);

@@ -1,7 +1,10 @@
 import Cookies from 'js-cookie';
 import axiosInstance from '../config/axiosConfig';
 
-const logout = async (redirect, setIsAuthenticated) => {
+const logout = async (
+  redirect: (path: string) => void,
+  setIsAuthenticated: (value: boolean) => void,
+) => {
   try {
     const response = await axiosInstance.post('/auth/logout');
 

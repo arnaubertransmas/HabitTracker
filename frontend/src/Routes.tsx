@@ -1,11 +1,6 @@
-import { useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {
-  Route,
-  Routes,
-  BrowserRouter as Router,
-  useNavigate,
-} from 'react-router-dom';
+import { Route, Routes, BrowserRouter, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
@@ -14,40 +9,46 @@ import Home from './pages/Home';
 import Error from './pages/Error';
 import AboutUs from './pages/AboutUs';
 import Habits from './pages/Habits';
-import CreateProject from './components/habits/CreateHabit';
+import CreateHabit from './components/habits/CreateHabit';
 
-const ProtectedRoute = ({ children }) => {
+interface ProtectedRouteProps {
+  children: ReactNode;
+}
+
+function ProtectedRoute({ children }: ProtectedRouteProps) {
   const redirect = useNavigate();
-  const isProtected = Cookies.get('cookie_access_token');
+  const isAuthenticated = Cookies.get('cookie_access_token');
 
-  // useEffect executes it AFTER THE CONNEXION RENDERS
   useEffect(() => {
-    if (!isProtected) {
-      return redirect('/signin');
+    if (!isAuthenticated) {
+      redirect('/signin');
     }
-    // run when token change
-  }, [isProtected, redirect]);
+  }, [isAuthenticated, redirect]);
 
-  return children;
-};
+  return isAuthenticated ? <>{children}</> : null;
+}
 
 const AppRoutes = () => {
+  const [showModal, setShowModal] = useState(false);
+
+  // const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
+  const handleSuccess = () => {
+    // Logic to handle success
+    console.log('Habit created successfully');
+  };
+
   return (
-    <Router
-      future={{
-        v7_relativeSplatPath: true, // for a console warning.
-      }}
-    >
+    <BrowserRouter>
       <Routes>
-        {/* public routes */}
+        {/* Public routes */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/signin" element={<Login />} />
         <Route path="/signup" element={<Register />} />
         <Route path="/about_us" element={<AboutUs />} />
 
-        {/* private routes */}
-
-        {/* modificar el /user en un futur, EL REDIRECT DE LA RUTA*/}
+        {/* Protected routes */}
         <Route
           path="/user"
           element={
@@ -73,19 +74,21 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="habits/:create_habit"
+          path="/habits/:create_habit"
           element={
             <ProtectedRoute>
-              <CreateProject />
+              <CreateHabit
+                show={showModal}
+                handleClose={handleCloseModal}
+                onSuccess={handleSuccess}
+              />
             </ProtectedRoute>
           }
         />
-
-        {/* error default route */}
+        {/* Error page (default route) */}
         <Route path="*" element={<Error />} />
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 };
-
 export default AppRoutes;
