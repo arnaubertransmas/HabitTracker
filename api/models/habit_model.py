@@ -48,8 +48,9 @@ class Habit:
         except Exception as e:
             return e
 
-    def delete_habit(id):
+    @staticmethod
+    def delete_habit(name):
         try:
-            habits_collection.delete_one({"_id": str(id)})
+            habits_collection.delete_one({"name": name})
         except Exception as e:
             return e

@@ -1,9 +1,10 @@
 import React from 'react';
+import axiosInstance from '../../config/axiosConfig';
 import { Button, Container, Row, Col, Table } from 'react-bootstrap';
 import Alert from 'react-bootstrap/Alert';
 
 interface Habit {
-  id: string;
+  // id: string;
   name: string;
 }
 
@@ -12,6 +13,7 @@ interface ShowHabitsProps {
   loading: boolean;
   error: string | null;
   handleShowModal: () => void;
+  loadHabits: () => Promise<void>;
 }
 
 const ShowHabits: React.FC<ShowHabitsProps> = ({
@@ -19,7 +21,26 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
   loading,
   error,
   handleShowModal,
+  loadHabits,
 }) => {
+  const handleDelete = async (name: string) => {
+    try {
+      console.log(name);
+      const response = await axiosInstance.delete(
+        `/habit/delete_habit/${name}`,
+      );
+
+      const result = response.data;
+      console.log(result, 'result');
+      if (!response.data.success) {
+        console.error('Error from server:', result);
+      } else {
+        await loadHabits();
+      }
+    } catch (error) {
+      console.log('Error deleting' + error);
+    }
+  };
   return (
     <Container fluid className="p-3">
       <Row className="mt-5">
@@ -55,7 +76,7 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
               </thead>
               <tbody>
                 {habits.map((habit, index) => (
-                  <tr key={habit.id || index}>
+                  <tr key={habit.name || index}>
                     <td>{habit.name}</td>
                     <td>
                       <div className="d-flex justify-content-center gap-2">
@@ -65,7 +86,11 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
                         <Button variant="warning" size="sm">
                           Edit
                         </Button>
-                        <Button variant="danger" size="sm">
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => handleDelete(habit.name)}
+                        >
                           Delete
                         </Button>
                       </div>

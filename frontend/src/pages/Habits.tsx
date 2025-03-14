@@ -42,6 +42,7 @@ const Habits = () => {
           loading={loading}
           error={error}
           handleShowModal={handleShowModal}
+          loadHabits={loadHabits}
         />
       </div>
       <CreateHabit

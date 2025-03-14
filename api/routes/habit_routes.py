@@ -75,11 +75,13 @@ def create_habit():
         )
 
 
-@habit_routes.route("/delete_habit", methods=["DELETE"])
+@habit_routes.route("/delete_habit/<string:name>", methods=["DELETE"])
 @jwt_required()
-def delete_habit():
+def delete_habit(name):
     try:
-        pass
+        Habit.delete_habit(name)
+        return jsonify({"success": True, "message": "Habit deleted successfully"}), 200
+
     except Exception as e:
         return (
             jsonify({"success": False, "message": f"Error deleting habit: {str(e)}"}),

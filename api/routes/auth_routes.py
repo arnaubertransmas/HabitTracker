@@ -60,6 +60,7 @@ def signin():
             if user and isinstance(user, list):
                 user = user[0]
 
+                # if no name found User will be name displayed
                 user_name = user.get("name", "User")
 
             response = jsonify(
@@ -67,7 +68,7 @@ def signin():
                     "success": True,
                     "message": "Login successful",
                     "access_token": access_token,
-                    "user": {"email": email, "name": user_name},  #! email és necessari?
+                    "user": {"name": user_name},
                 }
             )
 
