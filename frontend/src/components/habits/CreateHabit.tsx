@@ -7,6 +7,7 @@ import Input from '../ui/Input';
 import axiosInstance from '../../config/axiosConfig';
 
 interface CreateHabitProps {
+  // interface defining variables types
   show: boolean;
   handleClose: () => void;
   onSuccess: () => void;
@@ -27,6 +28,7 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
 
   const onSubmit = async (data: any) => {
     try {
+      // request to backend
       const response = await axiosInstance.post('/habit/create_habit', {
         name: data.name,
         frequency: data.frequency,
@@ -39,6 +41,7 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
         console.error('Error from server:', result);
         return;
       }
+      // reset and close modal
       reset();
       handleClose();
       if (onSuccess && typeof onSuccess === 'function') {

@@ -15,6 +15,7 @@ const Habits = () => {
   const handleCloseModal = () => setShowModal(false);
 
   const loadHabits = useCallback(async () => {
+    // only renders when loadHabits change (useCallback)
     try {
       setLoading(true);
       const response = await axiosInstance.get('/habit/get_habits');

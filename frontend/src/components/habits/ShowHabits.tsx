@@ -1,14 +1,15 @@
+// components/ShowHabits.tsx
 import React from 'react';
-import axiosInstance from '../../config/axiosConfig';
 import { Button, Container, Row, Col, Table } from 'react-bootstrap';
 import Alert from 'react-bootstrap/Alert';
+import handleDelete from '../../services/deleteHabit';
 
 interface Habit {
-  // id: string;
   name: string;
 }
 
 interface ShowHabitsProps {
+  // props types defined
   habits: Habit[];
   loading: boolean;
   error: string | null;
@@ -16,6 +17,7 @@ interface ShowHabitsProps {
   loadHabits: () => Promise<void>;
 }
 
+// FC = functinal component
 const ShowHabits: React.FC<ShowHabitsProps> = ({
   habits,
   loading,
@@ -23,24 +25,6 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
   handleShowModal,
   loadHabits,
 }) => {
-  const handleDelete = async (name: string) => {
-    try {
-      console.log(name);
-      const response = await axiosInstance.delete(
-        `/habit/delete_habit/${name}`,
-      );
-
-      const result = response.data;
-      console.log(result, 'result');
-      if (!response.data.success) {
-        console.error('Error from server:', result);
-      } else {
-        await loadHabits();
-      }
-    } catch (error) {
-      console.log('Error deleting' + error);
-    }
-  };
   return (
     <Container fluid className="p-3">
       <Row className="mt-5">
@@ -75,6 +59,7 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
                 </tr>
               </thead>
               <tbody>
+                {/* map through habits and show them in a table */}
                 {habits.map((habit, index) => (
                   <tr key={habit.name || index}>
                     <td>{habit.name}</td>
@@ -89,7 +74,8 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
                         <Button
                           variant="danger"
                           size="sm"
-                          onClick={() => handleDelete(habit.name)}
+                          // call delete functionallity
+                          onClick={() => handleDelete(habit.name, loadHabits)}
                         >
                           Delete
                         </Button>

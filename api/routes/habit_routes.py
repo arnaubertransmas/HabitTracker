@@ -9,6 +9,7 @@ habit_routes = Blueprint("habit", __name__)
 
 @jwt_required()
 def get_identity():
+    """Get email from user"""
     email = get_jwt_identity()
 
     return email
@@ -78,6 +79,7 @@ def create_habit():
 @habit_routes.route("/delete_habit/<string:name>", methods=["DELETE"])
 @jwt_required()
 def delete_habit(name):
+    """Deleting habit based on name"""
     try:
         Habit.delete_habit(name)
         return jsonify({"success": True, "message": "Habit deleted successfully"}), 200
