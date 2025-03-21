@@ -34,11 +34,6 @@ const AppRoutes = () => {
   // const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
-  const handleSuccess = () => {
-    // Logic to handle success
-    console.log('Habit created successfully');
-  };
-
   return (
     <BrowserRouter>
       <Routes>
@@ -69,7 +64,7 @@ const AppRoutes = () => {
           path="/habits"
           element={
             <ProtectedRoute>
-              <Habits />
+              <Habits habitType="habit" />
             </ProtectedRoute>
           }
         />
@@ -80,11 +75,34 @@ const AppRoutes = () => {
               <CreateHabit
                 show={showModal}
                 handleClose={handleCloseModal}
-                onSuccess={handleSuccess}
+                habitType="habit"
+                loadHabits={async () => {}}
               />
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/non-negotiables"
+          element={
+            <ProtectedRoute>
+              <Habits habitType="non-negotiable" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/non-negotiables/:create_habit"
+          element={
+            <ProtectedRoute>
+              <CreateHabit
+                show={showModal}
+                handleClose={handleCloseModal}
+                habitType="non-negotiable"
+                loadHabits={async () => {}}
+              />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Error page (default route) */}
         <Route path="*" element={<Error />} />
       </Routes>

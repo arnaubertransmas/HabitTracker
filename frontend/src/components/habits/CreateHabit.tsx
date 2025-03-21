@@ -10,13 +10,15 @@ interface CreateHabitProps {
   // interface defining variables types
   show: boolean;
   handleClose: () => void;
-  onSuccess: () => void;
+  loadHabits: () => Promise<void>;
+  habitType: 'habit' | 'non-negotiable';
 }
 
 const CreateHabit: React.FC<CreateHabitProps> = ({
   show,
   handleClose,
-  onSuccess,
+  habitType,
+  loadHabits,
 }) => {
   const methods = useForm({ mode: 'onChange' });
   const {
@@ -28,25 +30,21 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
 
   const onSubmit = async (data: any) => {
     try {
-      // request to backend
       const response = await axiosInstance.post('/habit/create_habit', {
         name: data.name,
         frequency: data.frequency,
         time_day: data.time_day,
-        type: 'habit',
+        type: habitType,
       });
 
-      const result = response.data;
-      if (!result.success) {
-        console.error('Error from server:', result);
+      if (!response.data.success) {
+        console.error('Error from server:', response.data);
         return;
       }
-      // reset and close modal
+
+      loadHabits();
       reset();
       handleClose();
-      if (onSuccess && typeof onSuccess === 'function') {
-        onSuccess();
-      }
     } catch (error) {
       console.error('Error creating habit:', error);
     }
@@ -55,7 +53,7 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Create a Habit</Modal.Title>
+        <Modal.Title>Create {habitType} </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <FormProvider {...methods}>

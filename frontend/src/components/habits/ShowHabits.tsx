@@ -15,6 +15,7 @@ interface ShowHabitsProps {
   error: string | null;
   handleShowModal: () => void;
   loadHabits: () => Promise<void>;
+  habitType: 'habit' | 'non-negotiable';
 }
 
 // FC = functinal component
@@ -24,37 +25,38 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
   error,
   handleShowModal,
   loadHabits,
+  habitType,
 }) => {
+  // uppercase 1st letter of type
+  const HabitTypeCap = habitType.charAt(0).toUpperCase() + habitType.slice(1);
   return (
     <Container fluid className="p-3">
       <Row className="mt-5">
-        <Col
-          md={9}
-          className="offset-md-3 d-flex justify-content-center border p-3"
-        >
+        <Col md={2} className="offset-md-1 d-flex justify-content-center p-3">
           <Button
             variant="primary"
             type="button"
-            size="sm"
             onClick={handleShowModal}
+            className="text-nowrap"
+            style={{ width: 'auto', minWidth: 'fit-content' }}
           >
-            Create Habit
+            Create {HabitTypeCap}
           </Button>
         </Col>
       </Row>
       <Row className="mt-5">
-        <Col md={8} className="offset-md-3">
+        <Col md={7} className="offset-md-1">
           {loading ? (
-            <Alert variant="info">Loading Habits...</Alert>
+            <Alert variant="info">Loading {habitType}...</Alert>
           ) : error ? (
             <Alert variant="danger">{error}</Alert>
           ) : habits.length === 0 ? (
-            <Alert variant="success">There are no habits yet</Alert>
+            <Alert variant="success">There are no {habitType} yet</Alert>
           ) : (
             <Table striped bordered hover className="text-center">
               <thead>
                 <tr>
-                  <th>Habit</th>
+                  <th>{HabitTypeCap}</th>
                   <th>Options</th>
                 </tr>
               </thead>

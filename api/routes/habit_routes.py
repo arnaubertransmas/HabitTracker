@@ -21,8 +21,9 @@ def get_habits():
     """Get all existing habits"""
     try:
 
+        habit_type = request.args.get("type")
         email = get_identity()
-        habits = Habit.get_habits(email)
+        habits = Habit.get_habits(email, habit_type)
 
         if habits:
             return (

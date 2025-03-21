@@ -30,11 +30,13 @@ class Habit:
             raise e
 
     @staticmethod
-    def get_habits(user_email):
+    def get_habits(user_email, habit_type):
         try:
             # exclude ID avoiding ObjectID error
             habits = list(
-                habits_collection.find({"user_email": user_email}, {"_id": 0})
+                habits_collection.find(
+                    {"user_email": user_email, "type": habit_type}, {"_id": 0}
+                )
             )
             return habits
         except Exception as e:

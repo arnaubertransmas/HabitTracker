@@ -5,7 +5,7 @@ import Sidebar from '../components/ui/Sidebar';
 import CreateHabit from '../components/habits/CreateHabit';
 import ShowHabits from '../components/habits/ShowHabits';
 
-const Habits = () => {
+const Habits = ({ habitType }: { habitType: 'habit' | 'non-negotiable' }) => {
   const [habits, setHabits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
@@ -15,10 +15,12 @@ const Habits = () => {
   const handleCloseModal = () => setShowModal(false);
 
   const loadHabits = useCallback(async () => {
-    // only renders when loadHabits change (useCallback)
     try {
       setLoading(true);
-      const response = await axiosInstance.get('/habit/get_habits');
+      const response = await axiosInstance.get(
+        // pass habit type in request
+        `/habit/get_habits?type=${habitType}`,
+      );
       const result = response?.data?.habits || [];
       setHabits(result);
       setLoading(false);
@@ -27,7 +29,7 @@ const Habits = () => {
       setError('Could not load habits');
       setLoading(false);
     }
-  }, []);
+  }, [habitType]);
 
   useEffect(() => {
     loadHabits();
@@ -44,12 +46,14 @@ const Habits = () => {
           error={error}
           handleShowModal={handleShowModal}
           loadHabits={loadHabits}
+          habitType={habitType}
         />
       </div>
       <CreateHabit
         show={showModal}
         handleClose={handleCloseModal}
-        onSuccess={loadHabits}
+        habitType={habitType}
+        loadHabits={loadHabits}
       />
     </>
   );
