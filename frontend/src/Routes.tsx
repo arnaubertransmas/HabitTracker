@@ -10,6 +10,7 @@ import Error from './pages/Error';
 import AboutUs from './pages/AboutUs';
 import Habits from './pages/Habits';
 import CreateHabit from './components/habits/CreateHabit';
+import Schedule from './pages/Schedule';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -99,6 +100,14 @@ const AppRoutes = () => {
                 habitType="non-negotiable"
                 loadHabits={async () => {}}
               />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/schedule"
+          element={
+            <ProtectedRoute>
+              <Schedule />
             </ProtectedRoute>
           }
         />
