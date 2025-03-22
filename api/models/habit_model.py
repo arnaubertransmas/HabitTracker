@@ -30,14 +30,19 @@ class Habit:
             raise e
 
     @staticmethod
-    def get_habits(user_email, habit_type):
+    def get_habits(user_email, habit_type=None):
         try:
+
+            # base query
+            query = {"user_email": user_email}
+
+            # if type specified add it
+            if habit_type:
+                query["type"] = habit_type
+
             # exclude ID avoiding ObjectID error
-            habits = list(
-                habits_collection.find(
-                    {"user_email": user_email, "type": habit_type}, {"_id": 0}
-                )
-            )
+            habits = list(habits_collection.find(query, {"_id": 0}))
+
             return habits
         except Exception as e:
             raise e

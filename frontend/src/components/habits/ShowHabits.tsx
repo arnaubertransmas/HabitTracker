@@ -29,10 +29,11 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
 }) => {
   // uppercase 1st letter of type
   const HabitTypeCap = habitType.charAt(0).toUpperCase() + habitType.slice(1);
+
   return (
     <Container fluid className="p-3">
       <Row className="mt-5">
-        <Col md={2} className="offset-md-1 d-flex justify-content-center p-3">
+        <Col md={6} className="offset-md-1 d-flex justify-content-center p-3">
           <Button
             variant="primary"
             type="button"
@@ -45,7 +46,7 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
         </Col>
       </Row>
       <Row className="mt-5">
-        <Col md={7} className="offset-md-1">
+        <Col md={10} className="offset-md-3 ml-5">
           {loading ? (
             <Alert variant="info">Loading {habitType}...</Alert>
           ) : error ? (
