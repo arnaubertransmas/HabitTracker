@@ -24,8 +24,6 @@ def get_habits():
         email = get_identity()
         habit_type = request.args.get("type", default=None)
 
-        print("get habits of", email, habit_type)
-
         if habit_type:
             habits = Habit.get_habits(email, habit_type)
         else:
