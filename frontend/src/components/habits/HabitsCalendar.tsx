@@ -36,7 +36,6 @@ const MyCalendar: React.FC = () => {
       const response = await axiosInstance.get('/habit/get_habits');
       if (response.data.success) {
         const habits = response.data.habits;
-        console.log(habits);
         const formattedEvents: MyEvent[] = habits.map((habit: any) => {
           let startDate: Date;
           let endDate: Date;
