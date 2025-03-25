@@ -8,19 +8,22 @@ habits_collection = db["habits"]
 
 class Habit:
 
-    def __init__(self, name, frequency, time_day, type_habit, user_email):
+    def __init__(self, name, frequency, days, time_day, type_habit, user_email):
         self.name = name
         self.frequency = frequency
+        self.days = days
         self.time_day = time_day
         self.type = type_habit
         self.user_email = user_email
 
     def save_habit(self):
+        print("Inserting habit:", self.__dict__)
         try:
             result = habits_collection.insert_one(
                 {
                     "name": self.name,
                     "frequency": self.frequency,
+                    "days": self.days,
                     "time_day": self.time_day,
                     "type": self.type,
                     "user_email": self.user_email,

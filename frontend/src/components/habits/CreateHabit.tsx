@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { Form } from 'react-bootstrap';
 import Input from '../ui/Input';
 import axiosInstance from '../../config/axiosConfig';
+import Frequency from '../../services/frequency_managment';
 
 interface CreateHabitProps {
-  // interface defining variables types
   show: boolean;
   handleClose: () => void;
   loadHabits: () => Promise<void>;
-  habitType: 'habit' | 'non-negotiable';
+  habitType: 'Habit' | 'Non-negotiable';
 }
 
 const CreateHabit: React.FC<CreateHabitProps> = ({
@@ -28,11 +28,30 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
     reset,
   } = methods;
 
+  useEffect(() => {
+    if (!show) {
+      // autoReset when modal close
+      reset();
+    }
+  }, [show, reset]);
+
   const onSubmit = async (data: any) => {
+    let days: string[] = [];
+    // variables from frequency_managment
+    if (data.frequency === 'daily' && data.daily) {
+      days = [data.daily];
+    } else if (data.frequency === 'weekly' && data.custom_day) {
+      days = [data.custom_day];
+    } else if (data.frequency === 'custom' && data.custom_days) {
+      days = data.custom_days;
+    }
+
     try {
+      // request to backend
       const response = await axiosInstance.post('/habit/create_habit', {
         name: data.name,
         frequency: data.frequency,
+        days: days,
         time_day: data.time_day,
         type: habitType,
       });
@@ -53,11 +72,13 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Create {habitType} </Modal.Title>
+        <Modal.Title>Create {habitType}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <FormProvider {...methods}>
+          {/* param data is passed automatically */}
           <Form onSubmit={handleSubmit(onSubmit)}>
+            <Form.Label>{habitType} name</Form.Label>
             <Input
               type="text"
               id="name"
@@ -73,25 +94,10 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
             />
             {errors.name && (
               <p className="text-danger">{(errors.name as any).message}</p>
-            )}{' '}
-            <Form.Group className="mb-3">
-              <Form.Label>Frequency</Form.Label>
-              <Form.Select
-                id="frequency"
-                {...register('frequency', { required: 'Field is required' })}
-                className="form-control"
-              >
-                <option value="">Select Frequency</option>
-                <option value="daily">Daily</option>
-                <option value="monthly">Monthly</option>
-                <option value="custom">Custom</option>
-              </Form.Select>
-              {errors.frequency && (
-                <p className="text-danger">
-                  {(errors.frequency as any).message}
-                </p>
-              )}
-            </Form.Group>
+            )}
+
+            <Frequency methods={methods} />
+
             <Form.Group className="mb-3">
               <Form.Label>Time of Day</Form.Label>
               <Form.Select
@@ -108,8 +114,9 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
                 <p className="text-danger">
                   {(errors.time_day as any).message}
                 </p>
-              )}{' '}
+              )}
             </Form.Group>
+
             <div className="d-flex justify-content-end mt-4">
               <Button
                 variant="secondary"

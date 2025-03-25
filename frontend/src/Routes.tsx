@@ -65,7 +65,7 @@ const AppRoutes = () => {
           path="/habits"
           element={
             <ProtectedRoute>
-              <Habits habitType="habit" />
+              <Habits habitType="Habit" />
             </ProtectedRoute>
           }
         />
@@ -76,7 +76,7 @@ const AppRoutes = () => {
               <CreateHabit
                 show={showModal}
                 handleClose={handleCloseModal}
-                habitType="habit"
+                habitType="Habit"
                 loadHabits={async () => {}}
               />
             </ProtectedRoute>
@@ -86,7 +86,7 @@ const AppRoutes = () => {
           path="/non-negotiables"
           element={
             <ProtectedRoute>
-              <Habits habitType="non-negotiable" />
+              <Habits habitType="Non-negotiable" />
             </ProtectedRoute>
           }
         />
@@ -97,7 +97,7 @@ const AppRoutes = () => {
               <CreateHabit
                 show={showModal}
                 handleClose={handleCloseModal}
-                habitType="non-negotiable"
+                habitType="Non-negotiable"
                 loadHabits={async () => {}}
               />
             </ProtectedRoute>

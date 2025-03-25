@@ -5,7 +5,7 @@ import Sidebar from '../components/ui/Sidebar';
 import CreateHabit from '../components/habits/CreateHabit';
 import ShowHabits from '../components/habits/ShowHabits';
 
-const Habits = ({ habitType }: { habitType: 'habit' | 'non-negotiable' }) => {
+const Habits = ({ habitType }: { habitType: 'Habit' | 'Non-negotiable' }) => {
   const [habits, setHabits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');

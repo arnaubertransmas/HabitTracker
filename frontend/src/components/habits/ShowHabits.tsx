@@ -1,4 +1,3 @@
-// components/ShowHabits.tsx
 import React from 'react';
 import { Button, Container, Row, Col, Table } from 'react-bootstrap';
 import Alert from 'react-bootstrap/Alert';
@@ -15,7 +14,7 @@ interface ShowHabitsProps {
   error: string | null;
   handleShowModal: () => void;
   loadHabits: () => Promise<void>;
-  habitType: 'habit' | 'non-negotiable';
+  habitType: 'Habit' | 'Non-negotiable';
 }
 
 // FC = functinal component
@@ -27,9 +26,6 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
   loadHabits,
   habitType,
 }) => {
-  // uppercase 1st letter of type
-  const HabitTypeCap = habitType.charAt(0).toUpperCase() + habitType.slice(1);
-
   return (
     <Container fluid className="p-3">
       <Row className="mt-5">
@@ -41,7 +37,7 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
             className="text-nowrap"
             style={{ width: 'auto', minWidth: 'fit-content' }}
           >
-            Create {HabitTypeCap}
+            Create {habitType}
           </Button>
         </Col>
       </Row>
@@ -57,7 +53,7 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
             <Table striped bordered hover className="text-center">
               <thead>
                 <tr>
-                  <th>{HabitTypeCap}</th>
+                  <th>{habitType}</th>
                   <th>Options</th>
                 </tr>
               </thead>
