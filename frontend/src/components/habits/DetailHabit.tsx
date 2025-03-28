@@ -10,7 +10,7 @@ interface Habit {
   time_day: string;
   start_time: string;
   end_time: string;
-  status?: string;
+  completed?: string;
 }
 
 interface DetailHabitProps {
@@ -47,7 +47,7 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
   // badge color based on status
   const habitStatus = (status?: string) => {
     switch (status) {
-      case 'Active':
+      case 'KL':
         return 'success';
       case 'Paused':
         return 'warning';
@@ -65,8 +65,8 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
           {habit ? (
             <>
               {habit.name} Details |
-              <Badge bg={habitStatus(habit.status)} className="ms-2">
-                {habit.status || '-'}
+              <Badge bg={habitStatus(habit.completed)} className="ms-2">
+                {habit.completed || '-'}
               </Badge>
             </>
           ) : (

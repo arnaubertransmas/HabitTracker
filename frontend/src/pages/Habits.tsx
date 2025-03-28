@@ -21,11 +21,13 @@ const Habits = ({ habitType }: { habitType: 'Habit' | 'Non-negotiable' }) => {
         // pass habit type in request
         `/habit/get_habits?type=${habitType}`,
       );
-      const result = response?.data?.habits || [];
 
-      if (!result.success) {
+      if (!response.data.success) {
         setError('Could not load habits');
       }
+
+      const result = response?.data?.habits || [];
+
       setHabits(result);
       setLoading(false);
     } catch (error) {

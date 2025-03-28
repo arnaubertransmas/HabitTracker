@@ -54,10 +54,10 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
         days: days,
         time_day: data.time_day,
         type: habitType,
+        completed: false,
       });
 
       if (!response.data.success) {
-        console.error('Error from server:', response.data);
         return;
       }
 

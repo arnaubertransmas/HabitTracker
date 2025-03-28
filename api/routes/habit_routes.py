@@ -89,8 +89,11 @@ def create_habit():
         days = data.get("days", "")
         time_day = data.get("time_day", "").strip()
         type_habit = data.get("type", "").strip()
+        completed = data.get("completed", "")
 
-        created = create_new_habit(name, frequency, days, time_day, type_habit, email)
+        created = create_new_habit(
+            name, frequency, days, time_day, type_habit, completed, email
+        )
 
         if created.get("success"):
             return jsonify(created), 201

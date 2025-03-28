@@ -2,7 +2,9 @@ from models.habit_model import Habit
 from utils.logger import log_error
 
 
-def create_new_habit(name, frequency, days, time_day, type_habit, user_email):
+def create_new_habit(
+    name, frequency, days, time_day, type_habit, completed, user_email
+):
     try:
         # validation of data sent from frontend
         if not all([name, frequency, time_day, type_habit, user_email]):
@@ -13,6 +15,9 @@ def create_new_habit(name, frequency, days, time_day, type_habit, user_email):
 
         if type(days) != list:
             return {"success": False, "message": "Invalid format for days param"}
+
+        if type(completed) != bool:
+            return {"success": False, "message": "Invalid format for completed param"}
 
         if Habit.get_habit(name, user_email):
             return {"success": False, "message": "Habit already exists"}
@@ -35,6 +40,7 @@ def create_new_habit(name, frequency, days, time_day, type_habit, user_email):
             start_time,
             end_time,
             type_habit,
+            completed,
             user_email,
         )
         habit.save_habit()
@@ -42,5 +48,6 @@ def create_new_habit(name, frequency, days, time_day, type_habit, user_email):
         return {"success": True, "message": "Habit saved correctly"}
 
     except Exception as e:
+        print(e, "from service")
         log_error(f"Habit registration {e}")
         return {"success": False, "message": f"Server error: {str(e)}"}

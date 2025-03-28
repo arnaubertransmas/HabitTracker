@@ -17,6 +17,7 @@ class Habit:
         start_time,
         end_time,
         type_habit,
+        completed,
         user_email,
     ):
         self.name = name
@@ -26,6 +27,7 @@ class Habit:
         self.start_time = start_time
         self.end_time = end_time
         self.type = type_habit
+        self.completed = completed
         self.user_email = user_email
 
     def save_habit(self):
@@ -39,6 +41,7 @@ class Habit:
                     "start_time": self.start_time,
                     "end_time": self.end_time,
                     "type": self.type,
+                    "completed": self.completed,
                     "user_email": self.user_email,
                 }
             )
