@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Button, Container, Row, Col, Table } from 'react-bootstrap';
+import { Button, Container, Row, Col, Table, Spinner } from 'react-bootstrap';
 import Alert from 'react-bootstrap/Alert';
 import handleDelete from '../../services/deleteHabit';
 import DetailHabit from './DetailHabit';
 import HabitInterface from '../../types/habit';
+import '../../assets/css/spinner.css';
 
 interface ShowHabitsProps {
   habits: HabitInterface[];
@@ -54,7 +55,9 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
         <Row className="mt-5">
           <Col md={10} className="offset-md-2 ml-5">
             {loading ? (
-              <Alert variant="info">Loading {habitType}...</Alert>
+              <div className="spinner-container">
+                <Spinner animation="border" role="status" />
+              </div>
             ) : error ? (
               <Alert variant="danger">{error}</Alert>
             ) : habits.length === 0 ? (

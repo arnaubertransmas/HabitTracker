@@ -5,11 +5,12 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import axiosInstance from '../../config/axiosConfig';
-import '../../assets/css/calendar.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import CreateHabit from './CreateHabit';
 import DetailHabit from './DetailHabit';
 import HabitInterface from '../../types/habit';
+import '../../assets/css/calendar.css';
+import '../../assets/css/spinner.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Calendar: React.FC = () => {
   const [events, setEvents] = useState<any[]>([]);
@@ -68,10 +69,8 @@ const Calendar: React.FC = () => {
       <Row>
         <Col xs={12}>
           {loading ? (
-            <div className="d-flex justify-content-center align-items-center">
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </Spinner>
+            <div className="spinner-container">
+              <Spinner animation="border" role="status" />
             </div>
           ) : error ? (
             <Alert variant="danger">{error}</Alert>
