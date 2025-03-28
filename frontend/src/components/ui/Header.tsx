@@ -55,7 +55,7 @@ const Header = () => {
                 className="px-4 py-2 rounded"
                 style={loginStyle}
                 onMouseEnter={(e) => {
-                  const target = e.target as HTMLAnchorElement; // Twithout that cannot declare style
+                  const target = e.target as HTMLAnchorElement; // Without that cannot declare style
                   target.style.color = loginHoverStyle.color;
                 }}
                 onMouseLeave={(e) => {
@@ -92,11 +92,11 @@ const Header = () => {
                 className="px-4 py-2 rounded"
                 style={loginStyle}
                 onMouseEnter={(e) => {
-                  const target = e.target as HTMLAnchorElement; // Type assertion here
+                  const target = e.target as HTMLAnchorElement;
                   target.style.color = '#007bff';
                 }}
                 onMouseLeave={(e) => {
-                  const target = e.target as HTMLAnchorElement; // Type assertion here
+                  const target = e.target as HTMLAnchorElement;
                   target.style.color = 'black';
                 }}
               >
@@ -108,11 +108,11 @@ const Header = () => {
                 className="fw-semibold px-4 py-2 rounded ms-2"
                 style={registerStyle}
                 onMouseEnter={(e) => {
-                  const target = e.target as HTMLAnchorElement; // Type assertion here
+                  const target = e.target as HTMLAnchorElement;
                   target.style.backgroundColor = '#0039CB';
                 }}
                 onMouseLeave={(e) => {
-                  const target = e.target as HTMLAnchorElement; // Type assertion here
+                  const target = e.target as HTMLAnchorElement;
                   target.style.backgroundColor = '#2962FF';
                 }}
               >

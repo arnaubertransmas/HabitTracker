@@ -63,6 +63,5 @@ def login_user(email, password):
         }
 
     except Exception as e:
-        # print(f"Login error: {str(e)}")
         log_error(f"Login error: {e}")
         return {"success": False, "message": f"Server error: {str(e)}"}

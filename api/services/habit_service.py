@@ -50,6 +50,5 @@ def create_new_habit(
         return {"success": True, "message": "Habit saved correctly"}
 
     except Exception as e:
-        print(e, "from service")
         log_error(f"Habit registration {e}")
         return {"success": False, "message": f"Server error: {str(e)}"}
