@@ -22,11 +22,15 @@ const Habits = ({ habitType }: { habitType: 'Habit' | 'Non-negotiable' }) => {
         `/habit/get_habits?type=${habitType}`,
       );
       const result = response?.data?.habits || [];
+
+      if (!result.success) {
+        setError('Could not load habits');
+      }
       setHabits(result);
       setLoading(false);
     } catch (error) {
       console.log('Error:', error);
-      setError('Could not load habits');
+      setError('Error ocurred');
       setLoading(false);
     }
   }, [habitType]);

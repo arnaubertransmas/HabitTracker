@@ -54,6 +54,28 @@ def get_habits():
         )
 
 
+@habit_routes.route("/habit_detail/<habit_name>", methods=["GET"])
+@jwt_required()
+def get_habit_detail(habit_name):
+    """Get the detail of specific habit"""
+    try:
+        email = get_identity()
+        habit = habit_name
+
+        habit_detailed = Habit.get_habit(habit, email)
+
+        if habit_detailed:
+            return jsonify(habit_detailed), 201
+        else:
+            return jsonify("Habit not found"), 404
+
+    except Exception as e:
+        return (
+            jsonify({"success": False, "message": f"Error consulting habit: {str(e)}"}),
+            500,
+        )
+
+
 @habit_routes.route("/create_habit", methods=["POST"])
 @jwt_required()
 def create_habit():

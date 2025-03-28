@@ -64,10 +64,10 @@ class Habit:
             raise e
 
     @staticmethod
-    def get_habit(name, user_email):
+    def get_habit(habit_name, user_email):
         try:
             habit = habits_collection.find_one(
-                {"name": name, "user_email": user_email}, {"_id": 0}
+                {"name": habit_name, "user_email": user_email}, {"_id": 0}
             )
             return habit if habit else None
         except Exception as e:
