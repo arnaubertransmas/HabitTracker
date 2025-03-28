@@ -14,10 +14,29 @@ def create_new_habit(name, frequency, days, time_day, type_habit, user_email):
         if type(days) != list:
             return {"success": False, "message": "Invalid format for days param"}
 
-        if Habit.get_habit("name", name):
+        if Habit.get_habit(name, user_email):
             return {"success": False, "message": "Habit already exists"}
 
-        habit = Habit(name, frequency, days, time_day, type_habit, user_email)
+        time_map = {
+            "morning": ("07:00", "12:00"),
+            "afternoon": ("12:00", "18:00"),
+            "night": ("18:00", "22:00"),
+        }
+
+        if time_day.lower() not in time_map:
+            return {"success": False, "message": "Invalid time of day"}
+
+        start_time, end_time = time_map[time_day.lower()]
+        habit = Habit(
+            name,
+            frequency,
+            days,
+            time_day,
+            start_time,
+            end_time,
+            type_habit,
+            user_email,
+        )
         habit.save_habit()
 
         return {"success": True, "message": "Habit saved correctly"}

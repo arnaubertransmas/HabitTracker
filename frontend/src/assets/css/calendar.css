@@ -1,0 +1,141 @@
+/* general container */
+.calendar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: var(--light);
+}
+
+/* intern container */
+.calendar-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  background-color: var(--white);
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  padding: 20px;
+}
+
+/* calendar table */
+.fc {
+  font-family: 'Open Sans';
+}
+
+/* days, num of month... */
+.fc-daygrid-day-number,
+.fc-col-header-cell a {
+  color: var(--dark) !important;
+  text-decoration: none !important;
+  font-weight: bold;
+}
+
+/* superior line of schedule */
+.fc-header-toolbar {
+  padding: 15px;
+  background-color: var(--light);
+  border-bottom: 2px solid var(--secondary);
+  border-radius: 8px 8px 0 0;
+}
+
+/* butons to change view + prev/next */
+.fc-dayGridMonth-button,
+.fc-timeGridWeek-button,
+.fc-timeGridDay-button,
+.fc-prev-button,
+.fc-next-button {
+  background-color: var(--secondary);
+  color: var(--white);
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+}
+
+/* active button */
+.fc-header-toolbar .fc-button-active {
+  filter: brightness(0.9);
+  border: 2px solid var(--dark);
+}
+
+/* button hover view */
+.fc-header-toolbar .fc-button:hover {
+  filter: brightness(1.1);
+}
+
+/* past days color */
+.fc-daygrid-day.past-day .fc-daygrid-day-number {
+  color: var(--secondary) !important;
+}
+
+/* future days color */
+.fc-daygrid-day.future-day .fc-daygrid-day-number {
+  color: var(--dark) !important;
+}
+
+/* actual day */
+.fc-day-today .fc-daygrid-day-number {
+  color: var(--light) !important;
+  background-color: var(--danger);
+  border-radius: 20px;
+}
+
+/* habit events */
+.habit-event {
+  background-color: var(--info);
+  border-left: 5px solid var(--primary);
+  color: var(--dark);
+}
+
+/* non-negotiable events */
+.non-negotiable-event {
+  background-color: #66d166 !important;
+  border-left: 5px solid var(--success);
+  color: var(--dark);
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+
+/* general event styles */
+.fc-event {
+  flex: 1;
+  cursor: pointer;
+  border-radius: 6px;
+  opacity: 0.9;
+  transition:
+    opacity 0.3s ease,
+    transform 0.2s ease;
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* event hover */
+.fc-event:hover {
+  transform: scale(1.03);
+  opacity: 1;
+  background-color: var(--light) !important;
+}
+
+/* event hover */
+.fc-event:hover {
+  transform: scale(1.03);
+}
+
+/* responsiveness */
+@media (max-width: 768px) {
+  .calendar-container {
+    padding: 10px;
+  }
+
+  .fc-header-toolbar {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .fc-header-toolbar .fc-toolbar-chunk {
+    margin-bottom: 10px;
+  }
+}

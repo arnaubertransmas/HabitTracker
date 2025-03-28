@@ -5,6 +5,11 @@
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
+    "@fullcalendar/timegrid": "^6.1.15",
     "@hello-pangea/dnd": "^18.0.1",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
@@ -14,7 +19,6 @@
     "js-cookie": "^3.0.5",
     "postcss": "^8.5.1",
     "react": "^18.2.0",
-    "react-big-calendar": "^1.18.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.54.2",
@@ -61,9 +65,9 @@
     "@types/react": "^18.0.0",
     "@types/react-big-calendar": "^1.16.1",
     "@types/react-dom": "^18.0.0",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-prettier": "^5.2.3",
-    "prettier": "^3.5.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-prettier": "^5.2.5",
+    "prettier": "^3.5.3",
     "sass": "^1.86.0"
   }
 }

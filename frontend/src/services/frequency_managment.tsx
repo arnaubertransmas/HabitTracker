@@ -17,21 +17,10 @@ const Frequency: React.FC<HabitFrequency> = ({ methods }) => {
 
   const frequency = watch('frequency');
 
-  // avoid useEffect to execut innecessarly with useMemo
-  const days_week = useMemo(
-    () => [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday',
-    ],
-    [],
-  );
+  // weekdays index
+  const days_week = useMemo(() => [0, 1, 2, 3, 4, 5, 6], []);
 
-  // all days when 'daily' is selected
+  // when daily is selected -->
   useEffect(() => {
     if (frequency === 'daily') {
       setValue('daily', days_week);
@@ -57,14 +46,14 @@ const Frequency: React.FC<HabitFrequency> = ({ methods }) => {
         )}
       </Form.Group>
 
-      {/* cases for different freqeuncies */}
       {frequency === 'daily' && (
         <Form.Group className="mb-3">
           <Form.Label>Selected Days:</Form.Label>
           <div className="d-flex flex-wrap gap-2">
             {days_week.map((day) => (
               <Button key={day} variant="primary" disabled>
-                {day.substring(0, 3)}
+                {/* show days and save index */}
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day]}
               </Button>
             ))}
           </div>
@@ -79,13 +68,12 @@ const Frequency: React.FC<HabitFrequency> = ({ methods }) => {
               <Button
                 key={day}
                 variant={
-                  // mark as selected
                   watch('custom_day') === day ? 'primary' : 'outline-secondary'
                 }
-                // set real value
+                // set value
                 onClick={() => setValue('custom_day', day)}
               >
-                {day.substring(0, 3)}
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day]}
               </Button>
             ))}
           </div>
@@ -112,14 +100,14 @@ const Frequency: React.FC<HabitFrequency> = ({ methods }) => {
                   if (selectedDays.includes(day)) {
                     setValue(
                       'custom_days',
-                      selectedDays.filter((d: string) => d !== day),
+                      selectedDays.filter((d: number) => d !== day),
                     );
                   } else {
                     setValue('custom_days', [...selectedDays, day]);
                   }
                 }}
               >
-                {day.substring(0, 3)}
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day]}
               </Button>
             ))}
           </div>

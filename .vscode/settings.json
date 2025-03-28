@@ -5,11 +5,10 @@
         "javascript",
         "javascriptreact"
     ],
-
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": "explicit"
     },
-    
-    "editor.formatOnType": true, 
+    "editor.formatOnType": true,
     "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

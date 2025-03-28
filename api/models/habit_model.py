@@ -8,16 +8,27 @@ habits_collection = db["habits"]
 
 class Habit:
 
-    def __init__(self, name, frequency, days, time_day, type_habit, user_email):
+    def __init__(
+        self,
+        name,
+        frequency,
+        days,
+        time_day,
+        start_time,
+        end_time,
+        type_habit,
+        user_email,
+    ):
         self.name = name
         self.frequency = frequency
         self.days = days
         self.time_day = time_day
+        self.start_time = start_time
+        self.end_time = end_time
         self.type = type_habit
         self.user_email = user_email
 
     def save_habit(self):
-        print("Inserting habit:", self.__dict__)
         try:
             result = habits_collection.insert_one(
                 {
@@ -25,6 +36,8 @@ class Habit:
                     "frequency": self.frequency,
                     "days": self.days,
                     "time_day": self.time_day,
+                    "start_time": self.start_time,
+                    "end_time": self.end_time,
                     "type": self.type,
                     "user_email": self.user_email,
                 }
@@ -51,12 +64,14 @@ class Habit:
             raise e
 
     @staticmethod
-    def get_habit(param, value):
+    def get_habit(name, user_email):
         try:
-            habit = list(habits_collection.find({param: value}))
-            return habit
+            habit = habits_collection.find_one(
+                {"name": name, "user_email": user_email}, {"_id": 0}
+            )
+            return habit if habit else None
         except Exception as e:
-            return e
+            raise e
 
     @staticmethod
     def delete_habit(name):
