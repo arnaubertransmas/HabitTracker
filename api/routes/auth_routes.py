@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, create_access_token
 from services.auth_service import login_user, registrate_user
 from flask_login import LoginManager
-from models.user_model import User
+from models.auth_model import User
 
 # * register Blueprint auth
 auth_routes = Blueprint("auth", __name__)
@@ -25,9 +25,11 @@ def signup():
         email = data.get("email", "").strip()
         password = data.get("password", "").strip()
         password2 = data.get("password2", "").strip()
+        streak = 0
 
         # registrate user
-        registered = registrate_user(name, surname, email, password, password2)
+        registered = registrate_user(name, surname, email, password, password2, streak)
+        print(registered)
 
         if registered.get("success"):
             return jsonify(registered), 201

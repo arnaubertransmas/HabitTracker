@@ -9,11 +9,12 @@ users_collection = db["users"]
 
 class User:
 
-    def __init__(self, name, surname, email, password):
+    def __init__(self, name, surname, email, password, streak):
         self.name = name
         self.surname = surname
         self.email = email
         self.password = generate_password_hash(password)
+        self.streak = streak
         # self.id = None
 
     def save(self):
@@ -24,6 +25,7 @@ class User:
                     "surname": self.surname,
                     "email": self.email,
                     "password": self.password,
+                    "streak": self.streak,
                 }
             )
 

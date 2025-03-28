@@ -7,7 +7,7 @@ def create_new_habit(
 ):
     try:
         # validation of data sent from frontend
-        if not all([name, frequency, time_day, type_habit, user_email]):
+        if not all([name, frequency, time_day, type_habit, completed, user_email]):
             return {"success": False, "message": "All fields are required"}
 
         if type(name) != str:

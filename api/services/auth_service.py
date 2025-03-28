@@ -1,16 +1,16 @@
-from models.user_model import User
+from models.auth_model import User
 from utils.logger import log_error
 from utils.validators import validate_email, validate_password, is_string
 from werkzeug.security import check_password_hash
 
 
-def registrate_user(name, surname, email, password, password2):
+def registrate_user(name, surname, email, password, password2, streak):
     try:
 
         if not is_string(name, surname):
             return {"success": False, "message": "Can't contain numbers"}
 
-        if not all([name, surname, email, password, password2]):
+        if not all([name, surname, email, password, password2] or streak is None):
             return {"success": False, "message": "All fields are required"}
 
         if not validate_email(email):
@@ -26,7 +26,10 @@ def registrate_user(name, surname, email, password, password2):
         if User.get_user("email", email):
             return {"success": False, "message": "This address is already registered!"}
 
-        user = User(name, surname, email, password)
+        if type(streak) != int:
+            return {"success": False, "message": "Invalid streak type"}
+
+        user = User(name, surname, email, password, streak)
         user.save()
 
         return {"success": True, "message": "User registered correctly"}
