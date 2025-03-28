@@ -11,6 +11,7 @@
 .calendar-wrapper {
   width: 100%;
   max-width: 1200px;
+  margin-left: 220px;
   background-color: var(--white);
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -29,6 +30,11 @@
   color: var(--dark) !important;
   text-decoration: none !important;
   font-weight: bold;
+}
+
+/* cursor pointer on day hover */
+.fc-daygrid-day:hover {
+  cursor: pointer;
 }
 
 /* superior line of schedule */
@@ -90,6 +96,10 @@
   color: var(--dark);
 }
 
+.event-title {
+  font-weight: bold;
+}
+
 /* non-negotiable events */
 .non-negotiable-event {
   background-color: #66d166 !important;
@@ -102,6 +112,14 @@
 
 /* general event styles */
 .fc-event {
+  width: 90% !important;
+  margin: 0 auto !important;
+  padding: 5px !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  border-radius: 4px !important;
+
   flex: 1;
   cursor: pointer;
   border-radius: 6px;
@@ -109,7 +127,7 @@
   transition:
     opacity 0.3s ease,
     transform 0.2s ease;
-  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 4px 6px rgba(58, 38, 38, 0.1);
 }
 
 /* event hover */
@@ -128,6 +146,10 @@
 @media (max-width: 768px) {
   .calendar-container {
     padding: 10px;
+  }
+
+  .calendar-wrapper {
+    margin-left: 0;
   }
 
   .fc-header-toolbar {

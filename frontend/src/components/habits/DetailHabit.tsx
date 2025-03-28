@@ -1,19 +1,10 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { Modal, Container, Row, Col, Badge } from 'react-bootstrap';
 import axiosInstance from '../../config/axiosConfig';
-
-interface Habit {
-  name: string;
-  type: 'Habit' | 'Non-negotiable';
-  frequency: string;
-  days: string;
-  time_day: string;
-  start_time: string;
-  end_time: string;
-  completed?: boolean;
-}
+import HabitInterface from '../../types/habit';
 
 interface DetailHabitProps {
+  // habitDetail props
   habitName: string;
   show: boolean;
   handleClose: () => void;
@@ -24,7 +15,7 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
   show,
   handleClose,
 }) => {
-  const [habit, setHabit] = useState<Habit | null>(null);
+  const [habit, setHabit] = useState<HabitInterface | null>(null);
 
   // get habit data
   const get_habit = useCallback(async () => {
@@ -37,6 +28,19 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
       console.error('Error fetching habit details:', error);
     }
   }, [habitName]);
+
+  const daysIndToFN = (days: number[]) => {
+    const dayNames = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ];
+    return days.map((dayIndex) => dayNames[dayIndex]).join(', ');
+  };
 
   useEffect(() => {
     if (show) {
@@ -95,7 +99,7 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
                 <Col md={4} className="fw-bold">
                   Frequency:
                 </Col>
-                <Col>{habit.days}</Col>
+                <Col>{habit.days ? daysIndToFN(habit.days) : '-'}</Col>
               </Row>
             )}
 

@@ -29,7 +29,6 @@ def signup():
 
         # registrate user
         registered = registrate_user(name, surname, email, password, password2, streak)
-        print(registered)
 
         if registered.get("success"):
             return jsonify(registered), 201

@@ -6,34 +6,43 @@ import { Form } from 'react-bootstrap';
 import Input from '../ui/Input';
 import axiosInstance from '../../config/axiosConfig';
 import Frequency from '../../services/frequencyManagment';
+import HabitInterface from '../../types/habit';
 
 interface CreateHabitProps {
   show: boolean;
   handleClose: () => void;
   loadHabits: () => Promise<void>;
-  habitType: 'Habit' | 'Non-negotiable';
+  defaultType?: 'Habit' | 'Non-negotiable';
 }
 
 const CreateHabit: React.FC<CreateHabitProps> = ({
   show,
   handleClose,
-  habitType,
+  defaultType,
   loadHabits,
 }) => {
-  const methods = useForm({ mode: 'onChange' });
+  const methods = useForm<HabitInterface>({
+    mode: 'onChange',
+    defaultValues: {
+      type: defaultType || '',
+    },
+  });
   const {
     handleSubmit,
     register,
     formState: { errors },
     reset,
+    setValue,
   } = methods;
 
   useEffect(() => {
     if (!show) {
       // autoReset when modal close
       reset();
+    } else if (defaultType) {
+      setValue('type', defaultType);
     }
-  }, [show, reset]);
+  }, [show, reset, defaultType, setValue]);
 
   const onSubmit = async (data: any) => {
     let days: string[] = [];
@@ -53,11 +62,12 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
         frequency: data.frequency,
         days: days,
         time_day: data.time_day,
-        type: habitType,
+        type: data.type,
         completed: false,
       });
 
       if (!response.data.success) {
+        console.error('Habit creation failed', response.data.message);
         return;
       }
 
@@ -68,17 +78,17 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
       console.error('Error creating habit:', error);
     }
   };
-
+  const habitType = methods.watch('type');
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Create {habitType}</Modal.Title>
+        <Modal.Title>Create {defaultType}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <FormProvider {...methods}>
           {/* param data is passed automatically */}
           <Form onSubmit={handleSubmit(onSubmit)}>
-            <Form.Label>{habitType} name</Form.Label>
+            <Form.Label>{defaultType} Name</Form.Label>
             <Input
               type="text"
               id="name"
@@ -114,6 +124,33 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
                 <p className="text-danger">
                   {(errors.time_day as any).message}
                 </p>
+              )}
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              {/* if habit specified disabled input */}
+              <Form.Label>Type</Form.Label>
+              {defaultType ? (
+                <Form.Control
+                  type="text"
+                  value={habitType}
+                  disabled
+                  className="form-control"
+                />
+              ) : (
+                // else select for habitType
+                <Form.Select
+                  id="type"
+                  {...register('type', { required: 'Field is required' })}
+                  className="form-control"
+                >
+                  <option value="">Select Type</option>
+                  <option value="Habit">Habit</option>
+                  <option value="Non-negotiable">Non-negotiable</option>
+                </Form.Select>
+              )}
+              {errors.type && (
+                <p className="text-danger">{(errors.type as any).message}</p>
               )}
             </Form.Group>
 

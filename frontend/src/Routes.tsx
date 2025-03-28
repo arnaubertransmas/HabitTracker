@@ -59,7 +59,7 @@ const AppRoutes = () => {
               <CreateHabit
                 show={showModal}
                 handleClose={handleCloseModal}
-                habitType="Habit"
+                defaultType="Habit"
                 loadHabits={async () => {}}
               />
             </ProtectedRoute>
@@ -80,7 +80,7 @@ const AppRoutes = () => {
               <CreateHabit
                 show={showModal}
                 handleClose={handleCloseModal}
-                habitType="Non-negotiable"
+                defaultType="Non-negotiable"
                 loadHabits={async () => {}}
               />
             </ProtectedRoute>

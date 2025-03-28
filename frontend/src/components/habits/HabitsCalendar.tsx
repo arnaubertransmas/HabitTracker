@@ -1,69 +1,46 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Container, Row, Col, Spinner, Alert } from 'react-bootstrap';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import axiosInstance from '../../config/axiosConfig';
 import '../../assets/css/calendar.css';
-
-// Habit and CalendarEvent interfaces remain the same
-interface Habit {
-  // structure of db
-  _id: string;
-  name: string;
-  type: 'Habit' | 'Non-negotiable';
-  days: string[];
-  time_day: string;
-  start_time: string;
-  end_time: string;
-  user_email: string;
-}
-
-interface CalendarEvent {
-  // structure of calendar
-  title: string;
-  daysOfWeek: number[];
-  startTime: string;
-  endTime: string;
-  type: string;
-}
+import 'bootstrap/dist/css/bootstrap.min.css';
+import CreateHabit from './CreateHabit';
+import DetailHabit from './DetailHabit';
+import HabitInterface from '../../types/habit';
 
 const Calendar: React.FC = () => {
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
+  const [showModal, setShowModal] = useState(false);
+  const [selectedHabit, setSelectedHabit] = useState<string | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
 
   const loadHabits = useCallback(async () => {
-    // day name to index day
-    const dayNameToIndex = {
-      Sunday: 0,
-      Monday: 1,
-      Tuesday: 2,
-      Wednesday: 3,
-      Thursday: 4,
-      Friday: 5,
-      Saturday: 6,
-    };
-
     try {
       setLoading(true);
       const response = await axiosInstance.get('/habit/get_habits');
 
       if (response.data.success) {
-        const habits: Habit[] = response.data.habits;
+        const habits: HabitInterface[] = response.data.habits;
 
-        // formattedEvent type = CalendarEvent
-        const formattedEvents: CalendarEvent[] = habits.map((habit) => ({
-          title: habit.name,
-          daysOfWeek: habit.days.map(
-            // transform day to index if day in dayNameToIndex
-            (day) => dayNameToIndex[day as keyof typeof dayNameToIndex],
-          ),
-          startTime: habit.start_time,
-          endTime: habit.end_time,
-          type: habit.type,
-        }));
+        // transform habits to events
+        const formattedEvents = habits.map((habit) => {
+          return {
+            title: habit.name,
+            daysOfWeek: habit.days,
+            allDay: false,
+            extendedProps: {
+              type: habit.type || 'Habit',
+              frequency: habit.frequency,
+            },
+          };
+        });
 
+        // save state of habits as events
         setEvents(formattedEvents);
       }
     } catch (error) {
@@ -78,99 +55,114 @@ const Calendar: React.FC = () => {
     loadHabits();
   }, [loadHabits]);
 
+  // modal create habit + detail
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+  const handleShowDetail = (habitName: string) => {
+    setSelectedHabit(habitName);
+    setShowDetailModal(true);
+  };
+
   return (
-    <div
-      style={{
-        width: '100%',
-        maxWidth: '1200px',
-        margin: '0 0 0 225px',
-        padding: '20px',
-      }}
-    >
-      {loading ? (
-        <p>Loading...</p>
-      ) : error ? (
-        <p style={{ color: 'red' }}>{error}</p>
-      ) : (
-        <div
-          style={{
-            width: '100%',
-            height: 'auto',
-            minHeight: '600px',
-          }}
-        >
-          <FullCalendar
-            // plugins for the calendar, view&dragNdrop
-            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView="dayGridMonth"
-            height="auto"
-            // superior toolbar
-            headerToolbar={{
-              left: 'prev,next',
-              center: 'title',
-              right: 'dayGridMonth,dayGridWeek,timeGridDay',
-            }}
-            // define views of calendar
-            views={{
-              dayGridMonth: {
-                type: 'dayGridMonth',
-                duration: { months: 1 },
-              },
-              dayGridWeek: {
-                type: 'dayGridWeek',
-                duration: { week: 1 },
-              },
-              timeGridDay: {
-                type: 'timeGridDay',
-                duration: { days: 1 },
-              },
-            }}
-            dayCellClassNames={(info_cell) => {
-              const today = new Date();
-              const todayWithoutTime = new Date(
-                today.getFullYear(),
-                today.getMonth(),
-                today.getDate(),
-              );
+    <Container fluid className="px-lg-5">
+      <Row>
+        <Col xs={12}>
+          {loading ? (
+            <div className="d-flex justify-content-center align-items-center">
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            </div>
+          ) : error ? (
+            <Alert variant="danger">{error}</Alert>
+          ) : (
+            <div className="calendar-wrapper">
+              <FullCalendar
+                // plugins for fullCalendar
+                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                initialView={'dayGridMonth'}
+                height="auto"
+                headerToolbar={{
+                  left: 'prev,next',
+                  center: 'title',
+                  right: 'dayGridMonth,dayGridWeek,timeGridDay',
+                }}
+                views={{
+                  // calendar views
+                  dayGridMonth: {
+                    type: 'dayGridMonth',
+                    duration: { months: 1 },
+                  },
+                  dayGridWeek: {
+                    type: 'dayGridWeek',
+                    duration: { week: 1 },
+                  },
+                  timeGridDay: {
+                    type: 'timeGridDay',
+                    duration: { days: 1 },
+                  },
+                }}
+                dayCellClassNames={(info_cell) => {
+                  // assign css classes to calendar days
+                  const today = new Date();
+                  const todayWithoutTime = new Date(
+                    today.getFullYear(),
+                    today.getMonth(),
+                    today.getDate(),
+                  );
 
-              const cellDate = new Date(info_cell.date);
+                  const cellDate = new Date(info_cell.date);
 
-              if (cellDate < todayWithoutTime) {
-                return ['past-day'];
-              }
+                  if (cellDate < todayWithoutTime) {
+                    return ['past-day'];
+                  }
 
-              if (cellDate.getTime() === todayWithoutTime.getTime()) {
-                return ['highlight-today'];
-              }
+                  if (cellDate.getTime() === todayWithoutTime.getTime()) {
+                    return ['highlight-today'];
+                  }
 
-              return [];
-            }}
-            // habits defined
-            events={events}
-            eventClassNames={(eventInfo) => {
-              return eventInfo.event.extendedProps.type === 'Habit'
-                ? ['habit-event']
-                : ['non-negotiable-event'];
-            }}
-            eventConstraint={{
-              startTime: '00:00',
-              endTime: '24:00',
-            }}
-            eventContent={(eventInfo) => {
-              return {
-                html: `<span>${eventInfo.event.title}</span>`,
-              };
-            }}
-            dateClick={(info) => {
-              console.log('Date clicked:', info.dateStr);
-            }}
-            eventClick={(info) => {
-              console.log('Event clicked:', info.event.title);
-            }}
+                  return [];
+                }}
+                // show only events at the calendar
+                events={events}
+                eventClassNames={(eventInfo) => {
+                  // differiencete from diff types
+                  return eventInfo.event.extendedProps.type === 'Non-negotiable'
+                    ? ['non-negotiable-event']
+                    : ['habit-event'];
+                }}
+                // text shown at event card
+                eventContent={(eventInfo) => {
+                  return {
+                    html: ` <span class="event-title">${eventInfo.event.title}</span> `,
+                  };
+                }}
+                dateClick={() => {
+                  handleShowModal();
+                }}
+                eventClick={(info) => {
+                  handleShowDetail(info.event.title);
+                }}
+              />
+            </div>
+          )}
+
+          {/* Create + Detail habit props */}
+          <CreateHabit
+            show={showModal}
+            handleClose={handleCloseModal}
+            loadHabits={loadHabits}
           />
-        </div>
-      )}
-    </div>
+          {selectedHabit && (
+            <DetailHabit
+              habitName={selectedHabit}
+              show={showDetailModal}
+              handleClose={() => setShowDetailModal(false)}
+            />
+          )}
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

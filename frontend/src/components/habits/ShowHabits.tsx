@@ -3,13 +3,10 @@ import { Button, Container, Row, Col, Table } from 'react-bootstrap';
 import Alert from 'react-bootstrap/Alert';
 import handleDelete from '../../services/deleteHabit';
 import DetailHabit from './DetailHabit';
-
-interface Habit {
-  name: string;
-}
+import HabitInterface from '../../types/habit';
 
 interface ShowHabitsProps {
-  habits: Habit[];
+  habits: HabitInterface[];
   loading: boolean;
   error: string | null;
   handleShowModal: () => void;
@@ -27,11 +24,13 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
   habitType,
 }) => {
   // state for managing modals
-  const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
+  const [selectedHabit, setSelectedHabit] = useState<HabitInterface | null>(
+    null,
+  );
   const [showDetailModal, setShowDetailModal] = useState(false);
 
   // Handler for showing detail modal
-  const handleShowDetail = (habit: Habit) => {
+  const handleShowDetail = (habit: HabitInterface) => {
     setSelectedHabit(habit);
     setShowDetailModal(true);
   };
@@ -40,7 +39,7 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
     <>
       <Container fluid className="p-3">
         <Row className="mt-5">
-          <Col md={6} className="offset-md-1 d-flex justify-content-center p-3">
+          <Col md={6} className="offset-md-0 d-flex justify-content-center p-3">
             <Button
               variant="primary"
               type="button"
@@ -53,7 +52,7 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
           </Col>
         </Row>
         <Row className="mt-5">
-          <Col md={10} className="offset-md-3 ml-5">
+          <Col md={10} className="offset-md-2 ml-5">
             {loading ? (
               <Alert variant="info">Loading {habitType}...</Alert>
             ) : error ? (
@@ -104,7 +103,7 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
         </Row>
       </Container>
 
-      {/* Detail Modal */}
+      {/* detail modal  */}
       {selectedHabit && (
         <DetailHabit
           habitName={selectedHabit?.name}

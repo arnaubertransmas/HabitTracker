@@ -58,7 +58,7 @@ const Habits = ({ habitType }: { habitType: 'Habit' | 'Non-negotiable' }) => {
       <CreateHabit
         show={showModal}
         handleClose={handleCloseModal}
-        habitType={habitType}
+        defaultType={habitType}
         loadHabits={loadHabits}
       />
     </>
