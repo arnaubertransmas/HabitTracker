@@ -1,7 +1,7 @@
-import { useState, useEffect, ReactNode } from 'react';
+import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Route, Routes, BrowserRouter, useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
+import { Route, Routes, BrowserRouter } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -11,23 +11,6 @@ import AboutUs from './pages/AboutUs';
 import Habits from './pages/Habits';
 import CreateHabit from './components/habits/CreateHabit';
 import Schedule from './pages/Schedule';
-
-interface ProtectedRouteProps {
-  children: ReactNode;
-}
-
-function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const redirect = useNavigate();
-  const isAuthenticated = Cookies.get('cookie_access_token');
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      redirect('/signin');
-    }
-  }, [isAuthenticated, redirect]);
-
-  return isAuthenticated ? <>{children}</> : null;
-}
 
 const AppRoutes = () => {
   const [showModal, setShowModal] = useState(false);

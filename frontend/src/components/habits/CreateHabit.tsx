@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import { Form } from 'react-bootstrap';
 import Input from '../ui/Input';
 import axiosInstance from '../../config/axiosConfig';
-import Frequency from '../../services/frequency_managment';
+import Frequency from '../../services/frequencyManagment';
 
 interface CreateHabitProps {
   show: boolean;
