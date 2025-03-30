@@ -4,15 +4,24 @@ import Header from '../components/ui/Header';
 import Sidebar from '../components/ui/Sidebar';
 import CreateHabit from '../components/habits/CreateHabit';
 import ShowHabits from '../components/habits/ShowHabits';
+import HabitInterface from '../types/habit';
 
 const Habits = ({ habitType }: { habitType: 'Habit' | 'Non-negotiable' }) => {
   const [habits, setHabits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [showModal, setShowModal] = useState(false);
+  const [habitToEdit, setHabitToEdit] = useState<HabitInterface | null>(null);
 
   const handleShowModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
+  const handleCloseModal = () => {
+    setHabitToEdit(null);
+    setShowModal(false);
+  };
+  const handleEdit = (habit: HabitInterface) => {
+    setHabitToEdit(habit);
+    setShowModal(true);
+  };
 
   const loadHabits = useCallback(async () => {
     try {
@@ -53,6 +62,7 @@ const Habits = ({ habitType }: { habitType: 'Habit' | 'Non-negotiable' }) => {
           handleShowModal={handleShowModal}
           loadHabits={loadHabits}
           habitType={habitType}
+          handleEdit={handleEdit}
         />
       </div>
       <CreateHabit
@@ -60,6 +70,7 @@ const Habits = ({ habitType }: { habitType: 'Habit' | 'Non-negotiable' }) => {
         handleClose={handleCloseModal}
         defaultType={habitType}
         loadHabits={loadHabits}
+        habitToEdit={habitToEdit}
       />
     </>
   );

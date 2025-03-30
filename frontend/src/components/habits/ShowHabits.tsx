@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Button, Container, Row, Col, Table, Spinner } from 'react-bootstrap';
 import Alert from 'react-bootstrap/Alert';
 import handleDelete from '../../services/deleteHabit';
@@ -13,9 +13,9 @@ interface ShowHabitsProps {
   handleShowModal: () => void;
   loadHabits: () => Promise<void>;
   habitType: 'Habit' | 'Non-negotiable';
+  handleEdit: (habit: HabitInterface) => void;
 }
 
-// FC = functinal component
 const ShowHabits: React.FC<ShowHabitsProps> = ({
   habits,
   loading,
@@ -23,6 +23,7 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
   handleShowModal,
   loadHabits,
   habitType,
+  handleEdit,
 }) => {
   // state for managing modals
   const [selectedHabit, setSelectedHabit] = useState<HabitInterface | null>(
@@ -30,11 +31,75 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
   );
   const [showDetailModal, setShowDetailModal] = useState(false);
 
-  // Handler for showing detail modal
-  const handleShowDetail = (habit: HabitInterface) => {
-    setSelectedHabit(habit);
-    setShowDetailModal(true);
-  };
+  // Memoized habits list to prevent unnecessary re-renders
+  const habitList = useMemo(() => {
+    // Handler for showing detail modal
+    const handleShowDetail = (habit: HabitInterface) => {
+      setSelectedHabit(habit);
+      setShowDetailModal(true);
+    };
+    return habits.map((habit, index) => (
+      <tr key={habit.name || index}>
+        <td>{habit.name}</td>
+        <td>
+          <div className="d-flex justify-content-center gap-2">
+            <Button
+              variant="info"
+              size="sm"
+              onClick={() => handleShowDetail(habit)}
+            >
+              Detail
+            </Button>
+            <Button
+              variant="warning"
+              size="sm"
+              onClick={() => handleEdit(habit)}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={() => handleDelete(habit.name, loadHabits)}
+            >
+              Delete
+            </Button>
+          </div>
+        </td>
+      </tr>
+    ));
+  }, [habits, handleEdit, loadHabits]);
+
+  // Memoized table component to prevent unnecessary re-renders
+  const habitsTable = useMemo(() => {
+    if (loading) {
+      return (
+        <div className="spinner-container">
+          <Spinner animation="border" role="status" />
+        </div>
+      );
+    }
+
+    if (error) {
+      return <Alert variant="danger">{error}</Alert>;
+    }
+
+    if (habits.length === 0) {
+      return <Alert variant="success">There are no {habitType} yet</Alert>;
+    }
+
+    return (
+      <Table striped bordered hover className="text-center">
+        <thead>
+          <tr>
+            <th>{habitType}</th>
+            <th>Options</th>
+          </tr>
+        </thead>
+        <tbody>{habitList}</tbody>
+      </Table>
+    );
+  }, [loading, error, habits, habitType, habitList]);
 
   return (
     <>
@@ -54,54 +119,7 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
         </Row>
         <Row className="mt-5">
           <Col md={10} className="offset-md-2 ml-5">
-            {loading ? (
-              <div className="spinner-container">
-                <Spinner animation="border" role="status" />
-              </div>
-            ) : error ? (
-              <Alert variant="danger">{error}</Alert>
-            ) : habits.length === 0 ? (
-              <Alert variant="success">There are no {habitType} yet</Alert>
-            ) : (
-              <Table striped bordered hover className="text-center">
-                <thead>
-                  <tr>
-                    <th>{habitType}</th>
-                    <th>Options</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* map through habits and show them in a table */}
-                  {habits.map((habit, index) => (
-                    <tr key={habit.name || index}>
-                      <td>{habit.name}</td>
-                      <td>
-                        <div className="d-flex justify-content-center gap-2">
-                          <Button
-                            variant="info"
-                            size="sm"
-                            onClick={() => handleShowDetail(habit)}
-                          >
-                            Detail
-                          </Button>
-                          <Button variant="warning" size="sm">
-                            Edit
-                          </Button>
-                          <Button
-                            variant="danger"
-                            size="sm"
-                            // call delete functionallity
-                            onClick={() => handleDelete(habit.name, loadHabits)}
-                          >
-                            Delete
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            )}
+            {habitsTable}
           </Col>
         </Row>
       </Container>

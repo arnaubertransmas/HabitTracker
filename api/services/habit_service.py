@@ -1,5 +1,13 @@
+from hmac import new
 from models.habit_model import Habit
 from utils.logger import log_error
+
+
+TIME_MAP = {
+    "morning": ("07:00", "12:00"),
+    "afternoon": ("12:00", "18:00"),
+    "night": ("18:00", "22:00"),
+}
 
 
 def create_new_habit(
@@ -24,16 +32,10 @@ def create_new_habit(
         if Habit.get_habit(name, user_email):
             return {"success": False, "message": "Habit already exists"}
 
-        time_map = {
-            "morning": ("07:00", "12:00"),
-            "afternoon": ("12:00", "18:00"),
-            "night": ("18:00", "22:00"),
-        }
-
-        if time_day.lower() not in time_map:
+        if time_day.lower() not in TIME_MAP:
             return {"success": False, "message": "Invalid time of day"}
 
-        start_time, end_time = time_map[time_day.lower()]
+        start_time, end_time = TIME_MAP[time_day.lower()]
         habit = Habit(
             name,
             frequency,
@@ -51,4 +53,41 @@ def create_new_habit(
 
     except Exception as e:
         log_error(f"Habit registration {e}")
+        return {"success": False, "message": f"Server error: {str(e)}"}
+
+
+def update_habit_service(habit_name, new_name, frequency, days, time_day, user_email):
+
+    try:
+        # update habit validation
+        habit = Habit.get_habit(habit_name, user_email)
+
+        if not habit:
+            return {"success": False, "message": "Habit doesn't exist"}
+
+        if habit_name != new_name:
+            if Habit.get_habit(new_name, user_email):
+                return {"success": False, "message": "Habit already exists"}
+
+        # dict for updates
+        updates = {}
+
+        # check new changes
+        if habit["name"] != new_name:
+            updates["name"] = new_name
+
+        if habit["frequency"] != frequency:
+            if type(days) == list:
+                updates["frequency"] = frequency
+
+        if habit["time_day"] != time_day:
+            if time_day.lower() in TIME_MAP:
+                updates["time_day"] = time_day
+
+        Habit.update_habit(habit_name, updates)
+
+        return {"success": True, "message": "Habit updated successfully"}
+
+    except Exception as e:
+        log_error(f"Habit update error {e}")
         return {"success": False, "message": f"Server error: {str(e)}"}

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from services.habit_service import create_new_habit
+from services.habit_service import create_new_habit, update_habit_service
 from models.habit_model import Habit
 
 # * register Blueprint auth
@@ -105,6 +105,32 @@ def create_habit():
             jsonify({"success": False, "message": f"Error creating habit: {str(e)}"}),
             500,
         )
+
+
+@habit_routes.route("/update_habit/<string:habit_name>", methods=["PUT"])
+@jwt_required()
+def update_habit(habit_name):
+    """update a habit/non-negotiable"""
+    try:
+        email = get_identity()
+
+        data = request.json
+        new_name = data.get("name", "").strip()
+        frequency = data.get("frequency", "").strip()
+        days = data.get("days", "")
+        time_day = data.get("time_day", "").strip()
+
+        updated = update_habit_service(
+            habit_name, new_name, frequency, days, time_day, email
+        )
+
+        if updated.get("success"):
+            return jsonify(updated), 201
+
+        return jsonify(updated), 400
+
+    except Exception as e:
+        return jsonify({"success": False, "message": f"Error updating habit: {str(e)}"})
 
 
 @habit_routes.route("/delete_habit/<string:name>", methods=["DELETE"])

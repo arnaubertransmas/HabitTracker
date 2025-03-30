@@ -61,6 +61,7 @@ const AppRoutes = () => {
                 handleClose={handleCloseModal}
                 defaultType="Habit"
                 loadHabits={async () => {}}
+                habitToEdit={null}
               />
             </ProtectedRoute>
           }
@@ -82,6 +83,7 @@ const AppRoutes = () => {
                 handleClose={handleCloseModal}
                 defaultType="Non-negotiable"
                 loadHabits={async () => {}}
+                habitToEdit={null}
               />
             </ProtectedRoute>
           }

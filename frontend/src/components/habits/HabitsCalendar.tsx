@@ -151,6 +151,7 @@ const Calendar: React.FC = () => {
             show={showModal}
             handleClose={handleCloseModal}
             loadHabits={loadHabits}
+            habitToEdit={null}
           />
           {selectedHabit && (
             <DetailHabit

@@ -1,18 +1,17 @@
-import React, { useEffect } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import { Form } from 'react-bootstrap';
+import React from 'react';
+import { Button, Modal, Form } from 'react-bootstrap';
+import { FormProvider } from 'react-hook-form';
 import Input from '../ui/Input';
-import axiosInstance from '../../config/axiosConfig';
 import Frequency from '../../services/frequencyManagment';
 import HabitInterface from '../../types/habit';
+import CreateLogic from '../../hooks/createHabitLogic';
 
 interface CreateHabitProps {
   show: boolean;
   handleClose: () => void;
   loadHabits: () => Promise<void>;
   defaultType?: 'Habit' | 'Non-negotiable';
+  habitToEdit: HabitInterface | null;
 }
 
 const CreateHabit: React.FC<CreateHabitProps> = ({
@@ -20,74 +19,27 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
   handleClose,
   defaultType,
   loadHabits,
+  habitToEdit,
 }) => {
-  const methods = useForm<HabitInterface>({
-    mode: 'onChange',
-    defaultValues: {
-      type: defaultType || '',
-    },
+  // use custom hook for handle logic of comp
+  const { methods, onSubmit, errors, habitType } = CreateLogic({
+    defaultType,
+    habitToEdit,
+    show,
+    loadHabits,
+    handleClose,
   });
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-    reset,
-    setValue,
-  } = methods;
 
-  useEffect(() => {
-    if (!show) {
-      // autoReset when modal close
-      reset();
-    } else if (defaultType) {
-      setValue('type', defaultType);
-    }
-  }, [show, reset, defaultType, setValue]);
-
-  const onSubmit = async (data: any) => {
-    let days: string[] = [];
-    // variables from frequency_managment
-    if (data.frequency === 'daily' && data.daily) {
-      days = [data.daily];
-    } else if (data.frequency === 'weekly' && data.custom_day) {
-      days = [data.custom_day];
-    } else if (data.frequency === 'custom' && data.custom_days) {
-      days = data.custom_days;
-    }
-
-    try {
-      // request to backend
-      const response = await axiosInstance.post('/habit/create_habit', {
-        name: data.name,
-        frequency: data.frequency,
-        days: days,
-        time_day: data.time_day,
-        type: data.type,
-        completed: false,
-      });
-
-      if (!response.data.success) {
-        console.error('Habit creation failed', response.data.message);
-        return;
-      }
-
-      loadHabits();
-      reset();
-      handleClose();
-    } catch (error) {
-      console.error('Error creating habit:', error);
-    }
-  };
-  const habitType = methods.watch('type');
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Create {defaultType}</Modal.Title>
+        <Modal.Title>
+          {habitToEdit ? `Edit ${habitToEdit.name}` : `Create ${defaultType}`}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <FormProvider {...methods}>
-          {/* param data is passed automatically */}
-          <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form onSubmit={onSubmit}>
             <Form.Label>{defaultType} Name</Form.Label>
             <Input
               type="text"
@@ -106,13 +58,15 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
               <p className="text-danger">{(errors.name as any).message}</p>
             )}
 
-            <Frequency methods={methods} />
+            <Frequency methods={methods} habitToEdit={habitToEdit} />
 
             <Form.Group className="mb-3">
               <Form.Label>Time of Day</Form.Label>
               <Form.Select
                 id="time_day"
-                {...register('time_day', { required: 'Field is required' })}
+                {...methods.register('time_day', {
+                  required: 'Field is required',
+                })}
                 className="form-control"
               >
                 <option value="">Select Time of Day</option>
@@ -128,7 +82,6 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
             </Form.Group>
 
             <Form.Group className="mb-3">
-              {/* if habit specified disabled input */}
               <Form.Label>Type</Form.Label>
               {defaultType ? (
                 <Form.Control
@@ -138,10 +91,11 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
                   className="form-control"
                 />
               ) : (
-                // else select for habitType
                 <Form.Select
                   id="type"
-                  {...register('type', { required: 'Field is required' })}
+                  {...methods.register('type', {
+                    required: 'Field is required',
+                  })}
                   className="form-control"
                 >
                   <option value="">Select Type</option>
@@ -163,7 +117,7 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
                 Cancel
               </Button>
               <Button variant="primary" type="submit">
-                Save Habit
+                {habitToEdit ? 'Update Habit' : 'Save Habit'}
               </Button>
             </div>
           </Form>

@@ -77,6 +77,15 @@ class Habit:
             raise e
 
     @staticmethod
+    def update_habit(habit_name, updates):
+        try:
+            # update only changes, not all ($set)
+            habits_collection.update_one({"name": habit_name}, {"$set": updates})
+
+        except Exception as e:
+            return e
+
+    @staticmethod
     def delete_habit(name):
         try:
             habits_collection.delete_one({"name": name})

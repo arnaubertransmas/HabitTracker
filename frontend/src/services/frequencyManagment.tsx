@@ -2,12 +2,14 @@ import React, { useEffect, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import Button from 'react-bootstrap/Button';
 import { Form } from 'react-bootstrap';
+import HabitInterface from '../types/habit';
 
 interface HabitFrequency {
   methods: UseFormReturn<any>;
+  habitToEdit: HabitInterface | null;
 }
 
-const Frequency: React.FC<HabitFrequency> = ({ methods }) => {
+const Frequency: React.FC<HabitFrequency> = ({ methods, habitToEdit }) => {
   const {
     watch,
     register,
@@ -15,14 +17,32 @@ const Frequency: React.FC<HabitFrequency> = ({ methods }) => {
     formState: { errors },
   } = methods;
 
-  const frequency = watch('frequency');
-
-  // weekdays index
+  // memorize days week indexes
   const days_week = useMemo(() => [0, 1, 2, 3, 4, 5, 6], []);
 
-  // when daily is selected -->
+  const frequency = watch('frequency');
+
+  useEffect(() => {
+    if (habitToEdit) {
+      // load frequency of habitToEdit
+      setValue('frequency', habitToEdit.frequency);
+
+      if (habitToEdit.frequency === 'daily' && habitToEdit.days) {
+        setValue('daily', habitToEdit.days);
+      }
+      if (habitToEdit.frequency === 'weekly' && habitToEdit.days) {
+        setValue('custom_day', habitToEdit.days[0]);
+      }
+      if (habitToEdit.frequency === 'custom' && habitToEdit.days) {
+        setValue('custom_days', habitToEdit.days);
+      }
+    }
+  }, [habitToEdit, setValue]);
+
+  // re-render if frequency, value or days_week changes
   useEffect(() => {
     if (frequency === 'daily') {
+      // if daily all days selected
       setValue('daily', days_week);
     }
   }, [frequency, setValue, days_week]);
@@ -46,13 +66,13 @@ const Frequency: React.FC<HabitFrequency> = ({ methods }) => {
         )}
       </Form.Group>
 
+      {/* frequency config --> (daily/weekly/custom) */}
       {frequency === 'daily' && (
         <Form.Group className="mb-3">
           <Form.Label>Selected Days:</Form.Label>
           <div className="d-flex flex-wrap gap-2">
             {days_week.map((day) => (
               <Button key={day} variant="primary" disabled>
-                {/* show days and save index */}
                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day]}
               </Button>
             ))}
@@ -70,7 +90,6 @@ const Frequency: React.FC<HabitFrequency> = ({ methods }) => {
                 variant={
                   watch('custom_day') === day ? 'primary' : 'outline-secondary'
                 }
-                // set value
                 onClick={() => setValue('custom_day', day)}
               >
                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day]}
