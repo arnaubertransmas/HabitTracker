@@ -65,9 +65,14 @@ def get_habit_detail(habit_name):
         habit_detailed = Habit.get_habit(habit, email)
 
         if habit_detailed:
-            return jsonify(habit_detailed), 201
+            return (
+                jsonify(
+                    {"success": True, "message": "Habit Found", "habit": habit_detailed}
+                ),
+                201,
+            )
         else:
-            return jsonify("Habit not found"), 404
+            return jsonify({"success": False, "message": "Habit not found"}), 404
 
     except Exception as e:
         return (
@@ -96,9 +101,12 @@ def create_habit():
         )
 
         if created.get("success"):
-            return jsonify(created), 201
+            return (
+                jsonify({"success": True, "message": "Habit created successfully"}),
+                201,
+            )
 
-        return jsonify(created), 400
+        return jsonify({"success": False, "message": "Failed to create habit"}), 400
 
     except Exception as e:
         return (
@@ -110,7 +118,7 @@ def create_habit():
 @habit_routes.route("/update_habit/<string:habit_name>", methods=["PUT"])
 @jwt_required()
 def update_habit(habit_name):
-    """update a habit/non-negotiable"""
+    """Update a habit/non-negotiable"""
     try:
         email = get_identity()
 
@@ -125,12 +133,18 @@ def update_habit(habit_name):
         )
 
         if updated.get("success"):
-            return jsonify(updated), 201
+            return (
+                jsonify({"success": True, "message": "Habit updated successfully"}),
+                201,
+            )
 
-        return jsonify(updated), 400
+        return jsonify({"success": False, "message": "Failed to update habit"}), 400
 
     except Exception as e:
-        return jsonify({"success": False, "message": f"Error updating habit: {str(e)}"})
+        return (
+            jsonify({"success": False, "message": f"Error updating habit: {str(e)}"}),
+            500,
+        )
 
 
 @habit_routes.route("/delete_habit/<string:name>", methods=["DELETE"])

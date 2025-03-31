@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Button, Container, Row, Col, Table, Spinner } from 'react-bootstrap';
 import Alert from 'react-bootstrap/Alert';
-import handleDelete from '../../services/deleteHabit';
+import { deleteHabit } from '../../services/habitService';
 import DetailHabit from './DetailHabit';
 import HabitInterface from '../../types/habit';
 import '../../assets/css/spinner.css';
@@ -60,7 +60,7 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
             <Button
               variant="danger"
               size="sm"
-              onClick={() => handleDelete(habit.name, loadHabits)}
+              onClick={() => deleteHabit(habit.name, loadHabits)}
             >
               Delete
             </Button>

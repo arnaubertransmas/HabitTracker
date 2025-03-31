@@ -4,7 +4,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import axiosInstance from '../../config/axiosConfig';
+import { getHabits } from '../../services/habitService';
 import CreateHabit from './CreateHabit';
 import DetailHabit from './DetailHabit';
 import HabitInterface from '../../types/habit';
@@ -23,27 +23,29 @@ const Calendar: React.FC = () => {
   const loadHabits = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get('/habit/get_habits');
+      // getHabits
+      const response = await getHabits();
 
-      if (response.data.success) {
-        const habits: HabitInterface[] = response.data.habits;
-
-        // transform habits to events
-        const formattedEvents = habits.map((habit) => {
-          return {
-            title: habit.name,
-            daysOfWeek: habit.days,
-            allDay: false,
-            extendedProps: {
-              type: habit.type || 'Habit',
-              frequency: habit.frequency,
-            },
-          };
-        });
-
-        // save state of habits as events
-        setEvents(formattedEvents);
+      if (!response) {
+        setError('Could not load habits');
+        return;
       }
+
+      const habits: HabitInterface[] = response;
+
+      // transform habits into events for FullCalendar
+      const formattedEvents = habits.map((habit) => ({
+        title: habit.name,
+        daysOfWeek: Array.isArray(habit.days) ? habit.days : [],
+        allDay: false,
+        extendedProps: {
+          type: habit.type || 'Habit',
+          frequency: habit.frequency,
+        },
+      }));
+
+      // save habits to state
+      setEvents(formattedEvents);
     } catch (error) {
       console.error('Error loading habits:', error);
       setError('Could not load habits');

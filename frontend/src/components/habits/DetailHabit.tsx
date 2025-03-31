@@ -1,6 +1,6 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Container, Row, Col, Badge } from 'react-bootstrap';
-import axiosInstance from '../../config/axiosConfig';
+import { getHabit } from '../../services/habitService';
 import HabitInterface from '../../types/habit';
 
 interface DetailHabitProps {
@@ -17,18 +17,7 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
 }) => {
   const [habit, setHabit] = useState<HabitInterface | null>(null);
 
-  // get habit data
-  const get_habit = useCallback(async () => {
-    try {
-      const response = await axiosInstance.get(
-        `/habit/habit_detail/${habitName}`,
-      );
-      setHabit(response.data);
-    } catch (error) {
-      console.error('Error fetching habit details:', error);
-    }
-  }, [habitName]);
-
+  // convert index to name
   const daysIndToFN = (days: number[]) => {
     const dayNames = [
       'Sunday',
@@ -39,14 +28,24 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
       'Friday',
       'Saturday',
     ];
+    // return arr(str) seperated by ","
     return days.map((dayIndex) => dayNames[dayIndex]).join(', ');
   };
 
   useEffect(() => {
-    if (show) {
-      get_habit();
-    }
-  }, [show, get_habit]);
+    // get habit data
+    const fetchHabit = async () => {
+      try {
+        if (show) {
+          const habitData = await getHabit(habitName);
+          setHabit(habitData);
+        }
+      } catch (error) {
+        console.error('Error fetching habit details:', error);
+      }
+    };
+    fetchHabit();
+  }, [show, habitName]);
 
   // badge color based on status
   const habitStatus = (completed?: boolean) => {

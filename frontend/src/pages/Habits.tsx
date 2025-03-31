@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import axiosInstance from '../config/axiosConfig';
 import Header from '../components/ui/Header';
 import Sidebar from '../components/ui/Sidebar';
 import CreateHabit from '../components/habits/CreateHabit';
 import ShowHabits from '../components/habits/ShowHabits';
 import HabitInterface from '../types/habit';
+import { getHabits } from '../services/habitService';
 
 const Habits = ({ habitType }: { habitType: 'Habit' | 'Non-negotiable' }) => {
   const [habits, setHabits] = useState([]);
@@ -26,18 +26,9 @@ const Habits = ({ habitType }: { habitType: 'Habit' | 'Non-negotiable' }) => {
   const loadHabits = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get(
-        // pass habit type in request
-        `/habit/get_habits?type=${habitType}`,
-      );
+      const response = await getHabits(habitType);
 
-      if (!response.data.success) {
-        setError('Could not load habits');
-      }
-
-      const result = response?.data?.habits || [];
-
-      setHabits(result);
+      setHabits(response);
       setLoading(false);
     } catch (error) {
       console.log('Error:', error);

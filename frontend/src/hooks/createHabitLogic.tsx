@@ -1,8 +1,7 @@
-// hooks/useHabitForm.ts
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import axiosInstance from '../config/axiosConfig';
 import HabitInterface from '../types/habit';
+import { createHabits, editHabit } from '../services/habitService';
 
 interface CreateLogicInterface {
   defaultType?: 'Habit' | 'Non-negotiable';
@@ -52,15 +51,15 @@ const CreateLogic = ({
 
   // form submission handler
   const onSubmit = async (data: any) => {
-    let days: string[] = [];
-
+    let days: number[] = [];
     // process frequency data
     if (data.frequency === 'daily' && data.daily) {
       days = [data.daily];
     } else if (data.frequency === 'weekly' && data.custom_day) {
       days = [data.custom_day];
     } else if (data.frequency === 'custom' && data.custom_days) {
-      days = data.custom_days;
+      // arr(str) => arr(int)
+      days = data.custom_days.map(Number);
     }
 
     try {
@@ -73,24 +72,24 @@ const CreateLogic = ({
         completed: false,
       };
 
-      let response;
+      let success = false;
+
       if (habitToEdit) {
-        response = await axiosInstance.put(
-          `/habit/update_habit/${habitToEdit.name}`,
-          dataToSend,
-        );
+        // passing loadHabits so they load without refreshing manually
+        success = await editHabit(habitToEdit, dataToSend, loadHabits);
       } else {
-        response = await axiosInstance.post('/habit/create_habit', dataToSend);
+        success = await createHabits(dataToSend, loadHabits);
       }
 
-      if (!response.data.success) {
-        console.error('Habit operation failed', response.data.message);
-        return;
+      if (success) {
+        reset();
+        handleClose();
+      } else {
+        setError('root', {
+          type: 'manual',
+          message: 'Failed to save habit',
+        });
       }
-
-      loadHabits();
-      reset();
-      handleClose();
     } catch (err) {
       console.error('Error processing habit:', err);
       setError('root', {
