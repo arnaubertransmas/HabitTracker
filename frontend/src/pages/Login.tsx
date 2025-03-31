@@ -10,8 +10,7 @@ import {
   Alert,
 } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
-import axiosInstance from '../config/axiosConfig';
+import { login } from '../services/authService';
 import Header from '../components/ui/Header';
 import Input from '../components/ui/Input';
 
@@ -32,34 +31,8 @@ const Login = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      setError('');
       setLoading(true);
-
-      const response = await axiosInstance.post('/auth/signin', {
-        email: data.email,
-        password: data.password,
-      });
-
-      const result = response.data;
-      if (!result.success) {
-        setError('Invalid Credentials');
-        return;
-      }
-
-      if (result.access_token && result.user) {
-        // set a cookie with access token
-        Cookies.set('cookie_access_token', result.access_token, {
-          expires: 7,
-          path: '/',
-        });
-
-        // setName to localstorage
-        localStorage.setItem('user_name', result.user.name);
-        redirect(`/user/${result.user.name.toLowerCase()}`);
-      }
-    } catch (err: any) {
-      console.log('Error message:', err.response?.data);
-      setError('Invalid Credentials');
+      await login(data.email, data.password, redirect, setError);
     } finally {
       setLoading(false);
     }

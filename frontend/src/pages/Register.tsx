@@ -10,24 +10,17 @@ import {
   Alert,
 } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import axiosInstance from '../config/axiosConfig';
 import Header from '../components/ui/Header';
 import Input from '../components/ui/Input';
-
-interface IRegisterForm {
-  name: string;
-  surname: string;
-  email: string;
-  password: string;
-  password2: string;
-}
+import UserInterface from '../types/auth';
+import { register } from '../services/authService';
 
 const Register = () => {
   const [error, setError] = useState<string>(''); // Set initial error state as an empty string
   const [loading, setLoading] = useState<boolean>(false);
   const redirect = useNavigate();
 
-  const methods = useForm<IRegisterForm>({ mode: 'onChange' });
+  const methods = useForm<UserInterface>({ mode: 'onChange' });
   const {
     handleSubmit,
     formState: { errors },
@@ -36,35 +29,16 @@ const Register = () => {
 
   const password = watch('password'); // Real-time watch for password
 
-  // Type the onSubmit function with the IRegisterForm type
-  const onSubmit: SubmitHandler<IRegisterForm> = async (data) => {
+  // onSubmit func w UserInterface type
+  const onSubmit: SubmitHandler<UserInterface> = async (data) => {
     if (data.password !== data.password2) {
       setError('Passwords do not match');
       return;
     }
 
     try {
-      setError('');
       setLoading(true);
-
-      const response = await axiosInstance.post('/auth/signup', {
-        name: data.name,
-        surname: data.surname,
-        email: data.email,
-        password: data.password,
-        password2: data.password2,
-      });
-
-      const result = await response.data;
-      if (!result.success) {
-        setError(result.message || 'Registration failed');
-        return;
-      }
-
-      redirect('/signin'); // Redirect to sign in page after successful registration
-    } catch (err: any) {
-      setError('Internal server error, try again later...');
-      console.error('Registration error', err);
+      await register(data, redirect, setError);
     } finally {
       setLoading(false);
     }

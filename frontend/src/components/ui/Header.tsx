@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import logout from '../../services/logout';
-import checkAuth from '../../services/checkAuth';
+import { logout } from '../../services/authService';
+import { checkAuth } from '../../services/authService';
 
 const Header = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
