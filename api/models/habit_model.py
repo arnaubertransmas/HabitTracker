@@ -1,5 +1,7 @@
 import os
+from turtle import update
 from pymongo import MongoClient
+from datetime import datetime
 
 client = MongoClient(os.environ.get("MONGO_URL"))
 db = client.HabitTracker
@@ -77,11 +79,12 @@ class Habit:
             raise e
 
     @staticmethod
-    def update_habit(habit_name, updates):
+    def update_habit(habit_name, user_email, updates):
         try:
             # update only changes, not all ($set)
-            habits_collection.update_one({"name": habit_name}, {"$set": updates})
-
+            habits_collection.update_one(
+                {"name": habit_name, "user_email": user_email}, {"$set": updates}
+            )
         except Exception as e:
             return e
 

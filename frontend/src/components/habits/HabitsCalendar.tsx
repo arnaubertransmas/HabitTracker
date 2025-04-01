@@ -160,6 +160,7 @@ const Calendar: React.FC = () => {
               habitName={selectedHabit}
               show={showDetailModal}
               handleClose={() => setShowDetailModal(false)}
+              loadHabits={loadHabits}
             />
           )}
         </Col>

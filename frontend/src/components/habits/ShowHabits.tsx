@@ -130,6 +130,7 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
           habitName={selectedHabit?.name}
           show={showDetailModal}
           handleClose={() => setShowDetailModal(false)}
+          loadHabits={loadHabits}
         />
       )}
     </>

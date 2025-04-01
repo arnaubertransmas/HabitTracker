@@ -25,6 +25,7 @@ export const getHabit = async (habitName: string) => {
     const response = await axiosInstance.get(
       `/habit/habit_detail/${habitName}`,
     );
+
     if (!response.data.success) {
       console.error('Habit operation failed:', response.data.message);
       return null;
@@ -58,7 +59,7 @@ export const createHabits = async (
   }
 };
 
-// udates an existing habit using its name as the identifier
+// updates an existing habit using its name as the identifier
 export const editHabit = async (
   habitToEdit: HabitInterface,
   habit: HabitInterface,
@@ -87,6 +88,30 @@ export const editHabit = async (
   }
 };
 
+// function to complete Habits
+export const completeHabit = async (
+  habitName: string,
+  loadHabits?: () => Promise<void>,
+) => {
+  try {
+    const response = await axiosInstance.post(`/habit/complete/${habitName}`);
+
+    if (!response.data || !response.data.success) {
+      console.error('Habit completion failed', response.data?.message);
+      return false;
+    }
+
+    // if loadHabits is provided, call it to refresh the data
+    if (loadHabits) {
+      await loadHabits();
+    }
+    return true;
+  } catch (err) {
+    console.error('Error completing habit:', err);
+    return false;
+  }
+};
+
 // deletes a habit by name
 export const deleteHabit = async (name: string, loadHabits: () => void) => {
   try {
@@ -100,7 +125,7 @@ export const deleteHabit = async (name: string, loadHabits: () => void) => {
       return true;
     }
   } catch (error) {
-    console.log('Error deleting: ', error);
+    console.error('Error deleting: ', error);
     return false;
   }
 };

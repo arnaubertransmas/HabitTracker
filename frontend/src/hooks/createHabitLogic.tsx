@@ -51,31 +51,31 @@ const CreateLogic = ({
 
   // form submission handler
   const onSubmit = async (data: any) => {
-    let days: number[] = [];
+    let days =
+      data.days && Array.isArray(data.days[0]) ? data.days[0] : data.days || [];
+
     // process frequency data
     if (data.frequency === 'daily' && data.daily) {
-      days = [data.daily];
+      days = [data.daily]; // Check if daily is correctly set
     } else if (data.frequency === 'weekly' && data.custom_day) {
-      days = [data.custom_day];
+      days = [data.custom_day]; // Ensure `custom_day` exists
     } else if (data.frequency === 'custom' && data.custom_days) {
       // arr(str) => arr(int)
-      days = data.custom_days.map(Number);
+      days = data.custom_days.map(Number); // Ensure conversion to numbers
     }
 
     try {
       const dataToSend = {
         name: data.name,
         frequency: data.frequency,
-        days: days,
+        days: days, // Ensure this is populated
         time_day: data.time_day,
         type: data.type,
-        completed: false,
+        completed: [],
       };
 
       let success = false;
-
       if (habitToEdit) {
-        // passing loadHabits so they load without refreshing manually
         success = await editHabit(habitToEdit, dataToSend, loadHabits);
       } else {
         success = await createHabits(dataToSend, loadHabits);

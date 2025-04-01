@@ -1,6 +1,10 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from services.habit_service import create_new_habit, update_habit_service
+from services.habit_service import (
+    complete_habit_service,
+    create_new_habit,
+    update_habit_service,
+)
 from models.habit_model import Habit
 
 # * register Blueprint auth
@@ -145,6 +149,26 @@ def update_habit(habit_name):
             jsonify({"success": False, "message": f"Error updating habit: {str(e)}"}),
             500,
         )
+
+
+@habit_routes.route("/complete/<string:habit_name>", methods=["POST"])
+def complete_habit(habit_name):
+    try:
+        # get user email from authentication
+        email = get_identity()
+
+        completed = complete_habit_service(habit_name, email)
+
+        if completed.get("success"):
+            return jsonify({"success": True, "message": "Habit completed"}), 200
+        else:
+            return (
+                jsonify({"success": False, "message": "Couldn't complete habit"}),
+                404,
+            )
+
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
 
 
 @habit_routes.route("/delete_habit/<string:name>", methods=["DELETE"])

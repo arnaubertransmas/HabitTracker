@@ -7,5 +7,5 @@ export default interface HabitInterface {
   start_time?: string;
   end_time?: string[];
   type: string;
-  completed?: boolean;
+  completed?: string[];
 }

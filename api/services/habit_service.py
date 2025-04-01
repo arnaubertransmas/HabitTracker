@@ -1,6 +1,7 @@
 from hmac import new
 from models.habit_model import Habit
 from utils.logger import log_error
+from datetime import datetime
 
 
 TIME_MAP = {
@@ -16,7 +17,8 @@ def create_new_habit(
     try:
         # validation of data sent from frontend
         if not all(
-            [name, frequency, time_day, type_habit, user_email] or completed is not None
+            [name, frequency, time_day, type_habit, user_email]
+            or not isinstance(completed, list)
         ):
             return {"success": False, "message": "All fields are required"}
 
@@ -26,7 +28,7 @@ def create_new_habit(
         if type(days) != list:
             return {"success": False, "message": "Invalid format for days param"}
 
-        if type(completed) != bool:
+        if type(completed) != list:
             return {"success": False, "message": "Invalid format for completed param"}
 
         if Habit.get_habit(name, user_email):
@@ -84,10 +86,41 @@ def update_habit_service(habit_name, new_name, frequency, days, time_day, user_e
             if time_day.lower() in TIME_MAP:
                 updates["time_day"] = time_day
 
-        Habit.update_habit(habit_name, updates)
+        Habit.update_habit(habit_name, user_email, updates)
 
         return {"success": True, "message": "Habit updated successfully"}
 
     except Exception as e:
         log_error(f"Habit update error {e}")
         return {"success": False, "message": f"Server error: {str(e)}"}
+
+
+def complete_habit_service(habit_name, email):
+    try:
+        habit = Habit.get_habit(habit_name, email)
+        if not habit:
+            return {"success": False, "message": "Habit not found"}
+
+        # get today's date in YYYY-MM-DD format
+        today = datetime.now().strftime("%Y-%m-%d")
+
+        # Initialize completed array if it doesn't exist
+        if "completed" not in habit or habit["completed"] is None:
+            completed = []
+        else:
+            completed = habit["completed"]
+
+        # add today's date if not already in the array
+        if today not in completed:
+            completed.append(today)
+
+            # Create updates dictionary with completed field
+            updates = {"completed": completed}
+
+            # Update the habit in the database
+            Habit.update_habit(habit_name, email, updates)
+            return {"success": True, "message": "Habit marked as complete"}
+        else:
+            return {"success": True, "message": "Habit already completed today"}
+    except Exception as e:
+        return {"success": False, "message": str(e)}
