@@ -1,4 +1,3 @@
-from hmac import new
 from models.habit_model import Habit
 from utils.logger import log_error
 from datetime import datetime
@@ -85,6 +84,11 @@ def update_habit_service(habit_name, new_name, frequency, days, time_day, user_e
         if habit["time_day"] != time_day:
             if time_day.lower() in TIME_MAP:
                 updates["time_day"] = time_day
+
+                # update corresponding hours to new time_day
+                new_start_time, new_end_time = TIME_MAP[time_day.lower()]
+                updates["start_time"] = new_start_time
+                updates["end_time"] = new_end_time
 
         Habit.update_habit(habit_name, user_email, updates)
 
