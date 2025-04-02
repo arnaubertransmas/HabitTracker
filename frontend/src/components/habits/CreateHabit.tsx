@@ -30,17 +30,21 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
     handleClose,
   });
 
+  const habitTypeValue = defaultType || '';
+
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
         <Modal.Title>
-          {habitToEdit ? `Edit ${habitToEdit.name}` : `Create ${defaultType}`}
+          {habitToEdit
+            ? `Edit ${habitToEdit.name}`
+            : `Create ${habitTypeValue}`}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <FormProvider {...methods}>
           <Form onSubmit={onSubmit}>
-            <Form.Label>{defaultType} Name</Form.Label>
+            <Form.Label>{habitTypeValue} Name</Form.Label>
             <Input
               type="text"
               id="name"

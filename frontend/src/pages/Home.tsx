@@ -8,7 +8,7 @@ const Home = () => {
     <>
       <Header />
       <Sidebar />
-      <DailyInfo />
+      <DailyInfo streak={190} />
     </>
   );
 };

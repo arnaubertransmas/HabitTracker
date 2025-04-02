@@ -20,10 +20,26 @@ const Calendar: React.FC = () => {
   const [selectedHabit, setSelectedHabit] = useState<string | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
 
+  const mapFrequencyToDays = (frequency: string, habitDays?: number[]) => {
+    // habitDays = arr(Int) w weekday Indexes (0-6)
+
+    // if frequency is daily, return all indexes
+    if (frequency.toLowerCase() === 'daily') {
+      return [0, 1, 2, 3, 4, 5, 6];
+    }
+
+    // return days if user has selected them specifically
+    if (habitDays && habitDays.length > 0) {
+      return habitDays;
+    }
+
+    // if frequency doesn't match any of the above, return empty array
+    return [];
+  };
+
   const loadHabits = useCallback(async () => {
     try {
       setLoading(true);
-      // getHabits
       const response = await getHabits();
 
       if (!response) {
@@ -33,18 +49,14 @@ const Calendar: React.FC = () => {
 
       const habits: HabitInterface[] = response;
 
-      // transform habits into events for FullCalendar
       const formattedEvents = habits.map((habit) => ({
         title: habit.name,
-        daysOfWeek: Array.isArray(habit.days) ? habit.days : [],
-        allDay: false,
-        extendedProps: {
-          type: habit.type || 'Habit',
-          frequency: habit.frequency,
-        },
+        startTime: habit.start_time,
+        endTime: habit.end_time,
+        daysOfWeek: mapFrequencyToDays(habit.frequency, habit.days), // map days
+        extendedProps: { type: habit.type || 'Habit' }, // we use this later to assign different classes
       }));
 
-      // save habits to state
       setEvents(formattedEvents);
     } catch (error) {
       console.error('Error loading habits:', error);
@@ -58,7 +70,7 @@ const Calendar: React.FC = () => {
     loadHabits();
   }, [loadHabits]);
 
-  // modal create habit + detail
+  // Modal handlers
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
   const handleShowDetail = (habitName: string) => {
@@ -79,63 +91,24 @@ const Calendar: React.FC = () => {
           ) : (
             <div className="calendar-wrapper">
               <FullCalendar
-                // plugins for fullCalendar
+                // pluggins for calendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                initialView={'dayGridMonth'}
-                height="auto"
+                initialView="dayGridMonth" // main view
+                events={events}
                 headerToolbar={{
                   left: 'prev,next',
                   center: 'title',
                   right: 'dayGridMonth,dayGridWeek,timeGridDay',
                 }}
-                views={{
-                  // calendar views
-                  dayGridMonth: {
-                    type: 'dayGridMonth',
-                    duration: { months: 1 },
-                  },
-                  dayGridWeek: {
-                    type: 'dayGridWeek',
-                    duration: { week: 1 },
-                  },
-                  timeGridDay: {
-                    type: 'timeGridDay',
-                    duration: { days: 1 },
-                  },
-                }}
-                dayCellClassNames={(info_cell) => {
-                  // assign css classes to calendar days
-                  const today = new Date();
-                  const todayWithoutTime = new Date(
-                    today.getFullYear(),
-                    today.getMonth(),
-                    today.getDate(),
-                  );
-
-                  const cellDate = new Date(info_cell.date);
-
-                  if (cellDate < todayWithoutTime) {
-                    return ['past-day'];
-                  }
-
-                  if (cellDate.getTime() === todayWithoutTime.getTime()) {
-                    return ['highlight-today'];
-                  }
-
-                  return [];
-                }}
-                // show only events at the calendar
-                events={events}
                 eventClassNames={(eventInfo) => {
-                  // differiencete from diff types
+                  // assign class depending of type
                   return eventInfo.event.extendedProps.type === 'Non-negotiable'
                     ? ['non-negotiable-event']
                     : ['habit-event'];
                 }}
-                // text shown at event card
                 eventContent={(eventInfo) => {
                   return {
-                    html: ` <span class="event-title">${eventInfo.event.title}</span> `,
+                    html: `<span class="event-title">${eventInfo.event.title}</span>`,
                   };
                 }}
                 dateClick={() => {
@@ -148,7 +121,6 @@ const Calendar: React.FC = () => {
             </div>
           )}
 
-          {/* Create + Detail habit props */}
           <CreateHabit
             show={showModal}
             handleClose={handleCloseModal}

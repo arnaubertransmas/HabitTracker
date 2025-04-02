@@ -8,6 +8,7 @@ export const getHabits = async (habitType?: 'Habit' | 'Non-negotiable') => {
       ? `/habit/get_habits?type=${habitType}`
       : '/habit/get_habits';
     const response = await axiosInstance.get(url);
+
     if (!response.data.success) {
       console.error('Could not load habits:', response.data.message);
       return null;
