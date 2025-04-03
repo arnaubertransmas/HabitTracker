@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLock, faCalendarCheck } from '@fortawesome/free-solid-svg-icons';
+import {
+  faLock,
+  faCalendarCheck,
+  faCircleUser,
+} from '@fortawesome/free-solid-svg-icons';
 import { NavLink } from 'react-router-dom';
 import {
   CDBSidebar,
@@ -13,6 +17,8 @@ import {
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const primaryColor = '#007bff';
+  const username = localStorage.getItem('user_name') || '';
+  const user = `/user/${username}`;
 
   // Control the screen size
   useEffect(() => {
@@ -97,6 +103,25 @@ const Sidebar = () => {
         <CDBSidebarContent className="sidebar-content">
           <CDBSidebarHeader prefix={<></>}>Features</CDBSidebarHeader>
           <CDBSidebarMenu>
+            {/*Dashboard Menu Item */}
+            <NavLink
+              to={user}
+              className={({ isActive }) => (isActive ? 'activeClicked' : '')}
+              onMouseEnter={hoverLinkEnter}
+              onMouseLeave={(e) => hoverLinkLeave(e, false)}
+              style={{
+                color: 'inherit',
+              }}
+            >
+              <CDBSidebarMenuItem className="sidebar-menu-item">
+                <FontAwesomeIcon
+                  icon={faCircleUser}
+                  style={{ ...iconMargin, color: 'inherit' }}
+                />
+                {!collapsed && 'Dashboard'}
+              </CDBSidebarMenuItem>
+            </NavLink>
+
             {/* Non-negotiables Menu Item */}
             <NavLink
               to="/non-negotiables"
