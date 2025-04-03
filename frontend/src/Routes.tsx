@@ -11,11 +11,11 @@ import AboutUs from './pages/AboutUs';
 import Habits from './pages/Habits';
 import CreateHabit from './components/habits/CreateHabit';
 import Schedule from './pages/Schedule';
+import Progress from './pages/Progress';
 
 const AppRoutes = () => {
   const [showModal, setShowModal] = useState(false);
 
-  // const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
   return (
@@ -93,6 +93,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Schedule />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/progress"
+          element={
+            <ProtectedRoute>
+              <Progress />
             </ProtectedRoute>
           }
         />

@@ -1,10 +1,15 @@
 import Header from '../components/ui/Header';
 import postits from '../assets/img/postits.jpeg';
+import Sidebar from '../components/ui/Sidebar';
 
 const AboutUs = () => {
+  const user = localStorage.getItem('user_name') || '';
+
   return (
     <>
       <Header />
+      {user && <Sidebar />}
+
       <div className="container py-5 d-flex flex-column align-items-center text-center">
         <h1 className="display-4 fw-bold mb-4">
           Empower Your Habits, Transform Your Life
