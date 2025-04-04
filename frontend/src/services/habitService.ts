@@ -92,22 +92,20 @@ export const editHabit = async (
 // function to complete Habits
 export const completeHabit = async (
   habitName: string,
-  selectedDate: string, // Use the selected date
+  selectedDate: string,
   loadHabits?: () => Promise<void>,
 ) => {
   try {
+    // send date as string in YYYY-MM-DD
+    const date = selectedDate.split('T')[0];
+
     const response = await axiosInstance.post(`/habit/complete/${habitName}`, {
-      completed: selectedDate, // Send correct key name
+      completed: date,
     });
 
     if (!response.data || !response.data.success) {
       console.error('Habit completion failed', response.data?.message);
       return false;
-    }
-
-    // Refresh habit data
-    if (loadHabits) {
-      await loadHabits();
     }
     return true;
   } catch (err) {

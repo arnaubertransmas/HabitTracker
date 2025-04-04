@@ -99,28 +99,40 @@ def update_habit_service(habit_name, new_name, frequency, days, time_day, user_e
         return {"success": False, "message": f"Server error: {str(e)}"}
 
 
-def complete_habit_service(habit_name, date, email):
+def complete_habit_service(habit_name, date_str, email):
     try:
         habit = Habit.get_habit(habit_name, email)
         if not habit:
             return {"success": False, "message": "Habit not found"}
 
-        # Ensure completed field exists and is a list
-        completed = habit.get("completed", [])  # Default to empty list if missing
+        # Parse the incoming date string
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
+        date_today = datetime.now().date()
 
-        if not isinstance(completed, list):  # Ensure it's actually a list
-            completed = []
+        if date_obj > date_today:
+            return {"success": False, "message": "Cannot mark future dates as complete"}
 
-        # Add the selected date if not already completed
-        if date not in completed:
-            completed.append(date)
+        completed = habit.get("completed", [])
 
+        # format date for storage and comparison
+        normalized_date_str = date_obj.strftime("%Y-%m-%d")
+
+        # Check if date is already in completed list
+        if normalized_date_str not in completed:
+            completed.append(normalized_date_str)
+
+            # Update the habit
             updates = {"completed": completed}
-
-            # Update the habit in the database
             Habit.update_habit(habit_name, email, updates)
-            return {"success": True, "message": "Habit marked as complete"}
+
+            return {
+                "success": True,
+                "message": f"Habit marked as complete for {normalized_date_str}",
+            }
         else:
-            return {"success": True, "message": "Habit already completed for this date"}
+            return {
+                "success": True,
+                "message": f"Habit already completed on {normalized_date_str}",
+            }
     except Exception as e:
         return {"success": False, "message": str(e)}

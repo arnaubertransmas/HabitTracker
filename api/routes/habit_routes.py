@@ -152,12 +152,11 @@ def update_habit(habit_name):
 
 
 @habit_routes.route("/complete/<string:habit_name>", methods=["POST"])
+@jwt_required()
 def complete_habit(habit_name):
     try:
-        # get user email from authentication
         email = get_identity()
         data = request.json
-
         date = data.get("completed", "")
 
         completed = complete_habit_service(habit_name, date, email)
