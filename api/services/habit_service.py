@@ -99,32 +99,28 @@ def update_habit_service(habit_name, new_name, frequency, days, time_day, user_e
         return {"success": False, "message": f"Server error: {str(e)}"}
 
 
-def complete_habit_service(habit_name, email):
+def complete_habit_service(habit_name, date, email):
     try:
         habit = Habit.get_habit(habit_name, email)
         if not habit:
             return {"success": False, "message": "Habit not found"}
 
-        # get today's date in YYYY-MM-DD format
-        today = datetime.now().strftime("%Y-%m-%d")
+        # Ensure completed field exists and is a list
+        completed = habit.get("completed", [])  # Default to empty list if missing
 
-        # Initialize completed array if it doesn't exist
-        if "completed" not in habit or habit["completed"] is None:
+        if not isinstance(completed, list):  # Ensure it's actually a list
             completed = []
-        else:
-            completed = habit["completed"]
 
-        # add today's date if not already in the array
-        if today not in completed:
-            completed.append(today)
+        # Add the selected date if not already completed
+        if date not in completed:
+            completed.append(date)
 
-            # Create updates dictionary with completed field
             updates = {"completed": completed}
 
             # Update the habit in the database
             Habit.update_habit(habit_name, email, updates)
             return {"success": True, "message": "Habit marked as complete"}
         else:
-            return {"success": True, "message": "Habit already completed today"}
+            return {"success": True, "message": "Habit already completed for this date"}
     except Exception as e:
         return {"success": False, "message": str(e)}

@@ -92,17 +92,20 @@ export const editHabit = async (
 // function to complete Habits
 export const completeHabit = async (
   habitName: string,
+  selectedDate: string, // Use the selected date
   loadHabits?: () => Promise<void>,
 ) => {
   try {
-    const response = await axiosInstance.post(`/habit/complete/${habitName}`);
+    const response = await axiosInstance.post(`/habit/complete/${habitName}`, {
+      completed: selectedDate, // Send correct key name
+    });
 
     if (!response.data || !response.data.success) {
       console.error('Habit completion failed', response.data?.message);
       return false;
     }
 
-    // if loadHabits is provided, call it to refresh the data
+    // Refresh habit data
     if (loadHabits) {
       await loadHabits();
     }

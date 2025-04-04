@@ -156,8 +156,11 @@ def complete_habit(habit_name):
     try:
         # get user email from authentication
         email = get_identity()
+        data = request.json
 
-        completed = complete_habit_service(habit_name, email)
+        date = data.get("completed", "")
+
+        completed = complete_habit_service(habit_name, date, email)
 
         if completed.get("success"):
             return jsonify({"success": True, "message": "Habit completed"}), 200
