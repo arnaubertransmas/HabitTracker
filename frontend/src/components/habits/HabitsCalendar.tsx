@@ -19,6 +19,9 @@ const Calendar: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedHabit, setSelectedHabit] = useState<string | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string | undefined>(
+    undefined,
+  );
 
   const mapFrequencyToDays = (frequency: string, habitDays?: number[]) => {
     // habitDays = arr(Int) w weekday Indexes (0-6)
@@ -93,7 +96,7 @@ const Calendar: React.FC = () => {
               <FullCalendar
                 // pluggins for calendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                initialView="dayGridMonth" // main view
+                initialView="dayGridWeek" // main view
                 events={events}
                 headerToolbar={{
                   left: 'prev,next',
@@ -111,10 +114,12 @@ const Calendar: React.FC = () => {
                     html: `<span class="event-title">${eventInfo.event.title}</span>`,
                   };
                 }}
-                dateClick={() => {
+                dateClick={(info) => {
+                  setSelectedDate(info.dateStr); // Saves selected date
                   handleShowModal();
                 }}
                 eventClick={(info) => {
+                  setSelectedDate(info.event.startStr); // pass selected date to event
                   handleShowDetail(info.event.title);
                 }}
               />
@@ -133,6 +138,7 @@ const Calendar: React.FC = () => {
               show={showDetailModal}
               handleClose={() => setShowDetailModal(false)}
               loadHabits={loadHabits}
+              selectedDate={selectedDate}
             />
           )}
         </Col>

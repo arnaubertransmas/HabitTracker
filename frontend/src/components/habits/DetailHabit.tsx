@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Container, Row, Col, Badge } from 'react-bootstrap';
-import {
-  completeHabit,
-  deleteHabit,
-  getHabit,
-} from '../../services/habitService';
+import { Modal, Container, Row, Col, Badge, Button } from 'react-bootstrap';
+import { deleteHabit, getHabit } from '../../services/habitService';
 import HabitInterface from '../../types/habit';
-import { Button } from 'react-bootstrap';
+import { useHabitCompletion } from '../../hooks/completeHabit';
 
 interface DetailHabitProps {
-  // habitDetail props
   habitName: string;
   show: boolean;
   handleClose: () => void;
   loadHabits: () => Promise<void>;
+  selectedDate?: string;
 }
 
 const DetailHabit: React.FC<DetailHabitProps> = ({
@@ -21,86 +17,43 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
   show,
   handleClose,
   loadHabits,
+  selectedDate,
 }) => {
   const [habit, setHabit] = useState<HabitInterface | null>(null);
-  const [complete, setComplete] = useState<boolean>(false);
 
-  // convert index to name
-  const daysIndToFN = (days: number[] | undefined) => {
-    if (!days || days.length === 0) return 'No days set'; // Handle undefined or empty
+  // custom hook
+  const {
+    error,
+    isLoading,
+    isHabitCompleted,
+    handleCompleteHabit,
+    daysIndicesToFullNames,
+    validateDateForCompletion,
+  } = useHabitCompletion(loadHabits);
 
-    // if its doublewrapped, grab the one from inside
-    const flatDays = Array.isArray(days[0]) ? days[0] : days;
+  // ensure its always a string type
+  const validatedSelectedDate = selectedDate || new Date().toISOString();
 
-    const dayNames = [
-      'Sunday',
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-    ];
-    return flatDays
-      .map((dayIndex) => dayNames[dayIndex] || 'Invalid day')
-      .join(', ');
-  };
-
-  const handleComplete = async (habitName: string) => {
-    try {
-      if (habit) {
-        // Call the API to mark the habit as complete
-        const success = await completeHabit(habit.name, loadHabits);
-
-        if (success) {
-          // Fetch the latest habit data from the server to ensure we have the most up-to-date information
-          const updatedHabitData = await getHabit(habitName);
-
-          // Update the local state with the latest data
-          setHabit(updatedHabitData);
-
-          // Set complete to true to hide the Complete button
-          setComplete(true);
-        }
-      }
-    } catch (error) {
-      console.error('Error marking habit as complete:', error);
-    }
-  };
-
-  const isCompletedToday = (habit: HabitInterface | null) => {
-    if (!habit || !habit.completed) return false;
-
-    const today = new Date().toISOString().split('T')[0]; // Get YYYY-MM-DD format
-    return habit.completed.includes(today);
-  };
+  const [isValid, validationError] = validateDateForCompletion(
+    validatedSelectedDate,
+  );
 
   useEffect(() => {
-    // get habit data
     const fetchHabit = async () => {
       try {
         if (show) {
           const habitData = await getHabit(habitName);
           setHabit(habitData);
-          setComplete(isCompletedToday(habitData));
         }
       } catch (error) {
         console.error('Error fetching habit details:', error);
       }
     };
-    fetchHabit();
-  }, [show, habitName]);
 
-  // badge color based on status
-  const habitStatus = (completed?: string[]) => {
-    if (completed && completed.length > 0) {
-      return ['Completed', 'success'];
-    } else if (completed && completed.length === 0) {
-      return ['Pending', 'danger'];
-    } else {
-      return ['-', 'secondary'];
+    if (show) {
+      fetchHabit();
     }
-  };
+  }, [show, habitName, selectedDate]);
 
   return (
     <Modal show={show} onHide={handleClose} size="lg" centered>
@@ -109,8 +62,11 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
           {habit ? (
             <>
               {habit.name} Details |
-              <Badge bg={habitStatus(habit.completed)[1]} className="ms-2">
-                {habitStatus(habit.completed)[0]}
+              <Badge
+                bg={isHabitCompleted(habit, validatedSelectedDate)[1]}
+                className="ms-2"
+              >
+                {isHabitCompleted(habit, validatedSelectedDate)[0]}
               </Badge>
             </>
           ) : (
@@ -120,7 +76,9 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
       </Modal.Header>
 
       <Modal.Body>
-        {habit ? ( // render if there's a habit
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : habit ? (
           <Container>
             <Row className="mb-3">
               <Col md={4} className="fw-bold">
@@ -141,7 +99,9 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
                 <Col md={4} className="fw-bold">
                   Frequency:
                 </Col>
-                <Col>{habit.days ? daysIndToFN(habit.days) : '-'}</Col>
+                <Col>
+                  {habit.days ? daysIndicesToFullNames(habit.days) : '-'}
+                </Col>
               </Row>
             )}
 
@@ -155,35 +115,52 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
                 </Col>
               </Row>
             )}
+
             <Row className="mb-3">
-              <Col md={4} className="fw-bold">
-                {!complete && (
+              <Col>
+                {!isHabitCompleted(habit, validatedSelectedDate)[2] && (
                   <Button
                     variant="success"
                     style={{ color: 'white', marginRight: '5px' }}
                     onClick={async () => {
-                      await handleComplete(habit.name);
-                      handleClose();
+                      try {
+                        // call out to handleCompleteHabit
+                        await handleCompleteHabit(
+                          habit.name,
+                          validatedSelectedDate,
+                          habit,
+                          setHabit,
+                          handleClose,
+                        );
+                      } catch (error) {
+                        console.error('Error during habit completion:', error);
+                      }
                     }}
+                    // .!isValid = habit from another date (not today)
+                    disabled={!isValid}
                   >
-                    Complete
+                    {isLoading ? 'Completing...' : 'Complete'}
                   </Button>
                 )}
+
                 <Button
                   variant="danger"
                   style={{ color: 'white' }}
                   onClick={async () => {
                     await deleteHabit(habit.name, loadHabits);
-                    handleClose(); // close modal after deleting
+                    handleClose();
                   }}
                 >
                   Delete
                 </Button>
+                {error && (
+                  <div className="alert alert-danger mt-3">{error}</div>
+                )}
               </Col>
             </Row>
           </Container>
         ) : (
-          <p>Loading habit details...</p>
+          <p>No habit details available.</p>
         )}
       </Modal.Body>
     </Modal>

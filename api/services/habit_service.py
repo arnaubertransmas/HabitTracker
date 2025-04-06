@@ -109,8 +109,11 @@ def complete_habit_service(habit_name, date_str, email):
         date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
         date_today = datetime.now().date()
 
-        if date_obj > date_today:
-            return {"success": False, "message": "Cannot mark future dates as complete"}
+        if date_obj != date_today:
+            return {
+                "success": False,
+                "message": "Cannot mark habits as complete for other dates",
+            }
 
         completed = habit.get("completed", [])
 
