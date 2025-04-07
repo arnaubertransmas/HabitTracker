@@ -67,11 +67,6 @@
   border: 2px solid var(--dark);
 }
 
-/* button hover view */
-.fc-header-toolbar .fc-button:hover {
-  filter: brightness(1.1);
-}
-
 /* past days color */
 .fc-daygrid-day.past-day .fc-daygrid-day-number {
   color: var(--secondary) !important;
@@ -82,15 +77,25 @@
   color: var(--dark) !important;
 }
 
-/* actual day */
+/* actual day in month view */
 .fc-day-today .fc-daygrid-day-number {
   color: var(--light) !important;
   background-color: var(--danger);
   border-radius: 20px;
 }
 
+/* actual day in week/day view */
+.fc-day-today .fc-col-header-cell-cushion {
+  color: var(--light) !important;
+  background-color: var(--danger);
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+
+/* text of events */
 .event-title {
   font-weight: bold;
+  color: var(--dark) !important;
 }
 
 /* habit events */
