@@ -74,9 +74,9 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
                 className="form-control"
               >
                 <option value="">Select Time of Day</option>
-                <option value="morning">Morning</option>
-                <option value="afternoon">Afternoon</option>
-                <option value="night">Night</option>
+                <option value="Morning">Morning</option>
+                <option value="Afternoon">Afternoon</option>
+                <option value="Night">Night</option>
               </Form.Select>
               {errors.time_day && (
                 <p className="text-danger">

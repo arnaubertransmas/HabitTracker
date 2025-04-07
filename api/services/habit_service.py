@@ -4,9 +4,9 @@ from datetime import datetime
 
 
 TIME_MAP = {
-    "morning": ("07:00", "12:00"),
-    "afternoon": ("12:00", "18:00"),
-    "night": ("18:00", "22:00"),
+    "Morning": ("07:00", "12:00"),
+    "Afternoon": ("12:00", "18:00"),
+    "Night": ("18:00", "22:00"),
 }
 
 
@@ -33,10 +33,10 @@ def create_new_habit(
         if Habit.get_habit(name, user_email):
             return {"success": False, "message": "Habit already exists"}
 
-        if time_day.lower() not in TIME_MAP:
+        if time_day not in TIME_MAP:
             return {"success": False, "message": "Invalid time of day"}
 
-        start_time, end_time = TIME_MAP[time_day.lower()]
+        start_time, end_time = TIME_MAP[time_day]
         habit = Habit(
             name,
             frequency,
