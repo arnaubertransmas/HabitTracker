@@ -32,6 +32,7 @@ export const login = async (
 
       // save user name to localStorage
       localStorage.setItem('user_name', result.user.name);
+      localStorage.setItem('email', email);
 
       // redirect to user's profile page
       redirect(`/user/${result.user.name.toLowerCase()}`);
@@ -84,6 +85,19 @@ export const register = async (
   }
 };
 
+export const getUser = async (email: string) => {
+  try {
+    const response = await axiosInstance.get(`/auth/get_user/${email}`);
+
+    if (response.data.success) {
+      return response.data.user;
+    }
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    return null;
+  }
+};
+
 export const checkAuth = async (
   setIsAuthenticated: (value: boolean) => void,
 ) => {
@@ -113,6 +127,7 @@ export const logout = async (
       // remove cookie
       Cookies.remove('cookie_access_token');
       localStorage.removeItem('user_name');
+      localStorage.removeItem('email');
       setIsAuthenticated(false);
       redirect('/signin');
     }

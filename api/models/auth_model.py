@@ -46,7 +46,9 @@ class User:
     @staticmethod
     def get_user(param, value):
         try:
-            user = list(users_collection.find({param: value}))
+            if param == "_id":
+                user = list(users_collection.find({param: value}))
+            user = list(users_collection.find({param: value}, {"_id": 0}))
             return user
         except Exception as e:
             return e

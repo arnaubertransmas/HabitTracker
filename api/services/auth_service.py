@@ -26,7 +26,7 @@ def registrate_user(name, surname, email, password, password2, streak):
         if User.get_user("email", email):
             return {"success": False, "message": "This address is already registered!"}
 
-        if type(streak) != int:
+        if type(streak) != list:
             return {"success": False, "message": "Invalid streak type"}
 
         user = User(name, surname, email, password, streak)

@@ -15,6 +15,28 @@ def load_user(user_id):
     return User.get_user("_id", user_id)
 
 
+@auth_routes.route("/get_user/<string:email>", methods=["GET"])
+@jwt_required()
+def get_user(email):
+    """Get user data"""
+    try:
+        # get user data from DB
+        user = User.get_user("email", email)
+
+        if user and isinstance(user, list):
+            user = user[0]
+            print(user, "LKJKLJL")
+            return jsonify({"success": True, "user": user}), 200
+
+        return jsonify({"success": False, "message": "User not found"}), 404
+
+    except Exception as e:
+        return (
+            jsonify({"success": False, "message": f"Error getting user: {str(e)}"}),
+            500,
+        )
+
+
 @auth_routes.route("/signup", methods=["POST"])
 def signup():
     """Signup route, register new user to DB"""
@@ -25,7 +47,7 @@ def signup():
         email = data.get("email", "").strip()
         password = data.get("password", "").strip()
         password2 = data.get("password2", "").strip()
-        streak = 0
+        streak = []
 
         # registrate user
         registered = registrate_user(name, surname, email, password, password2, streak)
