@@ -38,6 +38,7 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
   // ensure its always a string type
   const validatedSelectedDate = selectedDate || new Date().toISOString();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isValid, validationError] = validateDateForCompletion(
     validatedSelectedDate,
   );

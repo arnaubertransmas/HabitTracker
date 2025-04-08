@@ -62,7 +62,11 @@ const DailyInfo: React.FC<DailyInfoProps> = ({ streak }) => {
                 variant={getStreakVariant(streak)}
                 animated
                 className="mt-3"
-                style={{ height: '10px', borderRadius: '5px' }}
+                style={{
+                  height: '10px',
+                  borderRadius: '5px',
+                  border: '1px solid #cfcfcf',
+                }}
               />
             </Card.Body>
           </Card>
