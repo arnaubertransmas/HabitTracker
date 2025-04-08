@@ -2,6 +2,7 @@ from models.auth_model import User
 from utils.logger import log_error
 from utils.validators import validate_email, validate_password, is_string
 from werkzeug.security import check_password_hash
+from datetime import datetime
 
 
 def registrate_user(name, surname, email, password, password2, streak):
@@ -65,3 +66,31 @@ def login_user(email, password):
     except Exception as e:
         log_error(f"Login error: {e}")
         return {"success": False, "message": f"Server error: {str(e)}"}
+
+
+def update_streak_service(email, date):
+    try:
+        user = User.get_user("email", email)
+        if not user or len(user) == 0:
+            return {"success": False, "message": "User not found"}
+
+        user = user[0]
+        streak = user.get("streak", [])
+        date = date.split("T")[0]
+
+        if date in streak:
+            return {
+                "success": True,
+                "message": "Streak already recorded for this date",
+            }
+
+        # Append new date to the streak list
+        streak.append(date)
+
+        # Update the user in the database
+        updates = {"streak": streak}
+        User.update_user(email, updates)
+
+        return {"success": True, "message": "Streak updated successfully"}
+    except Exception as e:
+        return {"success": False, "message": str(e)}

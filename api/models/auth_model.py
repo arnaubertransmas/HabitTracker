@@ -52,3 +52,10 @@ class User:
             return user
         except Exception as e:
             return e
+
+    @staticmethod
+    def update_user(email, updates):
+        try:
+            users_collection.update_one({"email": email}, {"$set": updates})
+        except Exception as e:
+            raise e

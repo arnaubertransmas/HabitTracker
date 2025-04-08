@@ -98,7 +98,6 @@ export const completeHabit = async (
   try {
     // send date as string in YYYY-MM-DD
     const date = selectedDate.split('T')[0];
-
     const response = await axiosInstance.post(`/habit/complete/${habitName}`, {
       completed: date,
     });
@@ -111,6 +110,31 @@ export const completeHabit = async (
   } catch (err) {
     console.error('Error completing habit:', err);
     return false;
+  }
+};
+
+// function to update streak
+export const updateStreak = async (
+  habitName: string,
+  date: string,
+  loadHabits?: () => Promise<void>,
+) => {
+  try {
+    const response = await axiosInstance.post('/auth/update_streak', {
+      habitName: habitName,
+      date: date,
+    });
+    const result = response.data;
+    if (!response.data || !response.data.success) {
+      console.error('Error from server:', result);
+      return false;
+    }
+    if (loadHabits) {
+      await loadHabits();
+      return true;
+    }
+  } catch (err) {
+    console.error('Error updating streak:', err);
   }
 };
 

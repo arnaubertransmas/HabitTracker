@@ -86,7 +86,6 @@ class Habit:
                 {"name": habit_name, "user_email": user_email}, {"$set": updates}
             )
         except Exception as e:
-            print("error", e)
             return e
 
     @staticmethod

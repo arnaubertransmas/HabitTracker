@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, create_access_token
-from services.auth_service import login_user, registrate_user
+from flask_jwt_extended import get_jwt_identity, jwt_required, create_access_token
+from services.auth_service import login_user, registrate_user, update_streak_service
 from flask_login import LoginManager
 from models.auth_model import User
 
@@ -25,7 +25,6 @@ def get_user(email):
 
         if user and isinstance(user, list):
             user = user[0]
-            print(user, "LKJKLJL")
             return jsonify({"success": True, "user": user}), 200
 
         return jsonify({"success": False, "message": "User not found"}), 404
@@ -104,6 +103,25 @@ def signin():
             jsonify({"success": False, "message": f"Error logging the user: {str(e)}"}),
             500,
         )
+
+
+@auth_routes.route("/update_streak", methods=["POST"])
+@jwt_required()
+def update_streak():
+    """Update user's habit streak"""
+    try:
+        email = get_jwt_identity()
+        data = request.json
+        date = data.get("date", "")
+
+        streak_updated = update_streak_service(email, date)
+
+        if streak_updated.get("success"):
+            return jsonify({"success": True, "message": streak_updated["message"]}), 200
+        else:
+            return jsonify({"success": False, "message": "Couldn't update streak"}), 404
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
 
 
 @auth_routes.route("/logout", methods=["POST"])

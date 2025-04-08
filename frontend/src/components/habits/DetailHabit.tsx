@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Container, Row, Col, Badge, Button } from 'react-bootstrap';
-import { deleteHabit, getHabit } from '../../services/habitService';
+import {
+  deleteHabit,
+  getHabit,
+  updateStreak,
+} from '../../services/habitService';
 import HabitInterface from '../../types/habit';
 import { useHabitCompletion } from '../../hooks/completeHabit';
 
@@ -125,13 +129,20 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
                     onClick={async () => {
                       try {
                         // call out to handleCompleteHabit
-                        await handleCompleteHabit(
+                        const completeHabit = await handleCompleteHabit(
                           habit.name,
                           validatedSelectedDate,
                           habit,
                           setHabit,
                           handleClose,
                         );
+                        if (completeHabit) {
+                          await updateStreak(
+                            habit.name,
+                            validatedSelectedDate,
+                            loadHabits,
+                          );
+                        }
                       } catch (error) {
                         console.error('Error during habit completion:', error);
                       }

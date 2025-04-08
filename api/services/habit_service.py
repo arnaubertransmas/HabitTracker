@@ -139,22 +139,3 @@ def complete_habit_service(habit_name, date_str, email):
             }
     except Exception as e:
         return {"success": False, "message": str(e)}
-
-
-def update_streak_service(habit_name, date, email):
-    try:
-        habit = Habit.get_habit(habit_name, email)
-        if not habit:
-            return {"success": False, "message": "Habit not found"}
-
-        completed = habit.get("completed", [])
-        if date in completed:
-            return {"success": False, "message": "Streak already on date"}
-
-        # Update the habit
-        updates = {"streak": date.split("T")[0]}  # Extract only YYYY-MM-DD
-        Habit.update_habit(habit_name, email, updates)
-
-        return {"success": True, "message": "Streak updated successfully"}
-    except Exception as e:
-        return {"success": False, "message": str(e)}
