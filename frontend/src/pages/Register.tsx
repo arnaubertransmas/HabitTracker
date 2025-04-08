@@ -45,6 +45,7 @@ const Register = () => {
   };
 
   return (
+    // return register dynamic form
     <>
       <Header />
       <Container className="d-flex justify-content-center align-items-center mt-5">

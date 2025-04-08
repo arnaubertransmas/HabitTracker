@@ -11,12 +11,14 @@ def registrate_user(name, surname, email, password, password2, streak):
         if not is_string(name, surname):
             return {"success": False, "message": "Can't contain numbers"}
 
+        # streak[] is falsy so we need to check if it's None
         if not all([name, surname, email, password, password2] or streak is None):
             return {"success": False, "message": "All fields are required"}
 
         if not validate_email(email):
             return {"success": False, "message": "Invalid email address"}
 
+        # validate password
         if password != password2:
             return {"success": False, "message": "Passwords must be identical"}
 
@@ -30,6 +32,7 @@ def registrate_user(name, surname, email, password, password2, streak):
         if type(streak) != list:
             return {"success": False, "message": "Invalid streak type"}
 
+        # Save it in the database calling the model
         user = User(name, surname, email, password, streak)
         user.save()
 
@@ -55,6 +58,7 @@ def login_user(email, password):
 
         user = user_to_login[0]
 
+        # validate with the hashed password
         if not check_password_hash(user["password"], password):
             return {"success": False, "message": "Invalid credentials"}
 
@@ -75,10 +79,11 @@ def update_streak_service(email, date):
             return {"success": False, "message": "User not found"}
 
         user = user[0]
-        streak = user.get("streak", [])
+        streak = user.get("streak", [])  # if no streak, take []
         date = date.split("T")[0]  # Extract only YYYY-MM-DD
 
         today = datetime.now().date()
+        # get the latest added streak date if there is one
         last_streak_date = (
             datetime.strptime(streak[-1], "%Y-%m-%d").date() if streak else None
         )
@@ -98,6 +103,7 @@ def update_streak_service(email, date):
 
         # Update the user in the database
         updates = {"streak": streak}
+        # update user with the new streak
         User.update_user(email, updates)
 
         return {"success": True, "message": "Streak updated successfully"}

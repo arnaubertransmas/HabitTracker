@@ -3,6 +3,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Header from '../components/ui/Header';
 
+// error page, 404
 const Error404 = (): JSX.Element => {
   return (
     <>

@@ -18,6 +18,7 @@ const AppRoutes = () => {
   const handleCloseModal = () => setShowModal(false);
 
   return (
+    // keys are unique for each route to force re-rendering when navigating between routes
     <BrowserRouter>
       <Routes>
         {/* Public routes */}

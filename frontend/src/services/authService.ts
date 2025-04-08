@@ -2,6 +2,7 @@ import axiosInstance from '../config/axiosConfig';
 import Cookies from 'js-cookie';
 import UserInterface from '../types/auth';
 
+// function to login user
 export const login = async (
   email: string,
   password: string,
@@ -47,6 +48,7 @@ export const login = async (
   }
 };
 
+// Register function
 export const register = async (
   data: UserInterface,
   redirect: (path: string) => void,
@@ -61,6 +63,7 @@ export const register = async (
 
     setError('');
 
+    // pass data to backend
     const response = await axiosInstance.post('/auth/signup', {
       name: data.name,
       surname: data.surname,
@@ -85,6 +88,7 @@ export const register = async (
   }
 };
 
+// Fetch user data by email
 export const getUser = async (email: string) => {
   try {
     const response = await axiosInstance.get(`/auth/get_user/${email}`);
@@ -98,6 +102,7 @@ export const getUser = async (email: string) => {
   }
 };
 
+// Check if user is authenticated
 export const checkAuth = async (
   setIsAuthenticated: (value: boolean) => void,
 ) => {
@@ -116,6 +121,7 @@ export const checkAuth = async (
   }
 };
 
+// Logout function
 export const logout = async (
   redirect: (path: string) => void,
   setIsAuthenticated: (value: boolean) => void,
@@ -124,7 +130,7 @@ export const logout = async (
     const response = await axiosInstance.post('/auth/logout');
 
     if (response.data.success) {
-      // remove cookie
+      // remove cookies + localStorage
       Cookies.remove('cookie_access_token');
       localStorage.removeItem('user_name');
       localStorage.removeItem('email');

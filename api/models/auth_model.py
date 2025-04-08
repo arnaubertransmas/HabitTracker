@@ -29,8 +29,6 @@ class User:
                 }
             )
 
-            # self.id = result.inserted_id
-
         except Exception as e:
             raise e
 
@@ -56,6 +54,7 @@ class User:
     @staticmethod
     def update_user(email, updates):
         try:
+            # only update modified fields with "%set"
             users_collection.update_one({"email": email}, {"$set": updates})
         except Exception as e:
             raise e

@@ -18,6 +18,7 @@ const Habits = ({ habitType }: { habitType: 'Habit' | 'Non-negotiable' }) => {
     setHabitToEdit(null);
     setShowModal(false);
   };
+  // handle edit habit setting habit to edit
   const handleEdit = (habit: HabitInterface) => {
     setHabitToEdit(habit);
     setShowModal(true);
@@ -26,6 +27,7 @@ const Habits = ({ habitType }: { habitType: 'Habit' | 'Non-negotiable' }) => {
   const loadHabits = useCallback(async () => {
     try {
       setLoading(true);
+      // get Habits from API
       const response = await getHabits(habitType);
 
       setHabits(response);

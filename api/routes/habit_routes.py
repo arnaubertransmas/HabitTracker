@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-import jwt
 from services.habit_service import (
     complete_habit_service,
     create_new_habit,
@@ -130,7 +129,7 @@ def update_habit(habit_name):
         data = request.json
         new_name = data.get("name", "").strip()
         frequency = data.get("frequency", "").strip()
-        days = data.get("days", "")
+        days = data.get("days", "")  # cannot strip() an arr
         time_day = data.get("time_day", "").strip()
 
         updated = update_habit_service(
@@ -160,6 +159,7 @@ def complete_habit(habit_name):
         data = request.json
         date = data.get("completed", "")
 
+        # validate data in service
         completed = complete_habit_service(habit_name, date, email)
         if completed.get("success"):
             return jsonify({"success": True, "message": "Habit completed"}), 200

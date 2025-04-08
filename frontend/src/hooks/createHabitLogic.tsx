@@ -68,7 +68,7 @@ const CreateLogic = ({
       const dataToSend = {
         name: data.name,
         frequency: data.frequency,
-        days: days, // Ensure this is populated
+        days: days,
         time_day: data.time_day,
         type: data.type,
         completed: [],

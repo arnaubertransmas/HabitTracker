@@ -23,6 +23,7 @@ export const useHabitCompletion = (loadHabits: () => Promise<void>) => {
     // if no date is provided we'll use today's date
     const dateToCheck = habitClickedDate || new Date().toISOString();
     const normalizedDate = normalizeDate(dateToCheck);
+    // iterate across completed dates and check if the date is on arr
     const normalizedCompletedDates = habit.completed?.map(normalizeDate) || [];
     const isCompleted = normalizedCompletedDates.includes(normalizedDate);
     return isCompleted
@@ -31,17 +32,17 @@ export const useHabitCompletion = (loadHabits: () => Promise<void>) => {
   };
 
   // validate selected date
+  // check if date is valid
   const validateDateForCompletion = (
     selectedDate: string,
   ): [boolean, string | null] => {
-    // Create date objects and strip time components
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0); // start in 00:00
 
     const selectedDateObj = new Date(selectedDate);
     selectedDateObj.setHours(0, 0, 0, 0);
 
-    // Compare the date parts only
+    // Compare dates
     if (selectedDateObj.getTime() > today.getTime()) {
       return [false, 'Cannot complete habits for future dates'];
     } else if (selectedDateObj.getTime() < today.getTime()) {
@@ -51,6 +52,7 @@ export const useHabitCompletion = (loadHabits: () => Promise<void>) => {
     return [true, null];
   };
 
+  // Handle completion of a habit
   const handleCompleteHabit = async (
     habitName: string,
     selectedDate: string,
@@ -75,6 +77,7 @@ export const useHabitCompletion = (loadHabits: () => Promise<void>) => {
         return false;
       }
 
+      // call to API to mark the habit as complete
       const success = await completeHabit(habitName, date);
 
       if (success) {

@@ -4,6 +4,7 @@ import HabitInterface from '../types/habit';
 // get all habits with optional filtering by habit type
 export const getHabits = async (habitType?: 'Habit' | 'Non-negotiable') => {
   try {
+    // if type specified filter by it
     const url = habitType
       ? `/habit/get_habits?type=${habitType}`
       : '/habit/get_habits';
@@ -44,6 +45,7 @@ export const createHabits = async (
   loadHabits?: () => Promise<void>,
 ) => {
   try {
+    // data = dict
     const response = await axiosInstance.post('/habit/create_habit', data);
     if (!response.data.success) {
       console.error('Habit operation failed', response.data.message);
@@ -67,6 +69,7 @@ export const editHabit = async (
   loadHabits?: () => Promise<void>,
 ) => {
   try {
+    // pass whole habit to update
     const response = await axiosInstance.put(
       `/habit/update_habit/${habitToEdit.name}`,
       habit,
@@ -120,6 +123,7 @@ export const updateStreak = async (
   loadHabits?: () => Promise<void>,
 ) => {
   try {
+    // update it in auth
     const response = await axiosInstance.post('/auth/update_streak', {
       habitName: habitName,
       date: date,

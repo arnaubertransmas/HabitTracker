@@ -114,6 +114,7 @@ def update_streak():
         data = request.json
         date = data.get("date", "")
 
+        # validate data in service
         streak_updated = update_streak_service(email, date)
 
         if streak_updated.get("success"):

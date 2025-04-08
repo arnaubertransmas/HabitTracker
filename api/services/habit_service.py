@@ -82,14 +82,15 @@ def update_habit_service(habit_name, new_name, frequency, days, time_day, user_e
                 updates["frequency"] = frequency
 
         if habit["time_day"] != time_day:
-            if time_day.lower() in TIME_MAP:
+            if time_day in TIME_MAP:
                 updates["time_day"] = time_day
 
                 # update corresponding hours to new time_day
-                new_start_time, new_end_time = TIME_MAP[time_day.lower()]
+                new_start_time, new_end_time = TIME_MAP[time_day]
                 updates["start_time"] = new_start_time
                 updates["end_time"] = new_end_time
 
+        # update habyt from the model
         Habit.update_habit(habit_name, user_email, updates)
 
         return {"success": True, "message": "Habit updated successfully"}

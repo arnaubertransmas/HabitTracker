@@ -6,6 +6,7 @@ interface ProtectedRouteProps {
   children: ReactNode;
 }
 
+// define protected route for routes.tsx
 function ProtectedRoute({ children }: ProtectedRouteProps) {
   const redirect = useNavigate();
   const isAuthenticated = Cookies.get('cookie_access_token');
@@ -16,6 +17,7 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
     }
   }, [isAuthenticated, redirect]);
 
+  // If authenticated, render the children components
   return isAuthenticated ? <>{children}</> : null;
 }
 
