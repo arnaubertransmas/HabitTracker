@@ -76,7 +76,16 @@ def update_streak_service(email, date):
 
         user = user[0]
         streak = user.get("streak", [])
-        date = date.split("T")[0]
+        date = date.split("T")[0]  # Extract only YYYY-MM-DD
+
+        today = datetime.now().date()
+        last_streak_date = (
+            datetime.strptime(streak[-1], "%Y-%m-%d").date() if streak else None
+        )
+
+        # If streak exists and the last date is more than 1 day behind, reset streak
+        if last_streak_date and (today - last_streak_date).days > 1:
+            streak = []  # Reset streak
 
         if date in streak:
             return {
