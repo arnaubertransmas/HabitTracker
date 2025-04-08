@@ -15,24 +15,23 @@ import Progress from './pages/Progress';
 
 const AppRoutes = () => {
   const [showModal, setShowModal] = useState(false);
-
   const handleCloseModal = () => setShowModal(false);
 
   return (
     <BrowserRouter>
       <Routes>
         {/* Public routes */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/home" element={<LandingPage />} />
-        <Route path="/signin" element={<Login />} />
-        <Route path="/signup" element={<Register />} />
-        <Route path="/about_us" element={<AboutUs />} />
+        <Route path="/" element={<LandingPage key="landing" />} />
+        <Route path="/home" element={<LandingPage key="home" />} />
+        <Route path="/signin" element={<Login key="signin" />} />
+        <Route path="/signup" element={<Register key="signup" />} />
+        <Route path="/about_us" element={<AboutUs key="about" />} />
 
         {/* Protected routes */}
         <Route
           path="/user/:username"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute key="user">
               <Home />
             </ProtectedRoute>
           }
@@ -40,21 +39,22 @@ const AppRoutes = () => {
         <Route
           path="/habits"
           element={
-            <ProtectedRoute>
-              <Habits habitType="Habit" />
+            <ProtectedRoute key="habits">
+              <Habits habitType="Habit" key="habit" />
             </ProtectedRoute>
           }
         />
         <Route
           path="/habits/:create_habit"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute key="create-habit">
               <CreateHabit
                 show={showModal}
                 handleClose={handleCloseModal}
                 defaultType="Habit"
                 loadHabits={async () => {}}
                 habitToEdit={null}
+                key="create-habit-form"
               />
             </ProtectedRoute>
           }
@@ -62,21 +62,22 @@ const AppRoutes = () => {
         <Route
           path="/non-negotiables"
           element={
-            <ProtectedRoute>
-              <Habits habitType="Non-negotiable" />
+            <ProtectedRoute key="non-negotiables">
+              <Habits habitType="Non-negotiable" key="non-negotiable" />
             </ProtectedRoute>
           }
         />
         <Route
           path="/non-negotiables/:create_habit"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute key="create-non-negotiable">
               <CreateHabit
                 show={showModal}
                 handleClose={handleCloseModal}
                 defaultType="Non-negotiable"
                 loadHabits={async () => {}}
                 habitToEdit={null}
+                key="create-non-negotiable-form"
               />
             </ProtectedRoute>
           }
@@ -84,24 +85,25 @@ const AppRoutes = () => {
         <Route
           path="/schedule"
           element={
-            <ProtectedRoute>
-              <Schedule />
+            <ProtectedRoute key="schedule">
+              <Schedule key="schedule-view" />
             </ProtectedRoute>
           }
         />
         <Route
           path="/progress"
           element={
-            <ProtectedRoute>
-              <Progress />
+            <ProtectedRoute key="progress">
+              <Progress key="progress-view" />
             </ProtectedRoute>
           }
         />
 
         {/* Error page (default route) */}
-        <Route path="*" element={<Error />} />
+        <Route path="*" element={<Error key="error" />} />
       </Routes>
     </BrowserRouter>
   );
 };
+
 export default AppRoutes;
