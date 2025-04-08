@@ -82,10 +82,11 @@ class Habit:
     def update_habit(habit_name, user_email, updates):
         try:
             # update only changes, not all ($set)
-            habits_collection.update_one(
+            result = habits_collection.update_one(
                 {"name": habit_name, "user_email": user_email}, {"$set": updates}
             )
         except Exception as e:
+            print("error", e)
             return e
 
     @staticmethod

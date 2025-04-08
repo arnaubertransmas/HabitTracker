@@ -1,9 +1,11 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
+import jwt
 from services.habit_service import (
     complete_habit_service,
     create_new_habit,
     update_habit_service,
+    update_streak_service,
 )
 from models.habit_model import Habit
 
@@ -160,7 +162,6 @@ def complete_habit(habit_name):
         date = data.get("completed", "")
 
         completed = complete_habit_service(habit_name, date, email)
-
         if completed.get("success"):
             return jsonify({"success": True, "message": "Habit completed"}), 200
         else:
@@ -171,6 +172,29 @@ def complete_habit(habit_name):
 
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
+
+
+@habit_routes.route("/update_streak", methods=["POST"])
+@jwt_required()
+def update_streak():
+    if request.method == "POST":
+        try:
+            email = get_identity()
+            data = request.json
+            habit_name = data.get("habitName", "").strip()
+            date = data.get("date", "")
+
+            streak_updated = update_streak_service(habit_name, date, email)
+
+            if streak_updated.get("success"):
+                return jsonify({"success": True, "message": "Streak updated"}), 200
+            else:
+                return (
+                    jsonify({"success": False, "message": "Couldn't update streak"}),
+                    404,
+                )
+        except Exception as e:
+            return jsonify({"success": False, "message": str(e)}), 500
 
 
 @habit_routes.route("/delete_habit/<string:name>", methods=["DELETE"])

@@ -105,7 +105,7 @@ def complete_habit_service(habit_name, date_str, email):
         if not habit:
             return {"success": False, "message": "Habit not found"}
 
-        # Parse the incoming date string
+        # Convert str to date object and get date of today
         date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
         date_today = datetime.now().date()
 
@@ -117,12 +117,12 @@ def complete_habit_service(habit_name, date_str, email):
 
         completed = habit.get("completed", [])
 
-        # format date for storage and comparison
-        normalized_date_str = date_obj.strftime("%Y-%m-%d")
-
         # Check if date is already in completed list
-        if normalized_date_str not in completed:
-            completed.append(normalized_date_str)
+        date_str_formatted = date_obj.strftime(
+            "%Y-%m-%d"
+        )  # Convert back to string for storage
+        if date_str_formatted not in completed:
+            completed.append(date_str_formatted)
 
             # Update the habit
             updates = {"completed": completed}
@@ -130,12 +130,31 @@ def complete_habit_service(habit_name, date_str, email):
 
             return {
                 "success": True,
-                "message": f"Habit marked as complete for {normalized_date_str}",
+                "message": f"Habit marked as complete for {date_str_formatted}",
             }
         else:
             return {
                 "success": True,
-                "message": f"Habit already completed on {normalized_date_str}",
+                "message": f"Habit already completed on {date_str_formatted}",
             }
+    except Exception as e:
+        return {"success": False, "message": str(e)}
+
+
+def update_streak_service(habit_name, date, email):
+    try:
+        habit = Habit.get_habit(habit_name, email)
+        if not habit:
+            return {"success": False, "message": "Habit not found"}
+
+        completed = habit.get("completed", [])
+        if date in completed:
+            return {"success": False, "message": "Streak already on date"}
+
+        # Update the habit
+        updates = {"streak": date.split("T")[0]}  # Extract only YYYY-MM-DD
+        Habit.update_habit(habit_name, email, updates)
+
+        return {"success": True, "message": "Streak updated successfully"}
     except Exception as e:
         return {"success": False, "message": str(e)}

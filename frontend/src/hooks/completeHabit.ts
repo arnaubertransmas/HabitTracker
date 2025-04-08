@@ -34,21 +34,20 @@ export const useHabitCompletion = (loadHabits: () => Promise<void>) => {
   const validateDateForCompletion = (
     selectedDate: string,
   ): [boolean, string | null] => {
+    // Create date objects and strip time components
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const normalizedToday = normalizeDate(today);
-    const normalizedSelectedDate = normalizeDate(selectedDate);
+    const selectedDateObj = new Date(selectedDate);
+    selectedDateObj.setHours(0, 0, 0, 0);
 
-    const selectedDateObj = new Date(normalizedSelectedDate);
-    const todayObj = new Date(normalizedToday);
-
-    // forbid date completion for non-today days
-    if (selectedDateObj > todayObj) {
+    // Compare the date parts only
+    if (selectedDateObj.getTime() > today.getTime()) {
       return [false, 'Cannot complete habits for future dates'];
-    } else if (selectedDateObj < todayObj) {
+    } else if (selectedDateObj.getTime() < today.getTime()) {
       return [false, 'Cannot complete habits for past dates'];
     }
+
     return [true, null];
   };
 
@@ -58,7 +57,7 @@ export const useHabitCompletion = (loadHabits: () => Promise<void>) => {
     habit: HabitInterface | null,
     setHabit: React.Dispatch<React.SetStateAction<HabitInterface | null>>,
     handleClose: () => void,
-  ): Promise<void> => {
+  ): Promise<boolean> => {
     try {
       setIsLoading(true);
       setError(null);
@@ -66,11 +65,14 @@ export const useHabitCompletion = (loadHabits: () => Promise<void>) => {
 
       if (!habit) {
         setError('Error: No habit provided');
-        return;
+        return false;
       }
       // date validation
-      if (!validateDateForCompletion(selectedDate)) {
-        return;
+      const [isValid, validationError] =
+        validateDateForCompletion(selectedDate);
+      if (!isValid) {
+        setError(validationError || 'Invalid date');
+        return false;
       }
 
       const success = await completeHabit(habitName, date);
@@ -88,12 +90,15 @@ export const useHabitCompletion = (loadHabits: () => Promise<void>) => {
 
         // wait for 1 second before closing the modal to allow the user to see the success operation
         setTimeout(() => handleClose(), 1000);
+        return true;
       } else {
         setError('Failed to mark habit as complete');
+        return false;
       }
     } catch (error) {
       console.error('Error marking habit as complete:', error);
       setError('An unexpected error occurred. Please try again.');
+      return false;
     } finally {
       setIsLoading(false);
     }
