@@ -10,7 +10,7 @@
 /* intern container */
 .calendar-wrapper {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1450px;
   margin-left: 220px;
   background-color: var(--white);
   border-radius: 12px;
@@ -22,6 +22,8 @@
 /* calendar table */
 .fc {
   font-family: 'Open Sans';
+  width: 100% !important;
+  height: auto !important;
 }
 
 /* days, num of month... */
@@ -153,13 +155,25 @@
 }
 
 /* responsiveness */
+@media (min-width: 1200px) {
+  .calendar-wrapper {
+    margin-left: 220px;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .calendar-wrapper {
+    margin-left: 150px;
+  }
+}
+
 @media (max-width: 768px) {
   .calendar-container {
     padding: 10px;
   }
 
   .calendar-wrapper {
-    margin-left: 0;
+    margin-left: 100px;
   }
 
   .fc-header-toolbar {

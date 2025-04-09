@@ -13,6 +13,7 @@ import {
   CDBSidebarMenuItem,
   CDBSidebarHeader,
 } from 'cdbreact';
+import '../../assets/css/sidebar.css';
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -55,42 +56,22 @@ const Sidebar = () => {
   ) => {
     const menuItem = e.currentTarget.querySelector('.sidebar-menu-item');
     if (menuItem) {
-      (menuItem as HTMLElement).style.backgroundColor = 'transparent';
-      // If it's active, maintain the primary color, otherwise revert to #333
-      (menuItem as HTMLElement).style.color = isActive ? primaryColor : '#333';
+      // Check if this link has the activeClicked class
+      const hasActiveClass =
+        e.currentTarget.classList.contains('activeClicked');
+
+      // If it's active, keep the primary color background, otherwise transparent
+      (menuItem as HTMLElement).style.backgroundColor = hasActiveClass
+        ? primaryColor
+        : 'transparent';
+
+      // If it's active, keep text white, otherwise revert to #333
+      (menuItem as HTMLElement).style.color = hasActiveClass ? 'white' : '#333';
     }
   };
 
   return (
-    <div
-      className="sidebar-container"
-      style={{
-        height: '100%',
-        position: 'fixed',
-        zIndex: 1000,
-        overflowX: 'hidden',
-        transition: '0.3s',
-      }}
-    >
-      <style>
-        {`
-          .activeClicked {
-            background-color: #007bff;
-            color: white;
-          }
-          .sidebar-container {
-            height: 100%;
-            position: fixed;
-            z-index: 1000;
-            overflow-x: hidden;
-            transition: 0.3s;
-          }
-          .sidebar-menu-item {
-            transition: background-color 0.3s, color 0.3s;
-          }
-        `}
-      </style>
-
+    <div className="sidebar-container">
       <CDBSidebar
         textColor="#333"
         backgroundColor="transparent"
@@ -108,7 +89,12 @@ const Sidebar = () => {
               to={user}
               className={({ isActive }) => (isActive ? 'activeClicked' : '')}
               onMouseEnter={hoverLinkEnter}
-              onMouseLeave={(e) => hoverLinkLeave(e, false)}
+              onMouseLeave={(e) =>
+                hoverLinkLeave(
+                  e,
+                  e.currentTarget.classList.contains('activeClicked'),
+                )
+              }
               style={{
                 color: 'inherit',
               }}
@@ -127,7 +113,12 @@ const Sidebar = () => {
               to="/non-negotiables"
               className={({ isActive }) => (isActive ? 'activeClicked' : '')}
               onMouseEnter={hoverLinkEnter}
-              onMouseLeave={(e) => hoverLinkLeave(e, false)}
+              onMouseLeave={(e) =>
+                hoverLinkLeave(
+                  e,
+                  e.currentTarget.classList.contains('activeClicked'),
+                )
+              }
               style={{
                 color: 'inherit',
               }}
@@ -146,7 +137,12 @@ const Sidebar = () => {
               to="/habits"
               className={({ isActive }) => (isActive ? 'activeClicked' : '')}
               onMouseEnter={hoverLinkEnter}
-              onMouseLeave={(e) => hoverLinkLeave(e, false)}
+              onMouseLeave={(e) =>
+                hoverLinkLeave(
+                  e,
+                  e.currentTarget.classList.contains('activeClicked'),
+                )
+              }
               style={{
                 color: 'inherit',
               }}
@@ -165,7 +161,12 @@ const Sidebar = () => {
               to="/schedule"
               className={({ isActive }) => (isActive ? 'activeClicked' : '')}
               onMouseEnter={hoverLinkEnter}
-              onMouseLeave={(e) => hoverLinkLeave(e, false)}
+              onMouseLeave={(e) =>
+                hoverLinkLeave(
+                  e,
+                  e.currentTarget.classList.contains('activeClicked'),
+                )
+              }
               style={{
                 color: 'inherit',
               }}
@@ -184,7 +185,12 @@ const Sidebar = () => {
               to="/progress"
               className={({ isActive }) => (isActive ? 'activeClicked' : '')}
               onMouseEnter={hoverLinkEnter}
-              onMouseLeave={(e) => hoverLinkLeave(e, false)}
+              onMouseLeave={(e) =>
+                hoverLinkLeave(
+                  e,
+                  e.currentTarget.classList.contains('activeClicked'),
+                )
+              }
               style={{
                 color: 'inherit',
               }}

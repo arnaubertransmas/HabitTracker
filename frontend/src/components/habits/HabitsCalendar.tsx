@@ -82,7 +82,7 @@ const Calendar: React.FC = () => {
   };
 
   return (
-    <Container fluid className="px-lg-5">
+    <Container fluid className="px-lg-5 ms-5">
       <Row>
         <Col xs={12}>
           {loading ? (

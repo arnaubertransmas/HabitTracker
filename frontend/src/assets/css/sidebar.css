@@ -1,0 +1,23 @@
+/* active clicked sidebar button */
+.activeClicked .sidebar-menu-item {
+  background-color: #007bff !important;
+  color: white !important;
+}
+
+/* whole sidebar container */
+.sidebar-container {
+  height: 100%;
+  position: fixed;
+  z-index: 1000;
+  overflow-x: hidden;
+  transition: 0.3s;
+  margin-right: 5px;
+  width: 250px;
+}
+
+/* siebar menu items */
+.sidebar-menu-item {
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
