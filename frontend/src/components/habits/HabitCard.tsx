@@ -2,7 +2,7 @@ import { Card, Col } from 'react-bootstrap';
 import { Calendar, Clock, Activity } from 'lucide-react';
 import HabitInterface from '../../types/habit';
 
-// HabitCard which shows each habit on weekly/daily view
+// HabitCard which shows each habit on weekly/daily view in DailyInfo
 const HabitCard = ({ habit }: { habit: HabitInterface }) => {
   // get color of habit based on type
   const getBgColor = (type: string) => {
