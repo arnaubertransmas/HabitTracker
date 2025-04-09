@@ -77,9 +77,12 @@ def update_habit_service(habit_name, new_name, frequency, days, time_day, user_e
         if habit["name"] != new_name:
             updates["name"] = new_name
 
+        # . != to see if the value is different
         if habit["frequency"] != frequency:
-            if type(days) == list:
-                updates["frequency"] = frequency
+            updates["frequency"] = frequency
+
+        if type(days) == list:
+            updates["days"] = days
 
         if habit["time_day"] != time_day:
             if time_day in TIME_MAP:
