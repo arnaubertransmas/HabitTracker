@@ -51,7 +51,7 @@ const Header = () => {
             <>
               <Nav.Link
                 as={Link}
-                to="/user"
+                to={`/user/${localStorage.getItem('user_name')}`}
                 className="px-4 py-2 rounded"
                 style={loginStyle}
                 onMouseEnter={(e) => {

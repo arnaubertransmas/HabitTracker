@@ -89,7 +89,13 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
     }
 
     return (
-      <Table striped bordered hover className="text-center">
+      <Table
+        striped
+        bordered
+        hover
+        className="text-center"
+        style={{ maxWidth: '90%', marginRight: 'auto' }}
+      >
         <thead>
           <tr>
             <th>{habitType}</th>

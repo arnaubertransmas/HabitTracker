@@ -18,8 +18,7 @@ import '../../assets/css/sidebar.css';
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const primaryColor = '#007bff';
-  const username = localStorage.getItem('user_name') || '';
-  const user = `/user/${username}`;
+  const user = `/user/${localStorage.getItem('user_name')}`;
 
   // Control the screen size
   useEffect(() => {

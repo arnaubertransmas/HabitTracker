@@ -36,7 +36,7 @@ export const login = async (
       localStorage.setItem('email', email);
 
       // redirect to user's profile page
-      redirect(`/user/${result.user.name.toLowerCase()}`);
+      redirect(`/user/${result.user.name}`);
       return true;
     }
 
