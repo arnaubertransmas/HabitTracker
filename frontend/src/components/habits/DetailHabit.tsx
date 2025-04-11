@@ -7,6 +7,7 @@ import {
 } from '../../services/habitService';
 import HabitInterface from '../../types/habit';
 import { useHabitCompletion } from '../../hooks/completeHabit';
+import Notes from './Notes';
 
 interface DetailHabitProps {
   habitName: string;
@@ -120,6 +121,11 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
                 </Col>
               </Row>
             )}
+            <Row className="mb-3">
+              <Col>
+                <Notes habitName={habitName} />
+              </Col>
+            </Row>
 
             <Row className="mb-3">
               <Col>
