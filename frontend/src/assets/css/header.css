@@ -1,0 +1,38 @@
+/* Header Component Styles */
+.login-style {
+  background-color: #f8f9fa !important;
+  transition: 0.3s;
+}
+
+.register-style {
+  background-color: #2962ff !important;
+  color: white !important;
+  transition: 0.3s;
+}
+.login-style:hover {
+  color: #007bff !important;
+}
+
+.register-style:hover {
+  background-color: #0039cb !important;
+}
+
+.nav-link-signin {
+  color: black;
+}
+
+.nav-link-signin:hover {
+  color: #007bff;
+}
+
+/* specific selectors */
+.navbar .nav-link.login-style {
+  background-color: #f8f9fa;
+  transition: 0.3s;
+}
+
+.navbar .nav-link.register-style {
+  background-color: #2962ff;
+  transition: 0.3s;
+  color: white;
+}
