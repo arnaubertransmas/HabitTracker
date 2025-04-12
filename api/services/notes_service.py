@@ -1,25 +1,25 @@
-from utils.logger import log_error
-from models.notes_model import Notes
 from models.habit_model import Habit
+from models.notes_model import Notes
 
 
 def save_note_service(notes, habit_name, user_email):
     """save note to the database || validations"""
     try:
         if not Habit.get_habit(habit_name, user_email):
-            return {"success": False, "message": "Habit not found"}, 404
+            return {"success": False, "message": "Habit not found"}
 
-        if len(notes) >= 90:
-            return {"success": False, "message": "Note limit exceeded"}, 400
+        # check if note exists
+        existing_note = Notes.get_note(habit_name, user_email)
+        if existing_note:
+            # modify note
+            Notes.update_note(habit_name, user_email, notes)
+            return {"success": True, "message": "Note updated successfully"}
 
-        if Notes.get_note(habit_name, user_email):
-            return {"success": False, "message": "Note already exists"}, 400
-
+        # Create new note
         note = Notes(notes, habit_name, user_email)
         note.save()
-
-        return {"success": True, "message": "Note saved successfully"}, 200
+        return {"success": True, "message": "Note saved successfully"}
 
     except Exception as e:
-        log_error(e)
-        return {"success": False, "message": "Failed to save note"}, 500
+        print(f"Error in save_note_service: {e}")
+        return {"success": False, "message": f"Failed to save note: {str(e)}"}

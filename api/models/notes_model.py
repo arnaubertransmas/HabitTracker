@@ -7,7 +7,6 @@ notes_collection = db["notes"]
 
 
 class Notes:
-
     def __init__(self, notes, habit_name, user_email):
         self.notes = notes
         self.habit_name = habit_name
@@ -16,14 +15,24 @@ class Notes:
     def save(self):
         """Save a note to the database"""
         try:
-            notes_collection.insert_one(
-                {
-                    "notes": self.notes,
-                    "habit_name": self.habit_name,
-                    "user_email": self.user_email,
-                }
+            # check if existsts (again)
+            existing_note = notes_collection.find_one(
+                {"habit_name": self.habit_name, "user_email": self.user_email}
             )
 
+            if existing_note:
+                notes_collection.update_one(
+                    {"habit_name": self.habit_name, "user_email": self.user_email},
+                    {"$set": {"notes": self.notes}},
+                )
+            else:
+                notes_collection.insert_one(
+                    {
+                        "notes": self.notes,
+                        "habit_name": self.habit_name,
+                        "user_email": self.user_email,
+                    }
+                )
         except Exception as e:
             raise e
 
@@ -35,5 +44,17 @@ class Notes:
                 {"habit_name": habit_name, "user_email": user_email}, {"_id": 0}
             )
             return note
+        except Exception as e:
+            raise e
+
+    @staticmethod
+    def update_note(habit_name, user_email, new_notes):
+        """Update an existing note"""
+        try:
+            result = notes_collection.update_one(
+                {"habit_name": habit_name, "user_email": user_email},
+                {"$set": {"notes": new_notes}},
+            )
+            return result.modified_count > 0
         except Exception as e:
             raise e
