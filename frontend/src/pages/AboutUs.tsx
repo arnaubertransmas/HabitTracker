@@ -10,7 +10,10 @@ const AboutUs = () => {
       <Header />
       {user && <Sidebar />}
 
-      <div className="container py-5 d-flex flex-column align-items-center text-center">
+      <div
+        className="container py-5 d-flex flex-column align-items-center text-center"
+        style={{ marginLeft: '150px' }}
+      >
         <h1 className="display-4 fw-bold mb-4">
           Empower Your Habits, Transform Your Life
         </h1>

@@ -12,6 +12,7 @@ import Habits from './pages/Habits';
 import CreateHabit from './components/habits/CreateHabit';
 import Schedule from './pages/Schedule';
 import Progress from './pages/Progress';
+import EditProfile from './pages/EditProfile';
 
 const AppRoutes = () => {
   const [showModal, setShowModal] = useState(false);
@@ -34,6 +35,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute key="user">
               <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/user/:username/edit_profile"
+          element={
+            <ProtectedRoute key="user">
+              <EditProfile />
             </ProtectedRoute>
           }
         />
