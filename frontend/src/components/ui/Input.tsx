@@ -9,11 +9,12 @@ interface InputProps {
   placeholder?: string;
   className?: string;
   rules?: object;
+  disabled?: boolean;
 }
 
 // forwardRef to pass ref to input element
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ type, id, value, placeholder, className, rules = {} }, ref) => {
+  ({ type, id, value, placeholder, className, rules = {}, disabled }, ref) => {
     const methods = useFormContext();
 
     if (!methods) {
@@ -31,6 +32,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           value={value}
           placeholder={placeholder}
           className={className}
+          disabled={disabled}
           ref={(e: HTMLInputElement | null) => {
             registerRef(e);
             if (ref) {
