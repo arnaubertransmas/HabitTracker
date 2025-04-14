@@ -3,7 +3,7 @@ import { Card, Container, Nav, ProgressBar, Row, Col } from 'react-bootstrap';
 import { Award } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import HabitCard from './habits/HabitCard';
-import useHabits from '../hooks/getHabits_TW';
+import useHabits from '../hooks/getHabits_DW';
 
 interface DailyInfoProps {
   streak: number;
