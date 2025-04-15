@@ -8,6 +8,7 @@ const EditProfile = () => {
   const [userToUpdate, setUserToUpdate] = useState<UserInterface | null>(null);
 
   useEffect(() => {
+    // function to get whole user data
     const getWholeUser = async () => {
       try {
         const user = await getUser();

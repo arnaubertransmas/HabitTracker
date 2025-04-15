@@ -58,3 +58,10 @@ class User:
             users_collection.update_one({"email": email}, {"$set": updates})
         except Exception as e:
             raise e
+
+    @staticmethod
+    def delete_user(email):
+        try:
+            users_collection.delete_one({"email": email})
+        except Exception as e:
+            return e

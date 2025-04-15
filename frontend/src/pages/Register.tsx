@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
+import { FormProvider } from 'react-hook-form';
 import {
   Button,
   Form,
@@ -9,43 +8,32 @@ import {
   Card,
   Alert,
 } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Header from '../components/ui/Header';
 import Input from '../components/ui/Input';
 import UserInterface from '../types/auth';
-import { register } from '../services/authService';
+import CreateUserLogic from '../hooks/createUserLogic';
 
-const Register = () => {
-  const [error, setError] = useState<string>(''); // Set initial error state as an empty string
-  const [loading, setLoading] = useState<boolean>(false);
-  const redirect = useNavigate();
+interface UserFormProps {
+  userToUpdate?: UserInterface | null;
+}
 
-  const methods = useForm<UserInterface>({ mode: 'onChange' });
+// register main page
+const Register: React.FC<UserFormProps> = ({ userToUpdate }) => {
   const {
+    methods,
     handleSubmit,
-    formState: { errors },
-    watch,
-  } = methods;
-
-  const password = watch('password'); // Real-time watch for password
-
-  // onSubmit func w UserInterface type
-  const onSubmit: SubmitHandler<UserInterface> = async (data) => {
-    if (data.password !== data.password2) {
-      setError('Passwords do not match');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      await register(data, redirect, setError);
-    } finally {
-      setLoading(false);
-    }
-  };
+    errors,
+    password,
+    onSubmit,
+    handleDelete,
+    error,
+    success,
+    loading,
+    isEditMode,
+  } = CreateUserLogic({ userToUpdate });
 
   return (
-    // return register dynamic form
     <>
       <Header />
       <Container className="d-flex justify-content-center align-items-center mt-5">
@@ -53,13 +41,14 @@ const Register = () => {
           <Col xs={12} md={8} lg={6} className="mx-auto">
             <Card className="shadow p-5" style={{ margin: 'auto' }}>
               <Card.Body>
-                <h2 className="text-center mb-5">Sign Up</h2>
-                {error && (
-                  <Alert variant="danger" className="mb-4">
-                    {error}
-                  </Alert>
-                )}
-                {/* Inject methods validations to form */}
+                {/* if isEditMode show EditProfile */}
+                <h2 className="text-center mb-5">
+                  {isEditMode ? 'Edit Profile' : 'Sign Up'}
+                </h2>
+
+                {error && <Alert variant="danger">{error}</Alert>}
+                {success && <Alert variant="success">{success}</Alert>}
+
                 <FormProvider {...methods}>
                   <Form onSubmit={handleSubmit(onSubmit)}>
                     <Input
@@ -108,6 +97,7 @@ const Register = () => {
                           message: 'Invalid email address',
                         },
                       }}
+                      disabled={isEditMode} // Disable email field in editMode
                     />
                     {errors.email && (
                       <p className="text-danger">{errors.email.message}</p>
@@ -116,10 +106,14 @@ const Register = () => {
                     <Input
                       type="password"
                       id="password"
-                      placeholder="Password"
+                      placeholder={
+                        isEditMode
+                          ? 'New password (leave blank to keep current)'
+                          : 'Password'
+                      }
                       className="form-control"
                       rules={{
-                        required: 'Password is required',
+                        required: !isEditMode ? 'Password is required' : false,
                         minLength: {
                           value: 8,
                           message: 'Password must be at least 8 characters',
@@ -139,15 +133,23 @@ const Register = () => {
                     <Input
                       type="password"
                       id="password2"
-                      placeholder="Repeat your password"
+                      placeholder={
+                        isEditMode
+                          ? 'Confirm new password'
+                          : 'Repeat your password'
+                      }
                       className="form-control"
                       rules={{
-                        required: 'Please confirm your password',
+                        required: !isEditMode
+                          ? 'Please confirm your password'
+                          : false,
                         validate: (value: string) =>
-                          value === password || 'Passwords do not match',
+                          !value ||
+                          !password ||
+                          value === password ||
+                          'Passwords do not match',
                       }}
                     />
-
                     {errors.password2 && (
                       <p className="text-danger">{errors.password2.message}</p>
                     )}
@@ -159,15 +161,34 @@ const Register = () => {
                       size="lg"
                       disabled={loading}
                     >
-                      {loading ? 'Registering...' : 'Sign up'}
+                      {loading
+                        ? isEditMode
+                          ? 'Updating...'
+                          : 'Registering...'
+                        : isEditMode
+                          ? 'Update Profile'
+                          : 'Sign Up'}
                     </Button>
 
-                    <Form.Group className="text-center mt-3">
-                      Already have an account?
-                      <Link to="/signin" className="ms-1">
-                        Sign in
-                      </Link>
-                    </Form.Group>
+                    {!isEditMode ? (
+                      <Form.Group className="text-center mt-3">
+                        Already have an account?
+                        <Link to="/signin" className="ms-1">
+                          Sign in
+                        </Link>
+                      </Form.Group>
+                    ) : (
+                      <Form.Group className="text-center mt-3 border border-danger p-2 rounded">
+                        <Link
+                          to="/"
+                          style={{ cursor: 'pointer', textDecoration: 'none' }}
+                          onClick={handleDelete}
+                          className="ms-1 text-black"
+                        >
+                          Delete Account
+                        </Link>
+                      </Form.Group>
+                    )}
                   </Form>
                 </FormProvider>
               </Card.Body>

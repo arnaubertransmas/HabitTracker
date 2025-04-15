@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import HabitInterface from '../types/habit';
 import { createHabits, editHabit } from '../services/habitService';
 
-interface CreateLogicInterface {
+interface CreateHabitLogicInterface {
   defaultType?: 'Habit' | 'Non-negotiable';
   habitToEdit: HabitInterface | null;
   show: boolean;
@@ -11,13 +11,13 @@ interface CreateLogicInterface {
   handleClose: () => void;
 }
 
-const CreateLogic = ({
+const CreateHabitLogic = ({
   defaultType,
   habitToEdit,
   show,
   loadHabits,
   handleClose,
-}: CreateLogicInterface) => {
+}: CreateHabitLogicInterface) => {
   const methods = useForm<HabitInterface>({
     mode: 'onChange',
     defaultValues: {
@@ -110,4 +110,4 @@ const CreateLogic = ({
   };
 };
 
-export default CreateLogic;
+export default CreateHabitLogic;

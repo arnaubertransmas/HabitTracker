@@ -1,5 +1,6 @@
 from models.habit_model import Habit
 from models.notes_model import Notes
+from utils.logger import log_error
 
 
 def save_note_service(notes, habit_name, user_email):
@@ -21,5 +22,5 @@ def save_note_service(notes, habit_name, user_email):
         return {"success": True, "message": "Note saved successfully"}
 
     except Exception as e:
-        print(f"Error in save_note_service: {e}")
+        log_error(f"Note registration error: {e}")
         return {"success": False, "message": f"Failed to save note: {str(e)}"}

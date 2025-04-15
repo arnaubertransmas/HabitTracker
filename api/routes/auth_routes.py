@@ -1,6 +1,11 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required, create_access_token
-from services.auth_service import login_user, registrate_user, update_streak_service
+from services.auth_service import (
+    login_user,
+    registrate_user,
+    update_streak_service,
+    update_user_service,
+)
 from flask_login import LoginManager
 from models.auth_model import User
 
@@ -15,11 +20,12 @@ def load_user(user_id):
     return User.get_user("_id", user_id)
 
 
-@auth_routes.route("/get_user/<string:email>", methods=["GET"])
+@auth_routes.route("/get_user", methods=["GET"])
 @jwt_required()
-def get_user(email):
+def get_user():
     """Get user data"""
     try:
+        email = get_jwt_identity()
         # get user data from DB
         user = User.get_user("email", email)
 
@@ -105,6 +111,33 @@ def signin():
         )
 
 
+@auth_routes.route("/update_user", methods=["PUT"])
+@jwt_required()
+def update_user():
+    """Update user data"""
+    try:
+        data = request.json
+        name = data.get("name", "").strip()
+        surname = data.get("surname", "").strip()
+        email = get_jwt_identity()
+        password = data.get("password", "").strip()
+        password2 = data.get("password2", "").strip()
+
+        # validate data
+        updated = update_user_service(name, surname, email, password, password2)
+
+        if updated.get("success"):
+            return jsonify({"success": True, "message": "User info updated"}), 201
+
+        return jsonify({"success": False, "message": "Error updating user info"}), 400
+
+    except Exception as e:
+        return (
+            jsonify({"success": False, "message": f"Error checking session: {str(e)}"}),
+            500,
+        )
+
+
 @auth_routes.route("/update_streak", methods=["POST"])
 @jwt_required()
 def update_streak():
@@ -154,5 +187,26 @@ def check_session():
     except Exception as e:
         return (
             jsonify({"success": False, "message": f"Error checking session: {str(e)}"}),
+            500,
+        )
+
+
+@auth_routes.route("/delete_user", methods=["DELETE"])
+@jwt_required()
+def delete_user():
+    """Delete user"""
+    try:
+        email = get_jwt_identity()
+
+        # delete user from DB
+        User.delete_user(email)
+        # logout user to prevent access to the app
+        logout()
+
+        return jsonify({"success": True, "message": "User deleted successfully"}), 200
+
+    except Exception as e:
+        return (
+            jsonify({"success": False, "message": f"Error deleting user: {str(e)}"}),
             500,
         )

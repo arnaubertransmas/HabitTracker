@@ -33,7 +33,6 @@ export const login = async (
 
       // save user name to localStorage
       localStorage.setItem('user_name', result.user.name);
-      localStorage.setItem('email', email);
 
       // redirect to user's profile page
       redirect(`/user/${result.user.name}`);
@@ -89,16 +88,52 @@ export const register = async (
 };
 
 // Fetch user data by email
-export const getUser = async (email: string) => {
+export const getUser = async () => {
   try {
-    const response = await axiosInstance.get(`/auth/get_user/${email}`);
-
+    const response = await axiosInstance.get('/auth/get_user');
     if (response.data.success) {
       return response.data.user;
     }
   } catch (error) {
     console.error('Error fetching user:', error);
     return null;
+  }
+};
+
+// Update user data
+export const updateUser = async (dataUpdate: UserInterface) => {
+  try {
+    const response = await axiosInstance.put('/auth/update_user', dataUpdate);
+
+    if (response.data.success) {
+      return true;
+    } else {
+      console.error('Error from server:', response.data.message);
+      return false;
+    }
+  } catch (err) {
+    console.error('Error updating user:', err);
+    return false;
+  }
+};
+
+// DeleteUser function
+export const deleteUser = async () => {
+  try {
+    const response = await axiosInstance.delete(`/auth/delete_user`);
+
+    if (response.data.success) {
+      // remove cookies + localStorage
+      Cookies.remove('cookie_access_token');
+      localStorage.removeItem('user_name');
+      return true;
+    } else {
+      console.error('Error from server:', response.data.message);
+      return false;
+    }
+  } catch (err) {
+    console.error('Error deleting user:', err);
+    return false;
   }
 };
 
@@ -133,7 +168,6 @@ export const logout = async (
       // remove cookies + localStorage
       Cookies.remove('cookie_access_token');
       localStorage.removeItem('user_name');
-      localStorage.removeItem('email');
       setIsAuthenticated(false);
       redirect('/signin');
     }

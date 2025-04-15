@@ -4,7 +4,7 @@ import { FormProvider } from 'react-hook-form';
 import Input from '../ui/Input';
 import Frequency from '../../services/frequencyManagment';
 import HabitInterface from '../../types/habit';
-import CreateLogic from '../../hooks/createHabitLogic';
+import CreateHabitLogic from '../../hooks/createHabitLogic';
 
 interface CreateHabitProps {
   show: boolean;
@@ -22,7 +22,7 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
   habitToEdit,
 }) => {
   // use custom hook for handle logic of comp
-  const { methods, onSubmit, errors, habitType } = CreateLogic({
+  const { methods, onSubmit, errors, habitType } = CreateHabitLogic({
     defaultType,
     habitToEdit,
     show,
