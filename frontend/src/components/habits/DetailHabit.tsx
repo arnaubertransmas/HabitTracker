@@ -5,6 +5,7 @@ import {
   getHabit,
   updateStreak,
 } from '../../services/habitService';
+import { getUser } from '../../services/authService';
 import HabitInterface from '../../types/habit';
 import { useHabitCompletion } from '../../hooks/completeHabit';
 import Notes from './Notes';
@@ -144,11 +145,19 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
                           handleClose,
                         );
                         if (completeHabit) {
-                          await updateStreak(
-                            habit.name,
+                          const updated = await updateStreak(
                             validatedSelectedDate,
                             loadHabits,
                           );
+                          // once updated, update streak in localStorage
+                          if (updated) {
+                            const user = await getUser();
+                            const newStreak = user.streak?.length || 0;
+                            localStorage.setItem(
+                              'userStreak',
+                              newStreak.toString(), // format to string and upload it to localStorage
+                            );
+                          }
                         }
                       } catch (error) {
                         console.error('Error during habit completion:', error);

@@ -10,10 +10,17 @@ const Home = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const user = await getUser();
-      if (user) {
-        setUserStreak(user.streak.length || 0); // get user streak, length of arr
-      }
+      // get user-streak and upload it to localStorage
+      const streak = user.streak.length || 0;
+      setUserStreak(streak);
+      localStorage.setItem('userStreak', streak.toString());
     };
+
+    // check if localStorage has streak already
+    const cachedStreak = localStorage.getItem('userStreak');
+    if (cachedStreak !== null) {
+      setUserStreak(parseInt(cachedStreak));
+    }
 
     fetchUser();
   }, []);

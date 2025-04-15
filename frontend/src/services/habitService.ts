@@ -116,29 +116,30 @@ export const completeHabit = async (
   }
 };
 
-// function to update streak
 export const updateStreak = async (
-  habitName: string,
   date: string,
   loadHabits?: () => Promise<void>,
 ) => {
   try {
-    // update it in auth
     const response = await axiosInstance.post('/auth/update_streak', {
-      habitName: habitName,
       date: date,
     });
+
     const result = response.data;
-    if (!response.data || !response.data.success) {
-      console.error('Error from server:', result);
+
+    if (!result || !result.success) {
+      console.error('Error from server:', result?.message || 'Unknown error');
       return false;
     }
+
     if (loadHabits) {
       await loadHabits();
-      return true;
     }
+
+    return true;
   } catch (err) {
     console.error('Error updating streak:', err);
+    return false;
   }
 };
 

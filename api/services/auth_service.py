@@ -104,18 +104,21 @@ def update_streak_service(email, date):
             return {"success": False, "message": "User not found"}
 
         user = user[0]
-        streak = user.get("streak", [])  # if no streak, take []
-        date = date.split("T")[0]  # Extract only YYYY-MM-DD
+        streak = user.get("streak", [])
+        date = date.split("T")[0]  # extract only YYYY-MM-DD
 
         today = datetime.now().date()
-        # get the latest added streak date if there is one
+        # get the latest streak date if streak
         last_streak_date = (
             datetime.strptime(streak[-1], "%Y-%m-%d").date() if streak else None
         )
 
-        # If streak exists and the last date is more than 1 day behind, reset streak
-        if last_streak_date and (today - last_streak_date).days > 1:
-            streak = []  # Reset streak
+        # if last_streak and today date is more than 1 day behind reset streak
+        if last_streak_date:
+            days_since_last = (today - last_streak_date).days
+
+            if days_since_last > 1:
+                streak = []
 
         if date in streak:
             return {
@@ -123,12 +126,10 @@ def update_streak_service(email, date):
                 "message": "Streak already recorded for this date",
             }
 
-        # Append new date to the streak list
         streak.append(date)
 
-        # Update the user in the database
         updates = {"streak": streak}
-        # update user with the new streak
+        # update streak at db
         User.update_user(email, updates)
 
         return {"success": True, "message": "Streak updated successfully"}
