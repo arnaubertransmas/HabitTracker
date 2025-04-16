@@ -1,5 +1,6 @@
 import re
 from models.auth_model import User
+from models.habit_model import Habit
 
 
 def validate_email(email):
@@ -54,6 +55,39 @@ def validate_user_fields(
             return False
 
     if check_existing_email and User.get_user("email", email):
+        return False
+
+    return True
+
+
+def validate_habit_fields(
+    TIME_MAP,
+    name,
+    frequency,
+    days,
+    time_day,
+    type_habit,
+    user_email,
+    completed=True,
+    is_creation=True,
+):
+    """validate habit fields for create/update Habit/Non-negotiable"""
+    if not all([name, frequency, time_day, type_habit, user_email]):
+        return False
+
+    if type(name) != str:
+        return False
+
+    if type(days) != list:
+        return False
+
+    if type(completed) != list:
+        return False
+
+    if time_day not in TIME_MAP:
+        return False
+
+    if is_creation and Habit.get_habit(name, user_email):
         return False
 
     return True

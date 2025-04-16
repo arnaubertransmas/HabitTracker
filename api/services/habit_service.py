@@ -1,5 +1,6 @@
 from models.habit_model import Habit
 from utils.logger import log_error
+from utils.validators import validate_habit_fields
 from datetime import datetime
 
 
@@ -14,29 +15,16 @@ def create_new_habit(
     name, frequency, days, time_day, type_habit, completed, user_email
 ):
     try:
-        # validation of data sent from frontend
-        if not all(
-            [name, frequency, time_day, type_habit, user_email]
-            or not isinstance(completed, list)
-        ):
-            return {"success": False, "message": "All fields are required"}
+        validation = validate_habit_fields(
+            TIME_MAP, name, frequency, days, time_day, type_habit, user_email, completed
+        )
+        if not validation:
+            return {"success": False, "message": "Invalid data"}
 
-        if type(name) != str:
-            return {"success": False, "message": "Name param must contain only strings"}
-
-        if type(days) != list:
-            return {"success": False, "message": "Invalid format for days param"}
-
-        if type(completed) != list:
-            return {"success": False, "message": "Invalid format for completed param"}
-
-        if Habit.get_habit(name, user_email):
-            return {"success": False, "message": "Habit already exists"}
-
-        if time_day not in TIME_MAP:
-            return {"success": False, "message": "Invalid time of day"}
-
+        # start_time['] - end_time[1]
         start_time, end_time = TIME_MAP[time_day]
+
+        # habit to save at DB
         habit = Habit(
             name,
             frequency,
@@ -58,42 +46,47 @@ def create_new_habit(
 
 
 def update_habit_service(habit_name, new_name, frequency, days, time_day, user_email):
-
     try:
-        # update habit validation
         habit = Habit.get_habit(habit_name, user_email)
 
         if not habit:
             return {"success": False, "message": "Habit doesn't exist"}
 
-        if habit_name != new_name:
-            if Habit.get_habit(new_name, user_email):
-                return {"success": False, "message": "Habit already exists"}
+        # force to use a different name
+        if habit_name != new_name and Habit.get_habit(new_name, user_email):
+            return {"success": False, "message": "Habit already exists"}
 
-        # dict for updates
+        # validate all fields
+        validation = validate_habit_fields(
+            TIME_MAP,
+            new_name,
+            frequency,
+            days,
+            time_day,
+            habit.get("type", ""),
+            user_email,
+            habit.get("completed", []),
+            is_creation=False,
+        )
+
+        if not validation:
+            return {"success": False, "message": "Invalid data"}
+
+        # add only modified fields
         updates = {}
-
-        # check new changes
         if habit["name"] != new_name:
             updates["name"] = new_name
 
-        # . != to see if the value is different
         if habit["frequency"] != frequency:
             updates["frequency"] = frequency
 
         if type(days) == list:
             updates["days"] = days
 
-        if habit["time_day"] != time_day:
-            if time_day in TIME_MAP:
-                updates["time_day"] = time_day
+        if habit["time_day"] != time_day and time_day in TIME_MAP:
+            updates["time_day"] = time_day
+            updates["start_time"], updates["end_time"] = TIME_MAP[time_day]
 
-                # update corresponding hours to new time_day
-                new_start_time, new_end_time = TIME_MAP[time_day]
-                updates["start_time"] = new_start_time
-                updates["end_time"] = new_end_time
-
-        # update habyt from the model
         Habit.update_habit(habit_name, user_email, updates)
 
         return {"success": True, "message": "Habit updated successfully"}
@@ -109,7 +102,7 @@ def complete_habit_service(habit_name, date_str, email):
         if not habit:
             return {"success": False, "message": "Habit not found"}
 
-        # Convert str to date object and get date of today
+        # convert to date obj to compare
         date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
         date_today = datetime.now().date()
 
@@ -119,16 +112,15 @@ def complete_habit_service(habit_name, date_str, email):
                 "message": "Cannot mark habits as complete for other dates",
             }
 
+        # get list of completed dates
         completed = habit.get("completed", [])
 
-        # Check if date is already in completed list
-        date_str_formatted = date_obj.strftime(
-            "%Y-%m-%d"
-        )  # Convert back to string for storage
+        # check if current date is already in list
+        date_str_formatted = date_obj.strftime("%Y-%m-%d")
         if date_str_formatted not in completed:
             completed.append(date_str_formatted)
 
-            # Update the habit
+            # update habit with new date
             updates = {"completed": completed}
             Habit.update_habit(habit_name, email, updates)
 
@@ -136,10 +128,9 @@ def complete_habit_service(habit_name, date_str, email):
                 "success": True,
                 "message": f"Habit marked as complete for {date_str_formatted}",
             }
-        else:
-            return {
-                "success": True,
-                "message": f"Habit already completed on {date_str_formatted}",
-            }
+        return {
+            "success": True,
+            "message": f"Habit already completed on {date_str_formatted}",
+        }
     except Exception as e:
         return {"success": False, "message": str(e)}
