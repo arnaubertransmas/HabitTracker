@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { FormProvider } from 'react-hook-form';
 import Input from '../ui/Input';
-import Frequency from '../../services/frequencyManagment';
+import Frequency from './frequencyManagment';
 import HabitInterface from '../../types/habit';
 import CreateHabitLogic from '../../hooks/createHabitLogic';
 

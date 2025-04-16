@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import Button from 'react-bootstrap/Button';
 import { Form } from 'react-bootstrap';
-import HabitInterface from '../types/habit';
+import HabitInterface from '../../types/habit';
 
 interface HabitFrequency {
   methods: UseFormReturn<any>;
