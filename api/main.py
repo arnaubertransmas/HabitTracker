@@ -6,6 +6,7 @@ from flask_jwt_extended import JWTManager
 from routes.auth_routes import auth_routes, login_manager
 from routes.habit_routes import habit_routes
 from routes.notes_routes import notes_routes
+from routes.progress_routes import progress_routes
 from dotenv import load_dotenv
 
 # Carrega variables d'entorn
@@ -29,6 +30,7 @@ def create_app():
     app.register_blueprint(auth_routes, url_prefix="/auth")
     app.register_blueprint(habit_routes, url_prefix="/habit")
     app.register_blueprint(notes_routes, url_prefix="/notes")
+    app.register_blueprint(progress_routes, url_prefix="/progress")
 
     # Configuració detallada de CORS
     CORS(

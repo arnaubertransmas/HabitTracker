@@ -1,7 +1,5 @@
 import os
-from turtle import update
 from pymongo import MongoClient
-from datetime import datetime
 
 client = MongoClient(os.environ.get("MONGO_URL"))
 db = client.HabitTracker

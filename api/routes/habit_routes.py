@@ -6,8 +6,9 @@ from services.habit_service import (
     update_habit_service,
 )
 from models.habit_model import Habit
+from models.progress_model import Progress
 
-# * register Blueprint auth
+# * register Blueprint habit
 habit_routes = Blueprint("habit", __name__)
 
 
@@ -179,6 +180,7 @@ def delete_habit(name):
     """Deleting habit based on name"""
     try:
         Habit.delete_habit(name)
+        Progress.delete_habit(name)
         return jsonify({"success": True, "message": "Habit deleted successfully"}), 200
 
     except Exception as e:

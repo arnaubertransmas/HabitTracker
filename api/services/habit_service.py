@@ -1,4 +1,5 @@
 from models.habit_model import Habit
+from models.progress_model import Progress
 from utils.logger import log_error
 from utils.validators import validate_habit_fields
 from datetime import datetime
@@ -37,6 +38,9 @@ def create_new_habit(
             user_email,
         )
         habit.save_habit()
+        Progress.save_habit_to_progress(
+            name, time_day, type_habit, completed, user_email
+        )
 
         return {"success": True, "message": "Habit saved correctly"}
 
@@ -88,6 +92,7 @@ def update_habit_service(habit_name, new_name, frequency, days, time_day, user_e
             updates["start_time"], updates["end_time"] = TIME_MAP[time_day]
 
         Habit.update_habit(habit_name, user_email, updates)
+        Progress.update_habit(habit_name, user_email, updates)
 
         return {"success": True, "message": "Habit updated successfully"}
 
@@ -123,6 +128,7 @@ def complete_habit_service(habit_name, date_str, email):
             # update habit with new date
             updates = {"completed": completed}
             Habit.update_habit(habit_name, email, updates)
+            Progress.update_habit(habit_name, email, updates)
 
             return {
                 "success": True,
