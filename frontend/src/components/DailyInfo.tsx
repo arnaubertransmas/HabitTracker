@@ -31,8 +31,7 @@ const DailyInfo: React.FC<DailyInfoProps> = ({ streak }) => {
   }, [getHabitsDaily, getHabitsWeekly]);
 
   const getStreakVariant = (streak: number): string => {
-    if (streak >= 10) return 'success';
-    if (streak >= 1) return 'info';
+    if (streak >= 1) return 'success';
     return 'danger';
   };
 
