@@ -48,20 +48,26 @@ class Progress:
             return str(e)
 
     @staticmethod
-    def get_habits(user_email, habit_type=None):
+    def get_habits(user_email):
         try:
 
-            # base query
-            query = {"user_email": user_email}
+            habits_raw = list(
+                progress_collection.find({"user_email": user_email}, {"_id": 0})
+            )
 
-            # if type specified add it
-            if habit_type:
-                query["type"] = habit_type
+            # format each habit
+            formatted_habits = []
+            for habit in habits_raw:
+                habit_data = {
+                    "habitName": habit["name"],
+                    "completed": habit["completed"],
+                    "time_day": habit["time_day"],
+                    "habit_type": habit["type"],
+                }
+                formatted_habits.append(habit_data)
 
-            # exclude ID avoiding ObjectID error
-            habits = list(progress_collection.find(query, {"_id": 0}))
+            return formatted_habits
 
-            return habits
         except Exception as e:
             raise e
 
