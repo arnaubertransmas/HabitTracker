@@ -40,7 +40,6 @@ class Progress:
                 if field in Progress.ALLOWED_FIELDS:
                     filtered_updates[field] = value
 
-            # Fixed indentation: moved outside the loop
             result = progress_collection.update_one(
                 {"name": habit_name, "user_email": user_email},
                 {"$set": filtered_updates},
