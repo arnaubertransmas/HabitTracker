@@ -20,16 +20,11 @@ login_manager = LoginManager()
 
 
 @auth_routes.route("/refresh_token", methods=["POST"])
-@jwt_required(
-    refresh=True
-)  # Use this to ensure the request is made with a valid refresh token
+@jwt_required(refresh=True)
 def refresh_token():
-    """Refresh access token"""
+    """Refresh access token automatically"""
     try:
-        # Get the identity of the current user from the refresh token
         current_user = get_jwt_identity()
-
-        # Create a new access token
         new_access_token = create_access_token(identity=current_user)
 
         return jsonify({"success": True, "access_token": new_access_token}), 200
