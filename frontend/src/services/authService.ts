@@ -30,6 +30,10 @@ export const login = async (
         expires: 7,
         path: '/',
       });
+      Cookies.set('cookie_access_token_refresh', result.access_token_refresh, {
+        expires: 7,
+        path: '/',
+      });
 
       // save user name to localStorage
       localStorage.setItem('user_name', result.user.name);

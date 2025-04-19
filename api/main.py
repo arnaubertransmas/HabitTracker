@@ -9,7 +9,7 @@ from routes.notes_routes import notes_routes
 from routes.progress_routes import progress_routes
 from dotenv import load_dotenv
 
-# Carrega variables d'entorn
+# load env variables
 load_dotenv(dotenv_path=".env.local")
 
 DEBUG = bool(os.environ.get("DEBUG", True))
@@ -25,14 +25,15 @@ def create_app():
     app.config["JWT_COOKIE_SAMESITE"] = "Lax"
     app.config["JWT_COOKIE_DOMAIN"] = "localhost"
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+    app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=7)
 
-    # Registre de blueprints
+    # Blueprints register
     app.register_blueprint(auth_routes, url_prefix="/auth")
     app.register_blueprint(habit_routes, url_prefix="/habit")
     app.register_blueprint(notes_routes, url_prefix="/notes")
     app.register_blueprint(progress_routes, url_prefix="/progress")
 
-    # Configuració detallada de CORS
+    # CORS config
     CORS(
         app,
         supports_credentials=True,
@@ -51,7 +52,7 @@ def create_app():
     )
 
     jwt = JWTManager(app)
-    # iniciem login manager del Routes
+    # start login_manager in routes
     login_manager.init_app(app)
 
     return app, jwt
@@ -60,7 +61,7 @@ def create_app():
 app, jwt = create_app()
 
 
-# Afegir capçaleres CORS a totes les respostes
+# CORS headers
 @app.after_request
 def add_cors_headers(response):
     response.headers["Access-Control-Allow-Origin"] = os.environ.get(
@@ -74,7 +75,7 @@ def add_cors_headers(response):
     return response
 
 
-# Gestionar peticions OPTIONS (preflight)
+# OPTIONS (preflight)
 @app.route("/auth/signin", methods=["OPTIONS"])
 @app.route("/auth/signup", methods=["OPTIONS"])
 @app.route("/auth/logout", methods=["OPTIONS"])
@@ -94,7 +95,7 @@ def handle_options():
 
 @jwt.unauthorized_loader
 def handle_unauthorized_error(error_desc):
-    """Errors autenticació JWT"""
+    """Authentication JWT errors"""
     return (
         jsonify(
             {

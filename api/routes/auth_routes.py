@@ -1,5 +1,10 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import get_jwt_identity, jwt_required, create_access_token
+from flask_jwt_extended import (
+    get_jwt_identity,
+    jwt_required,
+    create_access_token,
+    create_refresh_token,
+)
 from services.auth_service import (
     login_user,
     registrate_user,
@@ -12,6 +17,27 @@ from models.auth_model import User
 # * register Blueprint auth
 auth_routes = Blueprint("auth", __name__)
 login_manager = LoginManager()
+
+
+@auth_routes.route("/refresh_token", methods=["POST"])
+@jwt_required(
+    refresh=True
+)  # Use this to ensure the request is made with a valid refresh token
+def refresh_token():
+    """Refresh access token"""
+    try:
+        # Get the identity of the current user from the refresh token
+        current_user = get_jwt_identity()
+
+        # Create a new access token
+        new_access_token = create_access_token(identity=current_user)
+
+        return jsonify({"success": True, "access_token": new_access_token}), 200
+    except Exception as e:
+        return (
+            jsonify({"success": False, "message": f"Error refreshing token: {str(e)}"}),
+            500,
+        )
 
 
 @login_manager.user_loader
@@ -82,6 +108,7 @@ def signin():
         if logged.get("success"):
             # create access token
             access_token = create_access_token(identity=email)
+            refresh_token = create_refresh_token(identity=email)
             user = User.get_user("email", email)
 
             # if user exists and its in a list:
@@ -96,6 +123,7 @@ def signin():
                     "success": True,
                     "message": "Login successful",
                     "access_token": access_token,
+                    "access_token_refresh": refresh_token,
                     "user": {"name": user_name},
                 }
             )
