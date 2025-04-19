@@ -14,10 +14,10 @@ const axiosInstance = axios.create({
 
 const refreshAccessToken = async () => {
   try {
-    // Get the refresh token with the correct name
+    // get refreshToken from cookes
     const refreshToken = Cookies.get('cookie_access_token_refresh');
 
-    // Send the refresh token in the Authorization header
+    // put it in header
     const response = await axios.post(
       `${apiUrl}/auth/refresh_token`,
       {}, // Empty body
@@ -56,35 +56,37 @@ axiosInstance.interceptors.request.use(
 
 // Intercept responses to check if the token has expired
 axiosInstance.interceptors.response.use(
-  (response) => response, // If no error, simply return the response
+  // if no error -->
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Check if the error is due to token expiration (401 Unauthorized)
+    // 401 = token expiration
     if (
       error.response &&
       error.response.status === 401 &&
       !originalRequest._retry
     ) {
-      originalRequest._retry = true; // Avoid infinite loop
+      // avoid infinite loop
+      originalRequest._retry = true;
 
-      // Try to refresh the access token
+      // request to refresh access token
       const newAccessToken = await refreshAccessToken();
 
       if (newAccessToken) {
-        // Retry the original request with the new access token
+        // retry the original request w new token
         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-        return axios(originalRequest); // Retry the original request
+        return axios(originalRequest);
       }
 
-      // If the refresh token also fails, log the user out
+      // if everything fails, force logout
       Cookies.remove('cookie_access_token');
       Cookies.remove('refresh_token');
       localStorage.removeItem('user_name');
-      window.location.href = '/signin'; // Redirect to login
+      window.location.href = '/signin';
     }
 
-    // If other errors occur, reject the promise
+    // if other errors occur, reject the promise
     return Promise.reject(error);
   },
 );
