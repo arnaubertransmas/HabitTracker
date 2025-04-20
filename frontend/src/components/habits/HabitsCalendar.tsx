@@ -139,6 +139,7 @@ const Calendar: React.FC = () => {
               handleClose={() => setShowDetailModal(false)}
               loadHabits={loadHabits}
               selectedDate={selectedDate}
+              fromCalendar={true}
             />
           )}
         </Col>

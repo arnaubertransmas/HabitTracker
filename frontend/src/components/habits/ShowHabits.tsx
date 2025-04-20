@@ -137,6 +137,7 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
           show={showDetailModal}
           handleClose={() => setShowDetailModal(false)}
           loadHabits={loadHabits}
+          fromCalendar={false}
         />
       )}
     </>

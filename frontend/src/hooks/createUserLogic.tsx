@@ -82,6 +82,7 @@ const CreateUserLogic = ({ userToUpdate }: UseUserFormProps) => {
       try {
         setLoading(true);
         const result = await deleteUser();
+        localStorage.removeItem('user_streak');
         if (result) {
           setSuccess('Account deleted successfully!');
           redirect('/signin');

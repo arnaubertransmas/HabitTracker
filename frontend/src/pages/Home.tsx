@@ -13,11 +13,11 @@ const Home = () => {
       // get user-streak and upload it to localStorage
       const streak = user.streak.length || 0;
       setUserStreak(streak);
-      localStorage.setItem('userStreak', streak.toString());
+      localStorage.setItem('user_streak', streak.toString());
     };
 
     // check if localStorage has streak already
-    const cachedStreak = localStorage.getItem('userStreak');
+    const cachedStreak = localStorage.getItem('user_streak');
     if (cachedStreak !== null) {
       setUserStreak(parseInt(cachedStreak));
     }

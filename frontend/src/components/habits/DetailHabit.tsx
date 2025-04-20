@@ -16,6 +16,7 @@ interface DetailHabitProps {
   handleClose: () => void;
   loadHabits: () => Promise<void>;
   selectedDate?: string;
+  fromCalendar: boolean;
 }
 
 const DetailHabit: React.FC<DetailHabitProps> = ({
@@ -24,6 +25,7 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
   handleClose,
   loadHabits,
   selectedDate,
+  fromCalendar,
 }) => {
   const [habit, setHabit] = useState<HabitInterface | null>(null);
 
@@ -130,45 +132,50 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
 
             <Row className="mb-3">
               <Col>
-                {!isHabitCompleted(habit, validatedSelectedDate)[2] && (
-                  <Button
-                    variant="success"
-                    style={{ color: 'white', marginRight: '5px' }}
-                    onClick={async () => {
-                      try {
-                        // call out to handleCompleteHabit
-                        const completeHabit = await handleCompleteHabit(
-                          habit.name,
-                          validatedSelectedDate,
-                          habit,
-                          setHabit,
-                          handleClose,
-                        );
-                        if (completeHabit) {
-                          const updated = await updateStreak(
+                {fromCalendar &&
+                  // if habit not complete, show CompleteButton
+                  !isHabitCompleted(habit, validatedSelectedDate)[2] && (
+                    <Button
+                      variant="success"
+                      style={{ color: 'white', marginRight: '5px' }}
+                      onClick={async () => {
+                        try {
+                          // call out to handleCompleteHabit
+                          const completeHabit = await handleCompleteHabit(
+                            habit.name,
                             validatedSelectedDate,
-                            loadHabits,
+                            habit,
+                            setHabit,
+                            handleClose,
                           );
-                          // once updated, update streak in localStorage
-                          if (updated) {
-                            const user = await getUser();
-                            const newStreak = user.streak?.length || 0;
-                            localStorage.setItem(
-                              'userStreak',
-                              newStreak.toString(), // format to string and upload it to localStorage
+                          // update streak
+                          if (completeHabit) {
+                            const updated = await updateStreak(
+                              validatedSelectedDate,
+                              loadHabits,
                             );
+                            // once updated, update streak in localStorage
+                            if (updated) {
+                              const user = await getUser();
+                              const newStreak = user.streak?.length || 0;
+                              localStorage.setItem(
+                                'userStreak',
+                                newStreak.toString(), // format to string and upload it to localStorage
+                              );
+                            }
                           }
+                        } catch (error) {
+                          console.error(
+                            'Error during habit completion:',
+                            error,
+                          );
                         }
-                      } catch (error) {
-                        console.error('Error during habit completion:', error);
-                      }
-                    }}
-                    // .!isValid = habit from another date (not today)
-                    disabled={!isValid}
-                  >
-                    {isLoading ? 'Completing...' : 'Complete'}
-                  </Button>
-                )}
+                      }}
+                      disabled={!isValid}
+                    >
+                      {isLoading ? 'Completing...' : 'Complete'}
+                    </Button>
+                  )}
 
                 <Button
                   variant="danger"

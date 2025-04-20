@@ -129,7 +129,9 @@ export const deleteUser = async () => {
     if (response.data.success) {
       // remove cookies + localStorage
       Cookies.remove('cookie_access_token');
+      Cookies.remove('cookie_access_token_refresh');
       localStorage.removeItem('user_name');
+      localStorage.removeItem('user_streak');
       return true;
     } else {
       console.error('Error from server:', response.data.message);
@@ -171,7 +173,9 @@ export const logout = async (
     if (response.data.success) {
       // remove cookies + localStorage
       Cookies.remove('cookie_access_token');
+      Cookies.remove('cookie_access_token_refresh');
       localStorage.removeItem('user_name');
+      localStorage.removeItem('user_streak');
       setIsAuthenticated(false);
       redirect('/signin');
     }
