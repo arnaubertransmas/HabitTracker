@@ -1,3 +1,4 @@
+import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 
 const TimeDayChart = ({
@@ -15,7 +16,7 @@ const TimeDayChart = ({
     // payload(array) = hoverData that will be displayed
     if (activeSlide && payload && payload.length) {
       return (
-        <div className="bg-white p-2 border rounded shadow text-sm">
+        <div className="bg-white p-2 border rounded shadow-sm text-sm">
           {/* get day_time name + value */}
           <p>{`${payload[0].name}: ${payload[0].value} Completions`}</p>
           <p>{`${payload[0].payload.percent.toFixed(0)}%`}</p>
@@ -37,6 +38,11 @@ const TimeDayChart = ({
     // % field
     const percentValue = data[index].percent.toFixed(0);
 
+    // if 0% hide it
+    if (data[index].percent === 0) {
+      return null;
+    }
+
     return (
       <text
         x={x}
@@ -53,9 +59,9 @@ const TimeDayChart = ({
   };
 
   return (
-    <div className="flex flex-col items-start">
+    <div className="d-flex flex-column align-items-start">
       {/* Chart section */}
-      <div className="w-full">
+      <div className="w-100">
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie
@@ -84,17 +90,17 @@ const TimeDayChart = ({
       </div>
 
       {/* Chart legend */}
-      <div className="w-full flex justify-center mt-2 mb-6">
-        <div className="inline-flex flex-wrap justify-center gap-x-4 gap-y-2 text-center">
+      <div className="w-100 d-flex justify-content-center mt-2 mb-6">
+        <div className="d-inline-flex flex-wrap justify-content-center gap-3 text-center">
           {data.map((entry, index) => (
             <span
               key={index}
-              className="inline-flex items-center text-sm"
+              className="d-inline-flex align-items-center text-small"
               style={{ color: COLORS[index % COLORS.length] }}
             >
               {/* Color block + label name */}
               <span className="mr-1">❏</span>
-              <span className="font-medium">{entry.name} </span>
+              <span className="fw-medium">{entry.name}</span>
             </span>
           ))}
         </div>
