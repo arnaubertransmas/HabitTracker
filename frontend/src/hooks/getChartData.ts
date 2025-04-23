@@ -5,16 +5,19 @@ export const weekData = (habits: ProgressInterface[]) => {
   const allDatesSet = new Set<string>();
 
   habits.forEach((habit) => {
+    // iterate completed habit list
     habit.completed.forEach((date: string) => {
       allDatesSet.add(date);
     });
   });
 
-  const allDates = Array.from(allDatesSet).sort().slice(-7); // Only last 7 dates
+  // get the last 7 days
+  const allDates = Array.from(allDatesSet).sort().slice(-7);
 
   const chartData = allDates.map((date) => {
     const entry: any = { date };
 
+    // check if habit is completed at date, if it is = 1, if not 0
     habits.forEach((habit) => {
       entry[habit.habitName] = habit.completed.includes(date) ? 1 : 0;
     });
