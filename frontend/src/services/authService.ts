@@ -1,6 +1,8 @@
 import axiosInstance from '../config/axiosConfig';
 import Cookies from 'js-cookie';
 import UserInterface from '../types/auth';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // function to login user
 export const login = async (
@@ -40,6 +42,7 @@ export const login = async (
 
       // redirect to user's profile page
       redirect(`/user/${result.user.name}`);
+      toast.info('Logged');
       return true;
     }
 
@@ -83,6 +86,7 @@ export const register = async (
 
     // Redirect to signin page after successful registration
     redirect('/signin');
+    toast.info('User registered, sign in');
     return true;
   } catch (err: any) {
     console.error('Registration error:', err.response?.data);
@@ -110,6 +114,7 @@ export const updateUser = async (dataUpdate: UserInterface) => {
     const response = await axiosInstance.put('/auth/update_user', dataUpdate);
 
     if (response.data.success) {
+      toast.warning('User updated');
       return true;
     } else {
       console.error('Error from server:', response.data.message);
@@ -127,6 +132,7 @@ export const deleteUser = async () => {
     const response = await axiosInstance.delete(`/auth/delete_user`);
 
     if (response.data.success) {
+      toast.error('User removed');
       // remove cookies + localStorage
       Cookies.remove('cookie_access_token');
       Cookies.remove('cookie_access_token_refresh');
@@ -171,6 +177,7 @@ export const logout = async (
     const response = await axiosInstance.post('/auth/logout');
 
     if (response.data.success) {
+      toast.info('Goodbye!');
       // remove cookies + localStorage
       Cookies.remove('cookie_access_token');
       Cookies.remove('cookie_access_token_refresh');

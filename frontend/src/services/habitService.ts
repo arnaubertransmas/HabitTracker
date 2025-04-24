@@ -1,5 +1,7 @@
 import axiosInstance from '../config/axiosConfig';
 import HabitInterface from '../types/habit';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // get all habits with optional filtering by habit type
 export const getHabits = async (habitType?: 'Habit' | 'Non-negotiable') => {
@@ -55,6 +57,7 @@ export const createHabits = async (
     if (loadHabits) {
       await loadHabits();
     }
+    toast.success('Successfully created');
     return true;
   } catch (err) {
     console.error('Error processing habit:', err);
@@ -85,6 +88,7 @@ export const editHabit = async (
     if (loadHabits) {
       await loadHabits();
     }
+    toast.warning(`${habitToEdit.name} edited succesfully`);
     return true;
   } catch (err) {
     console.error('Error updating habit:', err);
@@ -109,6 +113,7 @@ export const completeHabit = async (
       console.error('Habit completion failed', response.data?.message);
       return false;
     }
+    toast.success(`${habitName} completed for today!`);
     return true;
   } catch (err) {
     console.error('Error completing habit:', err);
@@ -135,7 +140,7 @@ export const updateStreak = async (
     if (loadHabits) {
       await loadHabits();
     }
-
+    toast.info(`Streak completed for today day ${date}`);
     return true;
   } catch (err) {
     console.error('Error updating streak:', err);
@@ -152,6 +157,7 @@ export const deleteHabit = async (name: string, loadHabits: () => void) => {
       console.error('Error from server:', result);
       return false;
     } else {
+      toast.error(`${name} deleted successfully`);
       await loadHabits();
       return true;
     }
