@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Container, Row, Col, Badge, Button } from 'react-bootstrap';
-import {
-  deleteHabit,
-  getHabit,
-  updateStreak,
-} from '../../services/habitService';
-import { getUser } from '../../services/authService';
+import { deleteHabit, getHabit } from '../../services/habitService';
+import { getUser, updateStreak } from '../../services/authService';
 import HabitInterface from '../../types/habit';
 import { useHabitCompletion } from '../../hooks/completeHabit';
 import Notes from './Notes';

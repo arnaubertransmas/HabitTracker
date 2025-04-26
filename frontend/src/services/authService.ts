@@ -126,6 +126,33 @@ export const updateUser = async (dataUpdate: UserInterface) => {
   }
 };
 
+export const updateStreak = async (
+  date: string,
+  loadHabits?: () => Promise<void>,
+) => {
+  try {
+    const response = await axiosInstance.post('/auth/update_streak', {
+      date: date,
+    });
+
+    const result = response.data;
+
+    if (!result || !result.success) {
+      console.error('Error from server:', result?.message || 'Unknown error');
+      return false;
+    }
+
+    if (loadHabits) {
+      await loadHabits();
+    }
+    toast.info(`Streak completed for today day ${date}`);
+    return true;
+  } catch (err) {
+    console.error('Error updating streak:', err);
+    return false;
+  }
+};
+
 // DeleteUser function
 export const deleteUser = async () => {
   try {
