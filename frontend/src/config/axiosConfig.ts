@@ -37,7 +37,7 @@ const refreshAccessToken = async () => {
     }
     return null;
   } catch (error) {
-    console.error('Error refreshing token:', error);
+    // console.error('Error refreshing token:', error);
     return null;
   }
 };

@@ -62,7 +62,7 @@ const Calendar: React.FC = () => {
 
       setEvents(formattedEvents);
     } catch (error) {
-      console.error('Error loading habits:', error);
+      // console.error('Error loading habits:', error);
       setError('Could not load habits');
     } finally {
       setLoading(false);

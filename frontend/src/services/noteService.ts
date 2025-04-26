@@ -10,7 +10,7 @@ export const saveNote = async (habitName: string, note: string) => {
 
     return response.data.success;
   } catch (err) {
-    console.error('Error saving note:', err);
+    // console.error('Error saving note:', err);
     return false;
   }
 };
@@ -29,7 +29,7 @@ export const getNote = async (habit_name: string) => {
     if (err.response && err.response.status === 404) {
       return { note: {} };
     }
-    console.error('Error getting note:', err);
+    // console.error('Error getting note:', err);
     return null;
   }
 };

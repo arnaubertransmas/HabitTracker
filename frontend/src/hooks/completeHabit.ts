@@ -99,7 +99,7 @@ export const useHabitCompletion = (loadHabits: () => Promise<void>) => {
         return false;
       }
     } catch (error) {
-      console.error('Error marking habit as complete:', error);
+      // console.error('Error marking habit as complete:', error);
       setError('An unexpected error occurred. Please try again.');
       return false;
     } finally {

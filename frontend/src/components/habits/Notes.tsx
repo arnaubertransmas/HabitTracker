@@ -48,7 +48,7 @@ const Notes = ({ habitName }: HabitNameProps) => {
         // mark initial load as complete, after await set it to false
         isInitialLoadRef.current = false;
       } catch (error) {
-        console.error('Error fetching note:', error);
+        // console.error('Error fetching note:', error);
         isInitialLoadRef.current = false;
       }
     };

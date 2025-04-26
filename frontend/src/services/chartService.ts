@@ -10,7 +10,7 @@ export const getUserData = async () => {
     }
     return response.data.user_data;
   } catch (err) {
-    console.error('Err fetching user data details' + err);
+    // console.error('Err fetching user data details' + err);
     return null;
   }
 };

@@ -95,7 +95,7 @@ const CreateHabitLogic = ({
         });
       }
     } catch (error) {
-      console.error('Error in form submission:', error);
+      // console.error('Error in form submission:', error);
       setError('root.serverError', {
         type: 'manual',
         message: 'An unexpected error occurred',

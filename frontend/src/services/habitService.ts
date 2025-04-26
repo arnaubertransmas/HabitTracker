@@ -13,12 +13,12 @@ export const getHabits = async (habitType?: 'Habit' | 'Non-negotiable') => {
     const response = await axiosInstance.get(url);
 
     if (!response.data.success) {
-      console.error('Could not load habits:', response.data.message);
+      // console.error('Could not load habits:', response.data.message);
       return null;
     }
     return response?.data?.habits || [];
   } catch (err) {
-    console.error('Error fetching habit details:', err);
+    // console.error('Error fetching habit details:', err);
     return null;
   }
 };
@@ -31,12 +31,12 @@ export const getHabit = async (habitName: string) => {
     );
 
     if (!response.data.success) {
-      console.error('Habit operation failed:', response.data.message);
+      // console.error('Habit operation failed:', response.data.message);
       return null;
     }
     return response.data.habit;
   } catch (err) {
-    console.error('Error fetching habit details:', err);
+    // console.error('Error fetching habit details:', err);
     return null;
   }
 };
@@ -113,10 +113,10 @@ export const editHabit = async (
     const responseData = response.data;
 
     if (!responseData || responseData.success !== true) {
-      console.error(
-        'Habit operation failed',
-        responseData?.message || 'Unknown error',
-      );
+      // console.error(
+      //   'Habit operation failed',
+      //   responseData?.message || 'Unknown error',
+      // );
       return {
         success: false,
         message: responseData?.message || 'Failed to update habit',
@@ -130,7 +130,7 @@ export const editHabit = async (
     toast.warning(`${habitToEdit.name} edited successfully`);
     return { success: true, message: 'Habit updated successfully' };
   } catch (err: unknown) {
-    console.error('Error updating habit:', err);
+    // console.error('Error updating habit:', err);
 
     // check if its axios err
     if (err && typeof err === 'object' && 'response' in err) {
@@ -172,7 +172,7 @@ export const completeHabit = async (
     });
 
     if (!response.data || !response.data.success) {
-      console.error('Habit completion failed', response.data?.message);
+      // console.error('Habit completion failed', response.data?.message);
       return false;
     }
 
@@ -182,7 +182,7 @@ export const completeHabit = async (
     }
     return true;
   } catch (err) {
-    console.error('Error completing habit:', err);
+    // console.error('Error completing habit:', err);
     return false;
   }
 };
@@ -191,9 +191,9 @@ export const completeHabit = async (
 export const deleteHabit = async (name: string, loadHabits: () => void) => {
   try {
     const response = await axiosInstance.delete(`/habit/delete_habit/${name}`);
-    const result = response.data;
+    // const result = response.data;
     if (!response.data.success) {
-      console.error('Error from server:', result);
+      // console.error('Error from server:', result);
       return false;
     } else {
       toast.error(`${name} deleted successfully`);
@@ -201,7 +201,7 @@ export const deleteHabit = async (name: string, loadHabits: () => void) => {
       return true;
     }
   } catch (error) {
-    console.error('Error deleting: ', error);
+    // console.error('Error deleting: ', error);
     return false;
   }
 };

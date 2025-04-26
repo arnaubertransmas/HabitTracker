@@ -33,7 +33,7 @@ const Habits = ({ habitType }: { habitType: 'Habit' | 'Non-negotiable' }) => {
       setHabits(response);
       setLoading(false);
     } catch (error) {
-      console.error('Error:', error);
+      // console.error('Error:', error);
       setError('Error ocurred');
       setLoading(false);
     }
