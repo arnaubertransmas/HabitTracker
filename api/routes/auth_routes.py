@@ -81,7 +81,7 @@ def signup():
         if registered.get("success"):
             return jsonify(registered), 201
 
-        return jsonify(registered), 400
+        return jsonify(registered.get("message")), 400
 
     except Exception as e:
         return (
@@ -125,7 +125,7 @@ def signin():
 
             return response, 200
 
-        return jsonify(logged), 400
+        return jsonify(logged.get("message")), 400
 
     except Exception as e:
         return (
@@ -167,8 +167,8 @@ def update_streak():
     """Update user's habit streak"""
     try:
         email = get_jwt_identity()
-        data = request.json
-        date = data.get("date", "")
+        front_data = request.json
+        date = front_data.get("date", "")
 
         # validate data in service
         streak_updated = update_streak_service(email, date)
@@ -176,7 +176,10 @@ def update_streak():
         if streak_updated.get("success"):
             return jsonify({"success": True, "message": streak_updated["message"]}), 200
         else:
-            return jsonify({"success": False, "message": "Couldn't update streak"}), 404
+            return (
+                jsonify({"success": False, "message": streak_updated.get("message")}),
+                404,
+            )
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
 

@@ -66,7 +66,7 @@ const CreateUserLogic = ({ userToUpdate }: UseUserFormProps) => {
       }
     } catch (err) {
       setError('An unexpected error occurred');
-      console.error(err);
+      // console.error(err);
     } finally {
       setLoading(false);
     }
@@ -91,7 +91,7 @@ const CreateUserLogic = ({ userToUpdate }: UseUserFormProps) => {
         }
       } catch (err) {
         setError('An unexpected error occurred');
-        console.error(err);
+        // console.error(err);
       } finally {
         setLoading(false);
       }

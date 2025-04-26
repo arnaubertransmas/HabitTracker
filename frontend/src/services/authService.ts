@@ -48,7 +48,7 @@ export const login = async (
 
     return false;
   } catch (err: any) {
-    console.error('Login error:', err.response?.data);
+    // console.error('Login error:', err.response?.data);
     if (setError) setError('Invalid Credentials');
     return false;
   }
@@ -89,8 +89,9 @@ export const register = async (
     toast.info('User registered, sign in');
     return true;
   } catch (err: any) {
-    console.error('Registration error:', err.response?.data);
-    setError('Internal server error, try again later...');
+    // console.error('Registration error:', err.response.data);
+    // set error directly from service
+    setError(err.response.data);
     return false;
   }
 };
@@ -103,7 +104,7 @@ export const getUser = async () => {
       return response.data.user;
     }
   } catch (error) {
-    console.error('Error fetching user:', error);
+    // console.error('Error fetching user:', error);
     return null;
   }
 };
@@ -117,11 +118,11 @@ export const updateUser = async (dataUpdate: UserInterface) => {
       toast.warning('User updated');
       return true;
     } else {
-      console.error('Error from server:', response.data.message);
+      // console.error('Error from server:', response.data.message);
       return false;
     }
   } catch (err) {
-    console.error('Error updating user:', err);
+    // console.error('Error updating user:', err);
     return false;
   }
 };
@@ -138,17 +139,16 @@ export const updateStreak = async (
     const result = response.data;
 
     if (!result || !result.success) {
-      console.error('Error from server:', result?.message || 'Unknown error');
+      // console.error('Error from server:', result?.message || 'Unknown error');
       return false;
     }
 
     if (loadHabits) {
       await loadHabits();
     }
-    toast.info(`Streak completed for today day ${date}`);
     return true;
   } catch (err) {
-    console.error('Error updating streak:', err);
+    // console.error('Error updating streak:', err);
     return false;
   }
 };
@@ -167,11 +167,11 @@ export const deleteUser = async () => {
       localStorage.removeItem('user_streak');
       return true;
     } else {
-      console.error('Error from server:', response.data.message);
+      // console.error('Error from server:', response.data.message);
       return false;
     }
   } catch (err) {
-    console.error('Error deleting user:', err);
+    // console.error('Error deleting user:', err);
     return false;
   }
 };
@@ -191,7 +191,7 @@ export const checkAuth = async (
   } catch (error) {
     Cookies.remove('cookie_access_token');
     setIsAuthenticated(false);
-    console.error('Error checking session:', error);
+    // console.error('Error checking session:', error);
   }
 };
 
@@ -214,7 +214,7 @@ export const logout = async (
       redirect('/signin');
     }
   } catch (error) {
-    console.error('Logout error:', error);
+    // console.error('Logout error:', error);
 
     // remove it anyway
     Cookies.remove('cookie_access_token');

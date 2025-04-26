@@ -11,8 +11,8 @@ def registrate_user(name, surname, email, password, password2, streak):
         validation_result = validate_user_fields(
             name, surname, email, password, password2
         )
-        if not validation_result:
-            return {"success": False, "message": "Invalid data format"}
+        if not validation_result.get("success"):
+            return {"success": False, "message": validation_result.get("message")}
 
         # Additional validation specific to registration
         if streak is None:
@@ -76,8 +76,8 @@ def update_user_service(name, surname, email, password, password2):
             validation_result = validate_user_fields(
                 name, surname, email, check_existing_email=False
             )
-        if not validation_result:
-            return {"success": False, "message": "Invalid data format"}
+        if not validation_result.get("success"):
+            return {"success": False, "message": validation_result.get("message")}
 
         # empty dict, store only fields that need to be updated
         updates = {}
