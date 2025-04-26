@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, Modal, Form } from 'react-bootstrap';
-import { FormProvider } from 'react-hook-form';
+import { Button, Modal, Form, Alert } from 'react-bootstrap';
+import { FormProvider, useFormState } from 'react-hook-form';
 import Input from '../ui/Input';
 import Frequency from './frequencyManagment';
 import HabitInterface from '../../types/habit';
@@ -31,6 +31,9 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
   });
 
   const habitTypeValue = defaultType || '';
+  const { errors: formStateErrors } = useFormState({
+    control: methods.control,
+  });
 
   return (
     <Modal show={show} onHide={handleClose} centered>
@@ -111,6 +114,12 @@ const CreateHabit: React.FC<CreateHabitProps> = ({
                 <p className="text-danger">{(errors.type as any).message}</p>
               )}
             </Form.Group>
+            {/* display api error if present */}
+            {formStateErrors.root?.serverError && (
+              <Alert variant="danger">
+                {formStateErrors.root.serverError.message}
+              </Alert>
+            )}
 
             <div className="d-flex justify-content-end mt-4">
               <Button

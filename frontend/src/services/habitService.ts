@@ -49,19 +49,52 @@ export const createHabits = async (
   try {
     // data = dict
     const response = await axiosInstance.post('/habit/create_habit', data);
-    if (!response.data.success) {
-      console.error('Habit operation failed', response.data.message);
-      return false;
+    const responseData = response.data;
+
+    if (!responseData || responseData.success !== true) {
+      // console.error(
+      //   'Habit operation failed',
+      //   responseData?.message || 'Unknown error',
+      // );
+      return {
+        success: false,
+        message: responseData?.message || 'Failed to create habit',
+      };
     }
 
     if (loadHabits) {
       await loadHabits();
     }
+
     toast.success('Successfully created');
-    return true;
-  } catch (err) {
-    console.error('Error processing habit:', err);
-    return false;
+    return { success: true, message: 'Habit created successfully' };
+  } catch (err: unknown) {
+    // console.error('Error processing habit:', err);
+
+    // check if err is an Axios error
+    if (err && typeof err === 'object' && 'response' in err) {
+      const axiosError = err as {
+        response?: {
+          data?: { message?: string };
+          status?: number;
+        };
+      };
+
+      return {
+        // show message from backend
+        success: false,
+        message:
+          axiosError.response?.data?.message ||
+          `Server error: ${axiosError.response?.status}`,
+      };
+    }
+
+    return {
+      // show err code status if everything fails
+      success: false,
+      message:
+        err instanceof Error ? err.message : 'An unexpected error occurred',
+    };
   }
 };
 
@@ -77,22 +110,51 @@ export const editHabit = async (
       `/habit/update_habit/${habitToEdit.name}`,
       habit,
     );
-    if (!response.data || !response.data.success) {
+    const responseData = response.data;
+
+    if (!responseData || responseData.success !== true) {
       console.error(
         'Habit operation failed',
-        response.data?.message || 'Unknown error',
+        responseData?.message || 'Unknown error',
       );
-      return false;
+      return {
+        success: false,
+        message: responseData?.message || 'Failed to update habit',
+      };
     }
-    // if loadHabits is provided, call it to refresh the data
+
     if (loadHabits) {
       await loadHabits();
     }
-    toast.warning(`${habitToEdit.name} edited succesfully`);
-    return true;
-  } catch (err) {
+
+    toast.warning(`${habitToEdit.name} edited successfully`);
+    return { success: true, message: 'Habit updated successfully' };
+  } catch (err: unknown) {
     console.error('Error updating habit:', err);
-    return false;
+
+    // check if its axios err
+    if (err && typeof err === 'object' && 'response' in err) {
+      const axiosError = err as {
+        response?: {
+          data?: { message?: string };
+          status?: number;
+        };
+      };
+
+      return {
+        // return message data from api if there's
+        success: false,
+        message:
+          axiosError.response?.data?.message ||
+          `Server error: ${axiosError.response?.status}`,
+      };
+    }
+
+    return {
+      // if everything fails return status code err
+      success: false,
+      message: err instanceof Error ? err.message : 'Unknown server error',
+    };
   }
 };
 
@@ -113,7 +175,11 @@ export const completeHabit = async (
       console.error('Habit completion failed', response.data?.message);
       return false;
     }
+
     toast.success(`${habitName} completed for today!`);
+    if (loadHabits) {
+      loadHabits();
+    }
     return true;
   } catch (err) {
     console.error('Error completing habit:', err);

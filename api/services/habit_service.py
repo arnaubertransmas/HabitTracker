@@ -19,8 +19,8 @@ def create_new_habit(
         validation = validate_habit_fields(
             TIME_MAP, name, frequency, days, time_day, type_habit, user_email, completed
         )
-        if not validation:
-            return {"success": False, "message": "Invalid data"}
+        if not validation.get("success"):
+            return {"success": False, "message": validation.get("message")}
 
         # start_time['] - end_time[1]
         start_time, end_time = TIME_MAP[time_day]
@@ -73,8 +73,8 @@ def update_habit_service(habit_name, new_name, frequency, days, time_day, user_e
             is_creation=False,
         )
 
-        if not validation:
-            return {"success": False, "message": "Invalid data"}
+        if not validation.get("success"):
+            return {"success": False, "message": validation.get("message")}
 
         # add only modified fields
         updates = {}

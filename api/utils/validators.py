@@ -39,25 +39,25 @@ def validate_user_fields(
     """validate user fields for register/edit_profile"""
 
     if not is_string(name, surname):
-        return False
+        return {"success": False, "message": "Name/surname must be in string format"}
 
     if not all([name, surname, email]):
-        return False
+        return {"success": False, "message": "Missing fields"}
 
     if not validate_email(email):
-        return False
+        return {"success": False, "message": "Invalid email"}
 
     if password or password2:
         if password != password2:
-            return False
+            return {"success": False, "message": "Passwords must be identical"}
 
         if not validate_password(password):
-            return False
+            return {"success": False, "message": "Missing complexity in your password"}
 
     if check_existing_email and User.get_user("email", email):
-        return False
+        return {"success": False, "message": "User already exists, change email"}
 
-    return True
+    return {"success": True, "message": "User correctly validated"}
 
 
 def validate_habit_fields(
@@ -73,21 +73,21 @@ def validate_habit_fields(
 ):
     """validate habit fields for create/update Habit/Non-negotiable"""
     if not all([name, frequency, time_day, type_habit, user_email]):
-        return False
+        return {"success": False, "message": "Missing fields"}
 
     if type(name) != str:
-        return False
+        return {"success": False, "message": "Bad name field format"}
 
     if type(days) != list:
-        return False
+        return {"success": False, "message": "Bad days field format"}
 
     if type(completed) != list:
-        return False
+        return {"success": False, "message": "Bad completed field format"}
 
     if time_day not in TIME_MAP:
-        return False
+        return {"success": False, "message": "Bad time day format"}
 
     if is_creation and Habit.get_habit(name, user_email):
-        return False
+        return {"success": False, "message": "Habit already exists"}
 
-    return True
+    return {"success": True, "message": "Habit correctly validated"}

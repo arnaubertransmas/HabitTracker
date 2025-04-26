@@ -1,3 +1,4 @@
+from email import message
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from services.habit_service import (
@@ -111,7 +112,7 @@ def create_habit():
                 201,
             )
 
-        return jsonify({"success": False, "message": "Failed to create habit"}), 400
+        return jsonify({"success": False, "message": created.get("message")}), 400
 
     except Exception as e:
         return (
@@ -143,7 +144,7 @@ def update_habit(habit_name):
                 201,
             )
 
-        return jsonify({"success": False, "message": "Failed to update habit"}), 400
+        return jsonify({"success": False, "message": updated.get("message")}), 400
 
     except Exception as e:
         return (

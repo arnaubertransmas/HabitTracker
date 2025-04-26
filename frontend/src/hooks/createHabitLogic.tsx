@@ -50,7 +50,7 @@ const CreateHabitLogic = ({
   }, [show, habitToEdit, reset, setValue, defaultType]);
 
   // form submission handler
-  const onSubmit = async (data: any) => {
+  const onSubmit = handleSubmit(async (data: any) => {
     let days =
       data.days && Array.isArray(data.days[0]) ? data.days[0] : data.days || [];
 
@@ -64,47 +64,51 @@ const CreateHabitLogic = ({
       days = data.custom_days.map(Number); // Ensure conversion to numbers
     }
 
-    try {
-      const dataToSend = {
-        name: data.name,
-        frequency: data.frequency,
-        days: days,
-        time_day: data.time_day,
-        type: data.type,
-        completed: [],
-      };
+    // data to send to backend
+    const dataToSend = {
+      name: data.name,
+      frequency: data.frequency,
+      days: days,
+      time_day: data.time_day,
+      type: data.type,
+      completed: [],
+    };
 
-      let success = false;
+    try {
+      let response;
       if (habitToEdit) {
-        success = await editHabit(habitToEdit, dataToSend, loadHabits);
+        response = await editHabit(habitToEdit, dataToSend, loadHabits);
       } else {
-        success = await createHabits(dataToSend, loadHabits);
+        response = await createHabits(dataToSend, loadHabits);
       }
 
-      if (success) {
-        reset();
+      // check if success is true
+      const isSuccess = response && response.success;
+
+      if (isSuccess) {
         handleClose();
       } else {
-        setError('root', {
+        // server error
+        setError('root.serverError', {
           type: 'manual',
-          message: 'Failed to save habit',
+          message: response?.message || 'Failed to save habit',
         });
       }
-    } catch (err) {
-      console.error('Error processing habit:', err);
-      setError('root', {
+    } catch (error) {
+      console.error('Error in form submission:', error);
+      setError('root.serverError', {
         type: 'manual',
         message: 'An unexpected error occurred',
       });
     }
-  };
+  });
 
   // watch habitType for the comp
   const habitType = watch('type');
 
   return {
     methods,
-    onSubmit: handleSubmit(onSubmit),
+    onSubmit,
     errors,
     habitType,
   };
