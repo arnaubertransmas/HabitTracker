@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import HabitInterface from '../types/habit';
-import { createHabits, editHabit } from '../services/habitService';
+import HabitInterface from '../../types/habit';
+import { createHabits, editHabit } from '../../services/habitService';
 
 interface CreateHabitLogicInterface {
   defaultType?: 'Habit' | 'Non-negotiable';

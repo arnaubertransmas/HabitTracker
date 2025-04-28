@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import HabitInterface from '../types/habit';
-import { completeHabit } from '../services/habitService';
+import HabitInterface from '../../types/habit';
+import { completeHabit } from '../../services/habitService';
 
 export const useHabitCompletion = (loadHabits: () => Promise<void>) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);

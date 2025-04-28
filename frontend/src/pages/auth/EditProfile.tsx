@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import Register from './Register';
-import Sidebar from '../components/ui/Sidebar';
-import { getUser } from '../services/authService';
-import UserInterface from '../types/auth';
+import Sidebar from '../../components/ui/Sidebar';
+import { getUser } from '../../services/authService';
+import UserInterface from '../../types/auth';
 
 const EditProfile = () => {
   const [userToUpdate, setUserToUpdate] = useState<UserInterface | null>(null);

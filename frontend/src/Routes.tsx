@@ -3,8 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import LandingPage from './pages/LandingPage';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
 import Home from './pages/Home';
 import Error from './pages/Error';
 import AboutUs from './pages/AboutUs';
@@ -12,7 +12,7 @@ import Habits from './pages/Habits';
 import CreateHabit from './components/habits/CreateHabit';
 import Schedule from './pages/Schedule';
 import Progress from './pages/Progress';
-import EditProfile from './pages/EditProfile';
+import EditProfile from './pages/auth/EditProfile';
 
 const AppRoutes = () => {
   const [showModal, setShowModal] = useState(false);

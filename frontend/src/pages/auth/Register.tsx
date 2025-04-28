@@ -9,10 +9,10 @@ import {
   Alert,
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import Header from '../components/ui/Header';
-import Input from '../components/ui/Input';
-import UserInterface from '../types/auth';
-import CreateUserLogic from '../hooks/createUserLogic';
+import Header from '../../components/ui/Header';
+import Input from '../../components/ui/Input';
+import UserInterface from '../../types/auth';
+import CreateUserLogic from '../../hooks/createUserLogic';
 
 interface UserFormProps {
   userToUpdate?: UserInterface | null;

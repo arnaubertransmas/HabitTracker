@@ -10,9 +10,9 @@ import {
   Alert,
 } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../services/authService';
-import Header from '../components/ui/Header';
-import Input from '../components/ui/Input';
+import { login } from '../../services/authService';
+import Header from '../../components/ui/Header';
+import Input from '../../components/ui/Input';
 
 interface FormData {
   email: string;

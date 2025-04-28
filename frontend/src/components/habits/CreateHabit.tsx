@@ -4,7 +4,7 @@ import { FormProvider, useFormState } from 'react-hook-form';
 import Input from '../ui/Input';
 import Frequency from './frequencyManagment';
 import HabitInterface from '../../types/habit';
-import CreateHabitLogic from '../../hooks/createHabitLogic';
+import CreateHabitLogic from '../../hooks/habits/createHabitLogic';
 
 interface CreateHabitProps {
   show: boolean;

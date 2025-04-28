@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
-import HabitInterface from '../types/habit';
-import { getHabits } from '../services/habitService';
+import HabitInterface from '../../types/habit';
+import { getHabits } from '../../services/habitService';
 
 interface UseHabitsProps {
   dayOfWeek: number;

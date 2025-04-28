@@ -3,7 +3,7 @@ import { Modal, Container, Row, Col, Badge, Button } from 'react-bootstrap';
 import { deleteHabit, getHabit } from '../../services/habitService';
 import { getUser, updateStreak } from '../../services/authService';
 import HabitInterface from '../../types/habit';
-import { useHabitCompletion } from '../../hooks/completeHabit';
+import { useHabitCompletion } from '../../hooks/habits/completeHabit';
 import Notes from './Notes';
 
 interface DetailHabitProps {
