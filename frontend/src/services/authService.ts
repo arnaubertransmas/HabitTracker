@@ -42,7 +42,7 @@ export const login = async (
 
       // redirect to user's profile page
       redirect(`/user/${result.user.name}`);
-      toast.info('Logged');
+      toast.info(`Hello, ${result.user.name}`);
       return true;
     }
 
@@ -205,7 +205,7 @@ export const logout = async (
     const response = await axiosInstance.post('/auth/logout');
 
     if (response.data.success) {
-      toast.info('Goodbye!');
+      toast.info(`See you soon ${localStorage.getItem('user_name')}!`);
       // remove cookies + localStorage
       Cookies.remove('cookie_access_token');
       Cookies.remove('cookie_access_token_refresh');
