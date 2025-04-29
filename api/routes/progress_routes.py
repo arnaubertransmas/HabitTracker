@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.progress_model import Progress
 
-# * register Blueprint auth
+# * register Blueprint progress
 progress_routes = Blueprint("progress", __name__)
 
 

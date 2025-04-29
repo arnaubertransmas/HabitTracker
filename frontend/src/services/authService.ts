@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import UserInterface from '../types/auth';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { showCookiesModal } from './showCookiesModal';
 
 // function to login user
 export const login = async (
@@ -12,9 +13,16 @@ export const login = async (
   setError?: (error: string) => void,
 ) => {
   try {
-    // clear any previous errors
     if (setError) setError('');
 
+    // show cookies modal bfore saving data
+    const accepted = await showCookiesModal();
+    if (!accepted) {
+      toast.error('This website cannot run without cookies...');
+      return false;
+    }
+
+    // validate credentials
     const response = await axiosInstance.post('/auth/signin', {
       email,
       password,
@@ -26,8 +34,8 @@ export const login = async (
       return false;
     }
 
+    // set cookies
     if (result.access_token && result.user) {
-      // set cookie with access token
       Cookies.set('cookie_access_token', result.access_token, {
         expires: 7,
         path: '/',
@@ -37,10 +45,8 @@ export const login = async (
         path: '/',
       });
 
-      // save user name to localStorage
       localStorage.setItem('user_name', result.user.name);
-
-      // redirect to user's profile page
+      // redirect to user main page
       redirect(`/user/${result.user.name}`);
       toast.info(`Hello, ${result.user.name}`);
       return true;
@@ -48,7 +54,6 @@ export const login = async (
 
     return false;
   } catch (err: any) {
-    // console.error('Login error:', err.response?.data);
     if (setError) setError('Invalid Credentials');
     return false;
   }

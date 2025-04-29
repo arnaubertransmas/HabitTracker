@@ -3,11 +3,9 @@ import Header from '../components/ui/Header';
 import Sidebar from '../components/ui/Sidebar';
 import DailyInfo from '../components/DailyInfo';
 import { getUser } from '../services/authService';
-import Cookies from '../components/ui/Cookies';
 
 const Home = () => {
   const [userStreak, setUserStreak] = useState(0);
-  const [showCookies, setShowCookies] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -18,13 +16,6 @@ const Home = () => {
           const streak = user.streak.length || 0;
           setUserStreak(streak);
           localStorage.setItem('user_streak', streak.toString());
-
-          // check if cookies modal was already shown
-          // and if has been accpeted
-          const cookiesShown = localStorage.getItem('cookies_consent_shown');
-          if (cookiesShown !== 'true') {
-            setShowCookies(true);
-          }
         }
       } catch (error) {
         console.error('Failed to fetch user:', error);
@@ -40,17 +31,11 @@ const Home = () => {
     fetchUser();
   }, []);
 
-  const handleCookieAction = () => {
-    // nofify child comp
-    setShowCookies(false);
-  };
-
   return (
     <>
       <Header />
       <Sidebar />
       <DailyInfo streak={userStreak} />
-      {showCookies && <Cookies onAction={handleCookieAction} />}
     </>
   );
 };
