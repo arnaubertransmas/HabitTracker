@@ -4,6 +4,7 @@ import { Award } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import HabitCard from './habits/HabitCard';
 import useHabits from '../hooks/habits/getHabits_DW';
+import RemindersList from './RemindersList';
 
 interface DailyInfoProps {
   streak: number;
@@ -72,7 +73,13 @@ const DailyInfo: React.FC<DailyInfoProps> = ({ streak }) => {
         </Col>
       </Row>
 
-      <div className="d-flex justify-content-center mb-4">
+      <Row>
+        <Col>
+          <RemindersList />
+        </Col>
+      </Row>
+
+      <div className="d-flex justify-content-center mb-5 mt-5">
         <Nav variant="pills" className="nav-fill border-0">
           <Nav.Item>
             <Nav.Link

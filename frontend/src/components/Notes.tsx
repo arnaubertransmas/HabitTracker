@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import Input from '../ui/Input';
-import { saveNote, getNote } from '../../services/noteService';
+import Input from './ui/Input';
+import { saveNote, getNote } from '../services/noteService';
 import { Form } from 'react-bootstrap';
 
 interface FormData {
