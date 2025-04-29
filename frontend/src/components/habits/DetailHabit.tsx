@@ -154,8 +154,9 @@ const DetailHabit: React.FC<DetailHabitProps> = ({
                             if (updated) {
                               const user = await getUser();
                               const newStreak = user.streak?.length || 0;
+                              // update streak
                               localStorage.setItem(
-                                'userStreak',
+                                'user_streak',
                                 newStreak.toString(), // format to string and upload it to localStorage
                               );
                             }
