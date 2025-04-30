@@ -5,6 +5,7 @@ import { deleteHabit } from '../../services/habitService';
 import DetailHabit from './DetailHabit';
 import HabitInterface from '../../types/habit';
 import '../../assets/css/spinner.css';
+import { Info, Pencil, Trash2 } from 'lucide-react';
 
 interface ShowHabitsProps {
   habits: HabitInterface[];
@@ -42,27 +43,30 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
       <tr key={habit.name || index}>
         <td>{habit.name}</td>
         <td>
-          <div className="d-flex justify-content-center gap-2">
+          <div className="d-flex flex-wrap justify-content-center gap-2">
             <Button
               variant="info"
               size="sm"
               onClick={() => handleShowDetail(habit)}
+              className="btn-responsive"
             >
-              Detail
+              <Info size={18} />
             </Button>
             <Button
               variant="warning"
               size="sm"
               onClick={() => handleEdit(habit)}
+              className="btn-responsive"
             >
-              Edit
+              <Pencil size={18} />
             </Button>
             <Button
               variant="danger"
               size="sm"
               onClick={() => deleteHabit(habit.name, loadHabits)}
+              className="btn-responsive"
             >
-              Delete
+              <Trash2 size={18} />
             </Button>
           </div>
         </td>
@@ -89,42 +93,43 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
     }
 
     return (
-      <Table
-        striped
-        bordered
-        hover
-        className="text-center"
-        style={{ maxWidth: '90%', marginRight: 'auto' }}
-      >
-        <thead>
-          <tr>
-            <th>{habitType}</th>
-            <th>Options</th>
-          </tr>
-        </thead>
-        <tbody>{habitList}</tbody>
-      </Table>
+      <div className="table-responsive">
+        <Table
+          striped
+          bordered
+          hover
+          className="text-center mx-auto"
+          style={{ maxWidth: '100%' }}
+        >
+          <thead>
+            <tr>
+              <th>{habitType}</th>
+              <th>Options</th>
+            </tr>
+          </thead>
+          <tbody>{habitList}</tbody>
+        </Table>
+      </div>
     );
   }, [loading, error, habits, habitType, habitList]);
 
   return (
     <>
-      <Container fluid className="p-3">
-        <Row className="mt-5">
-          <Col md={6} className="offset-md-0 d-flex justify-content-center p-3">
+      <Container fluid>
+        <Row className="mt-3 mt-md-4">
+          <Col xs={7} className="d-flex justify-content-center px-2 px-m-3">
             <Button
               variant="primary"
               type="button"
               onClick={handleShowModal}
-              className="text-nowrap"
-              style={{ width: 'auto', minWidth: 'fit-content' }}
+              className="text-nowrap mt-5"
             >
               Create {habitType}
             </Button>
           </Col>
         </Row>
-        <Row className="mt-5">
-          <Col md={10} className="offset-md-2 ml-5">
+        <Row className="mt-3 mt-md-4 ms-5">
+          <Col xs={12} sm={12} md={8} lg={8} className="mx-auto">
             {habitsTable}
           </Col>
         </Row>

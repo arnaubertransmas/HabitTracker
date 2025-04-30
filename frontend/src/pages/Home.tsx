@@ -3,6 +3,7 @@ import Header from '../components/ui/Header';
 import Sidebar from '../components/ui/Sidebar';
 import DailyInfo from '../components/DailyInfo';
 import { getUser } from '../services/authService';
+import { Container, Row, Col } from 'react-bootstrap';
 
 const Home = () => {
   const [userStreak, setUserStreak] = useState(0);
@@ -10,11 +11,12 @@ const Home = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        // get logged user
+        // get user
         const user = await getUser();
         if (user) {
           const streak = user.streak.length || 0;
           setUserStreak(streak);
+          // save streak to localStorage
           localStorage.setItem('user_streak', streak.toString());
         }
       } catch (error) {
@@ -22,7 +24,6 @@ const Home = () => {
       }
     };
 
-    // check if localStorage has streak already
     const cachedStreak = localStorage.getItem('user_streak');
     if (cachedStreak !== null) {
       setUserStreak(parseInt(cachedStreak));
@@ -34,8 +35,17 @@ const Home = () => {
   return (
     <>
       <Header />
-      <Sidebar />
-      <DailyInfo streak={userStreak} />
+      <Container fluid className="mt-3">
+        <Row>
+          <Col xs={12} lg={3} className="mb-3">
+            <Sidebar />
+          </Col>
+
+          <Col xs={12} lg={7}>
+            <DailyInfo streak={userStreak} />
+          </Col>
+        </Row>
+      </Container>
     </>
   );
 };

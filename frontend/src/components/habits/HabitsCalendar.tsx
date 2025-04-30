@@ -96,6 +96,7 @@ const Calendar: React.FC = () => {
               <FullCalendar
                 // pluggins for calendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                contentHeight="auto"
                 initialView="dayGridWeek" // main view
                 events={events}
                 headerToolbar={{

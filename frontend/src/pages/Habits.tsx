@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
 import Header from '../components/ui/Header';
 import Sidebar from '../components/ui/Sidebar';
 import CreateHabit from '../components/habits/CreateHabit';
@@ -18,7 +19,7 @@ const Habits = ({ habitType }: { habitType: 'Habit' | 'Non-negotiable' }) => {
     setHabitToEdit(null);
     setShowModal(false);
   };
-  // handle edit habit setting habit to edit
+
   const handleEdit = (habit: HabitInterface) => {
     setHabitToEdit(habit);
     setShowModal(true);
@@ -27,14 +28,12 @@ const Habits = ({ habitType }: { habitType: 'Habit' | 'Non-negotiable' }) => {
   const loadHabits = useCallback(async () => {
     try {
       setLoading(true);
-      // get Habits from API
+      // get habits and put it into state
       const response = await getHabits(habitType);
-
       setHabits(response);
       setLoading(false);
     } catch (error) {
-      // console.error('Error:', error);
-      setError('Error ocurred');
+      setError('Error occurred');
       setLoading(false);
     }
   }, [habitType]);
@@ -46,18 +45,27 @@ const Habits = ({ habitType }: { habitType: 'Habit' | 'Non-negotiable' }) => {
   return (
     <>
       <Header />
-      <div className="d-flex">
-        <Sidebar />
-        <ShowHabits
-          habits={habits}
-          loading={loading}
-          error={error}
-          handleShowModal={handleShowModal}
-          loadHabits={loadHabits}
-          habitType={habitType}
-          handleEdit={handleEdit}
-        />
-      </div>
+      <Container fluid className="mt-3">
+        <Row>
+          {/* sidebar controlled*/}
+          <Col xs={12} lg={3} className="mb-4 mb-lg-0">
+            <Sidebar />
+          </Col>
+
+          <Col xs={12}>
+            <ShowHabits
+              habits={habits}
+              loading={loading}
+              error={error}
+              handleShowModal={handleShowModal}
+              loadHabits={loadHabits}
+              habitType={habitType}
+              handleEdit={handleEdit}
+            />
+          </Col>
+        </Row>
+      </Container>
+
       <CreateHabit
         show={showModal}
         handleClose={handleCloseModal}
