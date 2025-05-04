@@ -1,29 +1,14 @@
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 const TimeDayChart = ({
   data,
 }: {
   data: { name: string; value: number; percent: number }[];
 }) => {
-  // Colors for segments
+  // segment colors
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
 
   if (!data || data.length === 0) return <p>No data yet</p>;
-
-  // Chart field hover
-  const ChartHover = ({ activeSlide, payload }: any) => {
-    // payload(array) = hoverData that will be displayed
-    if (activeSlide && payload && payload.length) {
-      return (
-        <div className="bg-white p-2 border rounded shadow text-sm">
-          {/* get day_time name + value */}
-          <p>{`${payload[0].name}: ${payload[0].value} Completions`}</p>
-          <p>{`${payload[0].payload.percent.toFixed(0)}%`}</p>
-        </div>
-      );
-    }
-    return null;
-  };
 
   // show % directly on chart
   const ChartLabel = (props: any) => {
@@ -83,7 +68,7 @@ const TimeDayChart = ({
                 />
               ))}
             </Pie>
-            <Tooltip content={<ChartHover />} />
+            {/* <Tooltip content={<ChartHover />} /> */}
           </PieChart>
         </ResponsiveContainer>
       </div>

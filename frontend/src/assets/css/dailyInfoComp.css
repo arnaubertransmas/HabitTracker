@@ -1,0 +1,122 @@
+/* background color */
+.bg-pattern {
+  background-color: #e6f2ff;
+}
+
+/* streak card styles */
+.streak-card {
+  width: 100%;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* streak-card top line */
+.streak-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #ffbb00, #ff9500);
+}
+
+/* positioning streak card */
+.streak-badge {
+  position: absolute;
+  top: -15px;
+  right: 20px;
+  z-index: 10;
+}
+
+/* habit card container */
+.habit-card {
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+/* hover on habit-card */
+.habit-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* day/weekly button styles */
+.nav-pills .nav-link {
+  border-radius: 30px;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* day/weekly button incative color */
+.nav-pills .nav-link:not(.active) {
+  background-color: #f8f9fa;
+}
+.nav-pills .nav-link:hover:not(.active) {
+  background-color: #e9ecef;
+}
+
+/* underline page header */
+.page-header {
+  position: relative;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.page-header:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 5px;
+  background: linear-gradient(90deg, #0d6efd, #a8dadc);
+  border-radius: 3px;
+}
+
+/* progress streak container */
+.streak-progress {
+  height: 14px;
+  border-radius: 7px;
+  margin: 1.5rem 0;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* streak counter */
+.streak-count {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #0d6efd;
+  line-height: 1;
+  display: inline-block;
+}
+
+/* day streak label */
+.streak-label {
+  font-size: 22px;
+  color: #495057;
+  font-weight: 500;
+  margin-left: 0.5rem;
+}
+
+/* header counter */
+.habit-section-header {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
