@@ -6,13 +6,12 @@
 
 /* wrapper responsive */
 .calendar-wrapper {
-  margin-left: 240px;
-  max-width: 100%;
+  max-width: 75%;
   background-color: var(--white);
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   overflow: hidden;
-  padding: 20px;
+  padding: 15px;
   transition: margin-left 0.3s ease;
 }
 
