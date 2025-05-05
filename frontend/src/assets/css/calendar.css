@@ -7,7 +7,7 @@
 /* wrapper responsive */
 .calendar-wrapper {
   max-width: 75%;
-  background-color: var(--white);
+  background-color: #e6f2ff;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   overflow: hidden;
