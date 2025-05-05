@@ -14,7 +14,19 @@ const Home = () => {
         // get user
         const user = await getUser();
         if (user) {
-          const streak = user.streak.length || 0;
+          let streak = user.streak.length || 0;
+          // get the last item from streak arr
+          const lastStreak = new Date(user.streak[user.streak.length - 1]);
+          const today = new Date();
+          // calculate difference in time
+          const diffInTime = today.getTime() - lastStreak.getTime();
+          // convert time difference to days
+          const diffInDays = diffInTime / (1000 * 3600 * 24);
+          // reset streak if the difference in days is 2 or more
+          if (diffInDays >= 2) {
+            streak = 0;
+          }
+
           setUserStreak(streak);
           // save streak to localStorage
           localStorage.setItem('user_streak', streak.toString());
