@@ -13,28 +13,86 @@
   transition: 0.3s;
   margin-right: 5px;
   width: 250px;
+  background-color: var(--light) !important;
 }
 
-/* siebar menu items */
+/* menu items */
 .sidebar-menu-item {
   transition:
     background-color 0.3s,
     color 0.3s;
 }
 
-/* media for when screen is smaller | complements with react-bootstrap */
+/* mobile navigation */
+.mobile-navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+/* vertical padding, keeping horizontal space */
+.mobile-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+}
+
+/* nav links styling */
+.mobile-nav-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #333;
+  text-decoration: none;
+  font-size: 12px;
+  padding: 5px 0;
+  width: 20%;
+  text-align: center;
+}
+
+/* spacing between icons + big icons */
+.mobile-nav-link svg {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+/* text label */
+.mobile-nav-label {
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* active icon on mobile */
+.mobile-nav-active {
+  color: #007bff !important;
+}
+
+/* responsivness */
 @media (min-width: 768px) and (max-width: 1024px) {
   .sidebar-container {
     width: 180px;
   }
-
   .sidebar-menu-item {
     font-size: 14px;
   }
 }
 
-@media (max-width: 788px) {
+/* hide vertical sidebar on mobile (showing mobile nav instead) */
+@media (max-width: 768px) {
   .sidebar-container {
     display: none;
+  }
+
+  /* padding to main content for bottom navigation */
+  body {
+    padding-bottom: 60px;
   }
 }
