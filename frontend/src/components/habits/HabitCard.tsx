@@ -27,11 +27,11 @@ const HabitCard: React.FC<HabitCardProps> = ({ habit }) => {
     <Card.Body className="d-flex flex-column mb-5">
       <Card.Title className="fw-bold fs-5 mb-3">{habit.name}</Card.Title>
       <div className="d-flex align-items-center mb-2">
-        <Calendar size={16} className="me-2 text-primary" />
+        <Calendar size={16} className={`me-2 ${getTextColor(habit.type)}`} />
         <span className="text-muted">Daytime: {habit.time_day}</span>
       </div>
       <div className="d-flex align-items-center mb-2">
-        <Clock size={16} className="me-2 text-info" />
+        <Clock size={16} className={`me-2 ${getTextColor(habit.type)}`} />
         <span className="text-muted">
           Time: {habit.start_time} - {habit.end_time}
         </span>

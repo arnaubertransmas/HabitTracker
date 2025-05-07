@@ -76,7 +76,7 @@
 }
 
 /* responsivness */
-@media (min-width: 768px) and (max-width: 1024px) {
+@media (min-width: 768px) and (max-width: 1034px) {
   .sidebar-container {
     width: 180px;
   }

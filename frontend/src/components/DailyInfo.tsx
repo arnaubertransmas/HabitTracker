@@ -31,7 +31,7 @@ const DailyInfo: React.FC<DailyInfoProps> = ({ streak }) => {
     year: 'numeric',
   });
 
-  // Use the custom hook for habit data
+  // custom hook for habit data
   const {
     habitsToday,
     completedToday,
@@ -174,9 +174,6 @@ const DailyInfo: React.FC<DailyInfoProps> = ({ streak }) => {
                           Add habits for today to stay disciplined and build
                           your streak
                         </p>
-                        <button className="btn btn-primary px-4 py-2">
-                          Add New Habit
-                        </button>
                       </Card.Body>
                     </Card>
                   </Col>
@@ -230,9 +227,6 @@ const DailyInfo: React.FC<DailyInfoProps> = ({ streak }) => {
                           Add weekly habits to organize your schedule and track
                           your progress
                         </p>
-                        <button className="btn btn-info text-white px-4 py-2">
-                          Add Weekly Habit
-                        </button>
                       </Card.Body>
                     </Card>
                   </Col>
