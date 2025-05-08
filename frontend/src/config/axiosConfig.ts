@@ -81,8 +81,11 @@ axiosInstance.interceptors.response.use(
 
       // if everything fails, force logout
       Cookies.remove('cookie_access_token');
-      Cookies.remove('refresh_token');
+      Cookies.remove('cookie_access_token_refresh');
       localStorage.removeItem('user_name');
+      localStorage.removeItem('user_streak');
+      localStorage.removeItem('cookies_consent_shown');
+      // redirect to sign-in page
       window.location.href = '/signin';
     }
 

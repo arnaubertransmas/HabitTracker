@@ -53,6 +53,7 @@ export const login = async (
     }
 
     return false;
+    // catch must be any or unknown
   } catch (err: any) {
     if (setError) setError('Invalid Credentials');
     return false;
