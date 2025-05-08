@@ -5,8 +5,11 @@ import { deleteHabit } from '../../services/habitService';
 import DetailHabit from './DetailHabit';
 import HabitInterface from '../../types/habit';
 import '../../assets/css/spinner.css';
-import { Info, Pencil, Trash2 } from 'lucide-react';
+import '../../assets/css/showHabits.css';
+import { Info, Pencil, Trash2, Search } from 'lucide-react';
+import { Form, InputGroup, Badge, Card } from 'react-bootstrap';
 
+// interface for the comp
 interface ShowHabitsProps {
   habits: HabitInterface[];
   loading: boolean;
@@ -31,40 +34,63 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
     null,
   );
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // Memoized habits list to prevent unnecessary re-renders
+  // filter habits based on search term
+  const filteredHabits = useMemo(() => {
+    return habits.filter((habit) =>
+      habit.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+  }, [habits, searchTerm]);
+
+  // memoized habits list to prevent unnecessary re-renders
   const habitList = useMemo(() => {
-    // Handler for showing detail modal
+    // handler for showing detail modal
     const handleShowDetail = (habit: HabitInterface) => {
       setSelectedHabit(habit);
       setShowDetailModal(true);
     };
-    return habits.map((habit, index) => (
-      <tr key={habit.name || index}>
-        <td>{habit.name}</td>
-        <td>
+    return filteredHabits.map((habit, index) => (
+      <tr key={habit.name || index} className="align-middle">
+        <td className="habit-name">
+          <div className="d-flex align-items-center justify-content-center">
+            <span className="fw-medium">{habit.name}</span>
+          </div>
+        </td>
+        <td className="options-column">
           <div className="d-flex flex-wrap justify-content-center gap-2">
             <Button
-              variant="info"
+              variant="outline-info"
               size="sm"
               onClick={() => handleShowDetail(habit)}
-              className="btn-responsive"
+              className="btn-icon"
+              title="View Details"
             >
               <Info size={18} />
             </Button>
             <Button
-              variant="warning"
+              variant="outline-warning"
               size="sm"
               onClick={() => handleEdit(habit)}
-              className="btn-responsive"
+              className="btn-icon"
+              title="Edit Habit"
             >
               <Pencil size={18} />
             </Button>
             <Button
-              variant="danger"
+              variant="outline-danger"
               size="sm"
-              onClick={() => deleteHabit(habit.name, loadHabits)}
-              className="btn-responsive"
+              onClick={() => {
+                if (
+                  window.confirm(
+                    `Are you sure you want to delete "${habit.name}"?`,
+                  )
+                ) {
+                  deleteHabit(habit.name, loadHabits);
+                }
+              }}
+              className="btn-icon"
+              title="Delete Habit"
             >
               <Trash2 size={18} />
             </Button>
@@ -72,14 +98,17 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
         </td>
       </tr>
     ));
-  }, [habits, handleEdit, loadHabits]);
+  }, [filteredHabits, handleEdit, loadHabits]);
 
-  // Memoized table component to prevent unnecessary re-renders
+  // memoized table
   const habitsTable = useMemo(() => {
     if (loading) {
       return (
         <div className="spinner-container">
           <Spinner animation="border" role="status" />
+          <p className="mt-2 text-muted">
+            Loading your {habitType.toLowerCase()}s...
+          </p>
         </div>
       );
     }
@@ -89,53 +118,110 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
     }
 
     if (habits.length === 0) {
-      return <Alert variant="success">There are no {habitType} yet</Alert>;
+      return (
+        <Card
+          className="text-center p-4 border-light"
+          style={{ backgroundColor: '#e6f2ff' }}
+        >
+          <Card.Body>
+            <div className="mb-3"></div>
+            <Card.Title>No {habitType}s Yet</Card.Title>
+            <Card.Text className="text-muted">
+              Start creating your {habitType.toLowerCase()}s to track your
+              progress
+            </Card.Text>
+          </Card.Body>
+        </Card>
+      );
+    }
+
+    // search result == 0
+    if (filteredHabits.length === 0) {
+      return (
+        <Alert variant="info" className="text-center">
+          No {habitType.toLowerCase()}s match your search term "{searchTerm}"
+        </Alert>
+      );
     }
 
     return (
-      <div className="table-responsive">
+      <div className="table-responsive mt-3">
         <Table
-          striped
-          bordered
           hover
-          className="text-center mx-auto"
-          style={{ maxWidth: '100%' }}
+          bordered
+          className="text-center mx-auto align-middle mb-5 table-fixed"
+          style={{ width: '100%', backgroundColor: '#e6f2ff' }}
         >
-          <thead>
+          <thead className="bg-light">
             <tr>
-              <th>{habitType}</th>
-              <th>Options</th>
+              <th style={{ width: '70%' }}>
+                {habitType}{' '}
+                <Badge bg={habitType === 'Habit' ? 'info' : 'warning'} pill>
+                  {filteredHabits.length}
+                </Badge>
+              </th>
+              <th style={{ width: '30%' }}>Options</th>
             </tr>
           </thead>
           <tbody>{habitList}</tbody>
         </Table>
       </div>
     );
-  }, [loading, error, habits, habitType, habitList]);
+  }, [
+    loading,
+    error,
+    habits,
+    habitType,
+    habitList,
+    filteredHabits,
+    searchTerm,
+  ]);
 
   return (
     <>
-      <Container fluid>
+      <Container fluid className="main">
         <Row className="mt-3 mt-md-4">
-          <Col xs={7} className="d-flex justify-content-center px-2 px-m-3">
-            <Button
-              variant="primary"
-              type="button"
-              onClick={handleShowModal}
-              className="text-nowrap mt-5"
-            >
-              Create {habitType}
-            </Button>
+          <Col xs={12} md={8} lg={7} className="px-2 px-md-3 mx-auto">
+            <div className="mt-3 mt-md-5">
+              <h4 className="mb-5 text-center">
+                <span className="text-primary fw-bold">My {habitType}s </span>
+                <Badge bg={habitType === 'Habit' ? 'info' : 'warning'} pill>
+                  {habits.length}
+                </Badge>
+              </h4>
+              <div className="d-flex align-items-center gap-3 mt-4 flex-column flex-md-row px-0 px-md-4">
+                <Button
+                  variant="primary"
+                  type="button"
+                  onClick={handleShowModal}
+                  className="create-button"
+                >
+                  Create {habitType}
+                </Button>
+                <InputGroup className="search-bar w-100">
+                  <InputGroup.Text className="bg-white border-end-0">
+                    <Search size={18} />
+                  </InputGroup.Text>
+                  <Form.Control
+                    placeholder={`Search ${habitType}s...`}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="border-start-0"
+                  />
+                </InputGroup>
+              </div>
+            </div>
           </Col>
         </Row>
-        <Row className="mt-3 mt-md-4 ms-5">
-          <Col xs={12} sm={12} md={8} lg={8} className="mx-auto">
+        <Row className="mt-3 mt-md-4">
+          <Col xs={12} sm={12} md={10} lg={8} className="mx-auto px-2 px-md-3">
+            {/* show habits table */}
             {habitsTable}
           </Col>
         </Row>
       </Container>
 
-      {/* detail modal  */}
+      {/* detail modal */}
       {selectedHabit && (
         <DetailHabit
           habitName={selectedHabit?.name}
