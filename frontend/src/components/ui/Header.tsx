@@ -18,7 +18,7 @@ const Header = () => {
   };
 
   return (
-    <Navbar bg="light" sticky="top" className="border shadow-sm py-3">
+    <Navbar bg="white" sticky="top" className="border shadow-sm py-3">
       <Container>
         <Navbar.Brand className="fw-bold text-primary">
           <Link to="/" style={{ textDecoration: 'none' }}>

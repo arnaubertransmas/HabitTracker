@@ -6,7 +6,7 @@
 
 .register-style {
   background-color: #2962ff !important;
-  color: white !important;
+  color: var(--light) !important;
   transition: 0.3s;
 }
 .login-style:hover {
@@ -34,5 +34,5 @@
 .navbar .nav-link.register-style {
   background-color: #2962ff;
   transition: 0.3s;
-  color: white;
+  color: var(--light);
 }

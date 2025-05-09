@@ -7,6 +7,9 @@ const Welcome = () => {
     borderRadius: '8px',
     fontSize: '1.1rem',
   };
+
+  const userName = localStorage.getItem('user_name');
+
   return (
     <div className="container text-center py-5">
       <div className="row justify-content-center">
@@ -16,20 +19,30 @@ const Welcome = () => {
             <br />
             Elevate your life
           </h1>
-
           <p className="lead mb-5">
             Take control of your daily routines to boost productivity and reach
             your goals faster.
           </p>
-
-          <Link
-            to="/signup"
-            role="button"
-            className="btn btn-primary btn-lg px-5 py-3"
-            style={linkStyle}
-          >
-            Try Habit Tracker
-          </Link>
+          {/* if userName redirect to dashboard */}
+          {userName ? (
+            <Link
+              to={`user/${userName}`}
+              role="button"
+              className="btn btn-primary btn-lg px-5 py-3"
+              style={linkStyle}
+            >
+              Try Habit Tracker
+            </Link>
+          ) : (
+            <Link
+              to="/signup"
+              role="button"
+              className="btn btn-primary btn-lg px-5 py-3"
+              style={linkStyle}
+            >
+              Try Habit Tracker
+            </Link>
+          )}
         </div>
       </div>
     </div>

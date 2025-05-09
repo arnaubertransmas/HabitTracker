@@ -38,7 +38,7 @@
 /* superior line of schedule */
 .fc-header-toolbar {
   padding: 15px;
-  background-color: var(--light);
+  background-color: #e6f2ff;
   border-bottom: 2px solid var(--secondary);
   border-radius: 8px 8px 0 0;
 }
@@ -50,7 +50,7 @@
 .fc-prev-button,
 .fc-next-button {
   background-color: var(--secondary);
-  color: var(--white);
+  color: var(--light);
   border: none;
   border-radius: 5px;
   padding: 8px 12px;

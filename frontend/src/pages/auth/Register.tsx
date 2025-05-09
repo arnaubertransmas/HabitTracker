@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { FormProvider } from 'react-hook-form';
 import {
   Button,
@@ -9,7 +8,7 @@ import {
   Card,
   Alert,
 } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Header from '../../components/ui/Header';
 import Input from '../../components/ui/Input';
 import UserInterface from '../../types/auth';
@@ -33,13 +32,6 @@ const Register: React.FC<UserFormProps> = ({ userToUpdate }) => {
     loading,
     isEditMode,
   } = CreateUserLogic({ userToUpdate });
-
-  const redirect = useNavigate();
-  const userName = localStorage.getItem('user_name');
-
-  useEffect(() => {
-    if (userName) redirect(`/user/${userName}`);
-  }, [userName, redirect]);
 
   return (
     <>
