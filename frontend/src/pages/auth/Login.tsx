@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import {
   Button,
@@ -24,6 +24,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const redirect = useNavigate();
   const methods = useForm<FormData>({ mode: 'onChange' });
+  const userName = localStorage.getItem('user_name');
   const {
     handleSubmit,
     formState: { errors },
@@ -37,6 +38,10 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (userName) redirect(`/user/${userName}`);
+  }, [redirect, userName]);
 
   return (
     // return login dynamic form

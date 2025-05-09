@@ -13,7 +13,16 @@ import '../../assets/css/spinner.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Calendar: React.FC = () => {
-  const [events, setEvents] = useState<any[]>([]);
+  // calendar interface
+  interface CalendarEvent {
+    title: string;
+    startTime: string | undefined;
+    endTime: string | undefined;
+    daysOfWeek: number[];
+    extendedProps: { type: string };
+  }
+
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [showModal, setShowModal] = useState(false);
@@ -55,7 +64,9 @@ const Calendar: React.FC = () => {
       const formattedEvents = habits.map((habit) => ({
         title: habit.name,
         startTime: habit.start_time,
-        endTime: habit.end_time,
+        endTime: Array.isArray(habit.end_time)
+          ? habit.end_time.join(', ')
+          : habit.end_time,
         daysOfWeek: mapFrequencyToDays(habit.frequency, habit.days), // map days
         extendedProps: { type: habit.type || 'Habit' }, // we use this later to assign different classes
       }));

@@ -8,13 +8,12 @@ progress_collection = db["progress"]
 
 class Progress:
 
-    def __init__(self, user_email, habit_name, date, completed):
+    def __init__(self, user_email, habit_name, completed):
         self.user_email = user_email
         self.habit_name = habit_name
-        self.date = date
         self.completed = completed
 
-    ALLOWED_FIELDS = ["habit_name", "user_email", "date", "completed"]
+    ALLOWED_FIELDS = ["habit_name", "user_email", "completed"]
 
     @staticmethod
     def save_habit_to_progress(name, time_day, habit_type, completed, user_email):

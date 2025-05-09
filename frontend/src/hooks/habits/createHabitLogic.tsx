@@ -41,7 +41,10 @@ const CreateHabitLogic = ({
         reset();
         // iterate accross habitToEdit showing data as value
         Object.keys(habitToEdit).forEach((key) => {
-          setValue(key as keyof HabitInterface, (habitToEdit as any)[key]);
+          setValue(
+            key as keyof HabitInterface,
+            (habitToEdit as HabitInterface)[key as keyof HabitInterface],
+          );
         });
       } else {
         reset();

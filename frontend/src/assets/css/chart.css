@@ -1,4 +1,4 @@
-/* line chart (weekly) */
+/* line chart */
 .active {
   font-weight: bold;
   color: black;
@@ -7,6 +7,7 @@
 .button {
   color: grey;
 }
+
 /* line chart end */
 /* heat chart (monthly) */
 /* general heat map container */
@@ -16,6 +17,7 @@
   margin: 20px 0;
   font-family: sans-serif;
   width: 100%;
+  overflow-x: auto; /* enable horizontal scrolling */
 }
 
 /* chart rows */
@@ -24,6 +26,7 @@
   align-items: center;
   height: 42px;
   margin-bottom: 5px;
+  min-width: max-content; /* ensure row doesn't shrink below content size */
 }
 
 /* align month days w cell start */
@@ -68,17 +71,37 @@
 /* @media for responsivness */
 @media (max-width: 992px) {
   .custom-heatmap-container {
-    overflow-x: hidden;
+    overflow-x: auto;
   }
-
   .habit-label {
     width: 110px;
     min-width: 110px;
     padding-right: 18px;
   }
-
   .habit-label-spacer {
     width: 110px;
     min-width: 110px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* chart positioning on mobile */
+  .shadow {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100%;
+  }
+
+  /* make buttons wrap properly */
+  .flex.flex-wrap {
+    justify-content: center;
+  }
+
+  /* adjust button sizes for small screens */
+  .btn.btn-sm.button {
+    margin: 2px;
+    padding: 4px 8px;
+    font-size: 0.9rem;
+    white-space: nowrap;
   }
 }

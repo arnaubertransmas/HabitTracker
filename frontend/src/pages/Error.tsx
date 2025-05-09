@@ -26,7 +26,7 @@ const Error404 = (): JSX.Element => {
             </Col>
           )}
 
-          <Col md={isAuthenticated ? 9 : 12} lg={isAuthenticated ? 10 : 12}>
+          <Col md={isAuthenticated ? 7 : 12} lg={isAuthenticated ? 8 : 12}>
             <Container fluid className="py-5 my-5">
               <Row className="justify-content-center text-center">
                 <Col md={10} lg={8} xl={6}>

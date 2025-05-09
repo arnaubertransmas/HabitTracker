@@ -52,11 +52,16 @@ const Chart = () => {
 
   return (
     <div
-      className="p-4 shadow rounded-xl bg-white"
-      style={{ marginLeft: '275px', marginRight: '80px', marginTop: '60px' }}
+      className="p-4 shadow rounded-xl bg-white chart-container"
+      style={{
+        marginLeft: '275px',
+        marginRight: '80px',
+        marginTop: '60px',
+        maxWidth: '100%',
+      }}
     >
       <h2 className="text-xl font-semibold mb-2">Progress</h2>
-      <div className="flex flex-wrap gap-2 my-4">
+      <div className="flex flex-wrap gap-2 my-4 chart-buttons">
         <button
           onClick={() => {
             // call each viewMode when button is clicked
@@ -100,21 +105,23 @@ const Chart = () => {
           Daytime
         </button>
       </div>
-      {/* render the appropriate chart based on viewMode */}
-      {/* time day data from custom hook */}
-      {viewMode === 'daytime' && (
-        <TimeDayChart data={timeDayData(habits)} />
-      )}{' '}
-      {viewMode === 'monthly' && <HabitHeatmap data={habits} />}
-      {(viewMode === 'weekly' ||
-        viewMode === 'habit' ||
-        viewMode === 'nonnegotiable') && (
-        <LineChartDefault
-          chartData={chartData}
-          habits={filteredHabits}
-          colors={filteredHabits.map((_, index) => generateColor(index))} // generate colors dynamically
-        />
-      )}
+      <div className="chart-content-wrapper">
+        {/* render the appropriate chart based on viewMode */}
+        {/* time day data from custom hook */}
+        {viewMode === 'daytime' && (
+          <TimeDayChart data={timeDayData(habits)} />
+        )}{' '}
+        {viewMode === 'monthly' && <HabitHeatmap data={habits} />}
+        {(viewMode === 'weekly' ||
+          viewMode === 'habit' ||
+          viewMode === 'nonnegotiable') && (
+          <LineChartDefault
+            chartData={chartData}
+            habits={filteredHabits}
+            colors={filteredHabits.map((_, index) => generateColor(index))} // generate colors dynamically
+          />
+        )}
+      </div>
     </div>
   );
 };
