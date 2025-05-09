@@ -127,7 +127,7 @@ export const editHabit = async (
       await loadHabits();
     }
 
-    toast.warning(`${habitToEdit.name} edited successfully`);
+    toast.success(`${habitToEdit.name} edited successfully`);
     return { success: true, message: 'Habit updated successfully' };
   } catch (err: unknown) {
     // console.error('Error updating habit:', err);
