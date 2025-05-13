@@ -1,6 +1,6 @@
 import os
 from datetime import timedelta
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify, make_response, request
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from routes.auth_routes import auth_routes, login_manager
@@ -40,19 +40,10 @@ def create_app():
     # CORS config - allow the specific frontend domain
     CORS(
         app,
+        resources={r"/*": {"origins": "*"}},
         supports_credentials=True,
-        resources={
-            r"/*": {
-                "origins": [FRONTEND_URL],
-                "supports_credentials": True,
-                "methods": ["GET", "POST", "OPTIONS", "HEAD", "PUT", "DELETE"],
-                "allow_headers": [
-                    "Content-Type",
-                    "Authorization",
-                    "Access-Control-Allow-Credentials",
-                ],
-            }
-        },
+        allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Credentials"],
+        methods=["GET", "POST", "OPTIONS", "HEAD", "PUT", "DELETE"]
     )
     
     jwt = JWTManager(app)
@@ -65,7 +56,15 @@ app, jwt = create_app()
 # CORS headers
 @app.after_request
 def add_cors_headers(response):
-    response.headers["Access-Control-Allow-Origin"] = FRONTEND_URL
+    # Get the origin from the request
+    origin = request.headers.get('Origin')
+    
+    # If the origin is our frontend or we're in development mode, allow it
+    if origin == FRONTEND_URL or DEBUG:
+        response.headers["Access-Control-Allow-Origin"] = origin
+    else:
+        response.headers["Access-Control-Allow-Origin"] = FRONTEND_URL
+        
     response.headers["Access-Control-Allow-Credentials"] = "true"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS, PUT, DELETE"
     response.headers["Access-Control-Allow-Headers"] = (
@@ -73,14 +72,19 @@ def add_cors_headers(response):
     )
     return response
 
-# OPTIONS (preflight)
-@app.route("/auth/signin", methods=["OPTIONS"])
-@app.route("/auth/signup", methods=["OPTIONS"])
-@app.route("/auth/logout", methods=["OPTIONS"])
-@app.route("/auth/check_session", methods=["OPTIONS"])
-def handle_options():
+# Handle OPTIONS requests (preflight) for all routes
+@app.route('/', defaults={'path': ''}, methods=['OPTIONS'])
+@app.route('/<path:path>', methods=['OPTIONS'])
+def handle_options(path):
     response = make_response()
-    response.headers["Access-Control-Allow-Origin"] = FRONTEND_URL
+    origin = request.headers.get('Origin')
+    
+    # If the origin is our frontend or we're in development mode, allow it
+    if origin == FRONTEND_URL or DEBUG:
+        response.headers["Access-Control-Allow-Origin"] = origin
+    else:
+        response.headers["Access-Control-Allow-Origin"] = FRONTEND_URL
+        
     response.headers["Access-Control-Allow-Credentials"] = "true"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS, PUT, DELETE"
     response.headers["Access-Control-Allow-Headers"] = (
@@ -104,6 +108,7 @@ def handle_unauthorized_error(error_desc):
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
+    
 # import os
 # from datetime import timedelta
 # from flask import Flask, jsonify, make_response
