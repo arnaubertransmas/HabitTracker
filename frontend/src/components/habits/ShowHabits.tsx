@@ -81,13 +81,7 @@ const ShowHabits: React.FC<ShowHabitsProps> = ({
               variant="outline-danger"
               size="sm"
               onClick={() => {
-                if (
-                  window.confirm(
-                    `Are you sure you want to delete "${habit.name}"?`,
-                  )
-                ) {
-                  deleteHabit(habit.name, loadHabits);
-                }
+                deleteHabit(habit.name, loadHabits);
               }}
               className="btn-icon"
               title="Delete Habit"

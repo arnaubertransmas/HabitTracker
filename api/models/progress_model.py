@@ -33,16 +33,33 @@ class Progress:
     @staticmethod
     def update_habit(habit_name, user_email, updates):
         try:
-            filtered_updates = {}
-            for field, value in updates.items():  # returns key:value
-                # if field in allowed_fields, update value
-                if field in Progress.ALLOWED_FIELDS:
-                    filtered_updates[field] = value
+            # map between Habit field names and Progress field names
+            # keep the field name as it is in Progress model
+            # for when fields are passed directly
+            field_mapping = {
+                "name": "name",
+                "habit_name": "name",
+                "time_day": "time_day",
+                "type": "type",
+                "completed": "completed",
+                "user_email": "user_email",
+            }
 
-            result = progress_collection.update_one(
-                {"name": habit_name, "user_email": user_email},
-                {"$set": filtered_updates},
-            )
+            filtered_updates = {}
+            for field, value in updates.items():
+                # If the field exists in our mapping, use the mapped field name for Progress
+                if field in field_mapping:
+                    filtered_updates[field_mapping[field]] = value
+
+            # Only update if we have values to update
+            if filtered_updates:
+                result = progress_collection.update_one(
+                    {"name": habit_name, "user_email": user_email},
+                    {"$set": filtered_updates},
+                )
+                return result
+            else:
+                return "No valid fields to update"
         except Exception as e:
             return str(e)
 
