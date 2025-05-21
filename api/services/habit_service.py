@@ -139,4 +139,5 @@ def complete_habit_service(habit_name, date_str, email):
             "message": f"Habit already completed on {date_str_formatted}",
         }
     except Exception as e:
+        log_error(f"Habit completetion error {e}")
         return {"success": False, "message": str(e)}

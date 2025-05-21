@@ -37,8 +37,8 @@ class Progress:
             # keep the field name as it is in Progress model
             # for when fields are passed directly
             field_mapping = {
-                "name": "name",
-                "habit_name": "name",
+                "name": "name",  # comming from Habit model
+                "habit_name": "name",  # field reference
                 "time_day": "time_day",
                 "type": "type",
                 "completed": "completed",
@@ -67,13 +67,13 @@ class Progress:
     def get_habits(user_email):
         try:
 
-            habits_raw = list(
+            raw_habits = list(
                 progress_collection.find({"user_email": user_email}, {"_id": 0})
             )
 
             # format each habit
             formatted_habits = []
-            for habit in habits_raw:
+            for habit in raw_habits:
                 habit_data = {
                     "habitName": habit["name"],
                     "completed": habit["completed"],
