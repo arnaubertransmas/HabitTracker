@@ -121,7 +121,7 @@ export const updateUser = async (dataUpdate: UserInterface) => {
     const response = await axiosInstance.put('/auth/update_user', dataUpdate);
 
     if (response.data.success) {
-      toast.warning('User updated');
+      toast.warning('User updated, logout to apply changes');
       return true;
     } else {
       // console.error('Error from server:', response.data.message);

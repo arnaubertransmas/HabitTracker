@@ -1,0 +1,71 @@
+version: "3"
+
+services:
+  frontend:
+    restart: always
+    build: ./frontend
+    ports:
+      - "3000:3000"
+
+    # sync local code with container
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app:cached
+    # enviorment variables
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - REACT_APP_API_URL=http://localhost:5000
+    depends_on:
+      - api
+    networks:
+      - app-network
+
+  api:
+    restart: always
+    # call dockerfile in api folder
+    build: ./api
+    ports:
+      - "5000:5050"
+    volumes:
+      - ./api:/app:cached
+    # wait for mongo to be ready
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo
+    restart: always
+    # enviorment variables
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 12345
+    # save data persistently outside the container
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app-network
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: 12345
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+# network definition
+networks:
+  app-network:
+    driver: bridge
+
+# save data persistently outside the container
+volumes:
+  mongodb_data:
